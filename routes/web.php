@@ -12,6 +12,10 @@ Route::middleware('auth')->group(function () {
 
     Route::resource('exam_question', ExamQuestionController::class);
 
+    Route::get('exam', function () {
+        return view('exam_question.exam');
+    });
+
 
 });
 

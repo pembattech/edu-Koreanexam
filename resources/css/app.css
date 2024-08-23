@@ -10,3 +10,12 @@
         background-color: rgb(243 244 246 / 1);
     }
 }
+
+.option-active > span:nth-child(1) {
+    background-color: black;
+    color: white;
+}
+
+.option-active > span:nth-child(2) {
+    font-weight: 900;
+}
