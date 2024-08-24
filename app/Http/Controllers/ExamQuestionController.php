@@ -13,7 +13,12 @@ class ExamQuestionController extends Controller
      */
     public function index()
     {
-        //
+        $exam_sets = ExamQuestion::query()
+            ->orderBy('set', 'asc') // Order by 'set' column in ascending order
+            ->distinct('set') // distinct('set'): Ensures that only unique values for the set column are selected.
+            ->pluck('set'); // pluck('set'): Retrieves an array of the values from the set column.
+
+        return view('exam_question.index', ['exam_sets' => $exam_sets]);
     }
 
     /**
@@ -107,6 +112,25 @@ class ExamQuestionController extends Controller
         // return redirect()->route('exam_question.index')->with('success', 'Exam question created successfully.');
     }
 
+    public function exam_table()
+    {
+        if (request()->ajax()) {
+
+            $questionNumber = request()->query('questionNumber');
+            $setNumber = request()->query('setNumber');
+
+            $exam_question = ExamQuestion::query()
+                ->where('question_number', $questionNumber)
+                ->where('set', $setNumber)
+                ->get();
+
+            return response()->json(['success' => $exam_question]);
+
+        } else {
+
+            return redirect("exam_question");
+        }
+    }
 
 
     /**
@@ -114,7 +138,9 @@ class ExamQuestionController extends Controller
      */
     public function show(ExamQuestion $examQuestion)
     {
-        //
+        // $exam_question = ExamQuestion::query();
+
+        // return view()
     }
 
     /**

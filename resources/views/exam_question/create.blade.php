@@ -1,18 +1,7 @@
 <x-app-layout>
 
-    @if ($errors->any())
-        <div class="alert alert-danger">
-            <ul>
-                @foreach ($errors->all() as $error)
-                    <li>{{ $error }}</li>
-                @endforeach
-            </ul>
-        </div>
-    @endif
-
-
     <form method="POST" action="{{ route('exam_question.store') }}" enctype="multipart/form-data"
-        class="py-4 px-4 mx-auto max-w-2xl lg:py-14">
+        class="py-4 px-4 mx-auto max-w-2xl lg:py-4">
         @csrf
 
         <div class="grid gap-4 sm:grid-cols-[1fr_3fr] sm:gap-6">

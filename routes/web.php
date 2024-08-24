@@ -10,7 +10,10 @@ Route::middleware('auth')->group(function () {
         return view('dashboard');
     })->name('dashboard');
 
+    Route::get('exam_question/exam_table', [ExamQuestionController::class, 'exam_table']);
+
     Route::resource('exam_question', ExamQuestionController::class);
+
 
     Route::get('exam', function () {
         return view('exam_question.exam');

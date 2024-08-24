@@ -21,7 +21,7 @@
 
             <div class="flex gap-2 items-center">
                 <div class="sidebar-item">
-                    <a href="#">
+                    <a href="{{ route('exam_question.index') }}">
                         Exam
                     </a>
                 </div>
