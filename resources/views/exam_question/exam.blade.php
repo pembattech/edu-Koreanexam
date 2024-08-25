@@ -139,19 +139,6 @@
                     },
                     success: function(response) {
 
-                        // $.ajax({
-                        //     url: '/answer/is_answer',
-                        //     method: 'GET',
-                        //     data: {
-                        //         'setNumber': setNumber,
-                        //         'questionNumber': questionNumber,
-                        //     },
-                        //     success: function(response) {
-                        //         console.log(response)
-                        //     };
-                        // });
-
-
                         console.log(response)
 
                         // Show the modal
@@ -195,6 +182,26 @@
                             $('#option_4').attr('data-value', option_4);
 
                         });
+
+                        $.ajax({
+                            url: '/answer/is-answer',
+                            method: 'GET',
+                            data: {
+                                'setNumber': setNumber,
+                                'questionNumber': questionNumber,
+                            },
+                            success: function(is_answer_response) {
+
+                                const answerId = is_answer_response.data.ans.answer;
+
+                                // Select the element by ID
+                                var element = $("#" + answerId);
+
+                                // Add the 'option-active' class to the parent element
+                                element.closest('.option-div').addClass('option-active');
+                            }
+                        });
+
 
 
                     }

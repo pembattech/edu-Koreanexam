@@ -14,7 +14,28 @@ class AnswerController extends Controller
     public function is_answer(Request $request)
     {
         if ($request->ajax()) {
-            // 
+
+            $question_number = $request->input('questionNumber');
+            $setNumber = $request->input('setNumber');
+
+            $answers = Answer::query()
+                ->select('answer')
+                ->where('question_num', $question_number)
+                ->where('set', $setNumber)
+                ->first();
+
+            if ($answers) {
+
+                return response()->json([
+                    'success' => true,
+                    'data' => [
+                        'is_answer' => true,
+                        'question_number' => $question_number,
+                        'set_number' => $setNumber,
+                        'ans' => $answers,
+                    ]
+                ]);
+            }
         } else {
             return redirect('exam_question');
         }
