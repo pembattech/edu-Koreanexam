@@ -37,10 +37,13 @@
                 </p>
 
                 <div class="right-question-item grid grid-cols-5 gap-4">
+
                     @for ($i = 1; $i <= 20; $i++)
-                        <p data-question-number= "{{ $i }}"
-                            class="question-item cursor-pointer hover:font-bold border-2 border-black p-4 text-center">
-                            {{ $i }}</p>
+
+                            <p data-question-number= "{{ $i }}"
+                                class="question-item cursor-pointer hover:font-bold border-2 border-black p-4 text-center">
+                                {{ $i }}
+                            </p>
                     @endfor
                 </div>
 

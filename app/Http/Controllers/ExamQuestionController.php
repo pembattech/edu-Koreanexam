@@ -45,6 +45,7 @@ class ExamQuestionController extends Controller
         // dd($request->all());
 
         $data = $request->validate([
+            'set_number' => ['required', 'integer'],
             'question_number' => ['required', 'unique:exam_questions'],
             'question_type' => ['required', 'string'],
             'question_description' => ['required_if:question_type,text', 'nullable', 'string'],
@@ -93,12 +94,10 @@ class ExamQuestionController extends Controller
             }
         }
 
-        // dd($data);
-
-
         // Create the exam question
         ExamQuestion::create([
-            "question_number" => $data['question_number'],
+            "set" => "set_" . $data['set_number'],
+            "question_number" => "set_" . $data['set_number'] . "_" . $data['question_number'],
             "question_type" => $data['question_type'],
             "question" => $data['question_description'],
             "answer_type" => $data['answer_type'],
@@ -109,10 +108,29 @@ class ExamQuestionController extends Controller
             "correct_answer" => $data['correct_answer'],
         ]);
 
-        // return redirect()->route('exam_question.index')->with('success', 'Exam question created successfully.');
+        return redirect()->route('exam_question.index')->with('success', 'Exam question created successfully.');
     }
 
-    public function exam_table()
+    // public function exam_table()
+    // {
+    //     if (request()->ajax()) {
+
+    //         $questionNumber = request()->query('questionNumber');
+    //         $setNumber = request()->query('setNumber');
+
+    //         $exam_question = ExamQuestion::query()
+    //             ->where('question_number', $questionNumber)
+    //             ->where('set', $setNumber)
+    //             ->get();
+
+    //         return response()->json(['success' => $exam_question]);
+    //     } else {
+
+    //         return redirect("exam_question");
+    //     }
+    // }
+
+    public function exam(Request $request)
     {
         if (request()->ajax()) {
 
@@ -125,12 +143,21 @@ class ExamQuestionController extends Controller
                 ->get();
 
             return response()->json(['success' => $exam_question]);
-
-        } else {
-
-            return redirect("exam_question");
         }
+        // dd($request);
+        // $questionNumber = $number;
+
+        // Example query to get questions based on the set and question number
+        // $questions = ExamQuestion::where('set', $set)
+        //     ->where('question_number', $questionNumber)
+        //     ->get();
+
+        // // Example: returning the questions as a response
+        // return response()->json($questionNumber
+        // );
+        return view('exam_question.exam');
     }
+
 
 
     /**

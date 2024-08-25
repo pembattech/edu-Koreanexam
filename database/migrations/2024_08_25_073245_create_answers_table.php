@@ -9,27 +9,26 @@ return new class extends Migration
     /**
      * Run the migrations.
      */
-    public function up()
+    public function up(): void
     {
         Schema::create('answers', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('candidate_id')->nullable();
-            $table->unsignedBigInteger('question_id')->nullable();
-            $table->text('answer')->nullable();
+            $table->unsignedBigInteger('candidate_id');
+            $table->unsignedBigInteger('question_num');
+            $table->text('answer');
             $table->boolean('is_correct')->default(false);
+            $table->text('set');
             $table->timestamps();
-
-            // Indexes
-            $table->index(['candidate_id', 'question_id'], 'user_question_idx');
 
             // Foreign keys
             $table->foreign('candidate_id')
                 ->references('id')
                 ->on('users')
                 ->onDelete('cascade');
-            $table->foreign('question_id')
-                ->references('id')
-                ->on('questions')
+
+            $table->foreign('question_num')
+                ->references('question_number')
+                ->on('exam_questions')
                 ->onDelete('cascade');
         });
     }

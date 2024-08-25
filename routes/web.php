@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AnswerController;
 use App\Http\Controllers\ExamQuestionController;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
@@ -11,13 +12,14 @@ Route::middleware('auth')->group(function () {
     })->name('dashboard');
 
     Route::get('exam_question/exam_table', [ExamQuestionController::class, 'exam_table']);
+    
+    Route::get('exam_question/exam', [ExamQuestionController::class, 'exam'])->name('exam_question.start_exam');
 
     Route::resource('exam_question', ExamQuestionController::class);
 
+    Route::get('answer/is-answer', [AnswerController::class, 'is_answer'])->name('answer.is_answer');
+    Route::post('answer/store-user-choice', [AnswerController::class, 'store_user_choice'])->name('answer.store');
 
-    Route::get('exam', function () {
-        return view('exam_question.exam');
-    });
 
 
 });

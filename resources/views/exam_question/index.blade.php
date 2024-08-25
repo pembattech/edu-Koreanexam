@@ -27,7 +27,7 @@
 
 
     @include('exam_question.exam_table')
-    @include('exam_question.exam')
+    {{-- @include('exam_question.exam') --}}
 
 
     <script>
@@ -42,55 +42,85 @@
                         return match.padStart(2, '0');
                     });
 
+                console.log('clicked' + " " + setNumber);
+
                 $(".modal_set_number").text("UBT " + formattedSetName);
+
 
                 $('.question-item').on('click', function(e) {
                     const questionNumber = $(this).data('question-number');
                     console.log('Question item clicked: ' + questionNumber + ' of set: ' +
                         setNumber);
 
+                    formated_questionNumber = setNumber + "_" + questionNumber;
 
-                    $.ajax({
-                        url: '/exam_question/exam_table',
-                        method: 'GET',
-                        data: {
-                            'setNumber': setNumber,
-                            'questionNumber': questionNumber,
-                        },
-                        success: function(response) {
-                            console.log(response)
+                    console.log(formated_questionNumber);
 
-                            // Show the modal
-                            $("#exam_table_popup").addClass('hidden');
-                            $("#exam_popup").removeClass('hidden');
-
-                            // Iterate over each question
-                            response.success.forEach(function(question) {
-                                // Extract data from each question object
-                                var questionNumber = question.question_number;
-                                var questionType = question.question_type;
-                                var questionText = question.question;
-                                var answerType = question.answer_type;
-                                var option_1 = question.option1;
-                                var option_2 = question.option2;
-                                var option_3 = question.option3;
-                                var option_4 = question.option4;
-
-                                var correctAnswer = question.correct_answer;
-
-                                $("#heading").text("Add yourself");
-                                $("#question-number").text(questionNumber);
-                                $("#actual-question").text(questionText);
-                                $("#option_1").text(option_1);
-                                $("#option_2").text(option_2);
-                                $("#option_3").text(option_3);
-                                $("#option_4").text(option_4);
-                            });
+                    // Store set number and question number in session storage
+                    sessionStorage.setItem('currentSetNumber', setNumber);
+                    sessionStorage.setItem('currentQuestionNumber', formated_questionNumber);
 
 
-                        }
+                    let url = "{{ route('exam_question.start_exam') }}"
 
-                    });
+                    window.location.href = url;
+
+                    // $.ajax({
+                    //     url: '/exam_question/exam',
+                    //     method: 'GET',
+                    //     data: {
+                    //         'setNumber': setNumber,
+                    //         'questionNumber': formated_questionNumber,
+                    //     },
+                    //     success: function(response) {
+                    //         console.log(response)
+
+                    //         // Show the modal
+                    //         $("#exam_table_popup").addClass('hidden');
+                    //         $("#exam_popup").removeClass('hidden');
+
+                    //         // Iterate over each question
+                    //         response.success.forEach(function(question) {
+                    //             // Extract data from each question object
+
+                    //             var questionNumber = question.question_number
+                    //                 .replace(question.set + "_", "");
+                    //             var questionType = question.question_type;
+                    //             var questionText = question.question;
+                    //             var answerType = question.answer_type;
+                    //             var option_1 = question.option1;
+                    //             var option_2 = question.option2;
+                    //             var option_3 = question.option3;
+                    //             var option_4 = question.option4;
+                    //             var set = question.set;
+
+                    //             // Store set number and question number in session storage
+                    //             sessionStorage.setItem('currentSetNumber', set);
+                    //             sessionStorage.setItem('currentQuestionNumber',
+                    //                 questionNumber);
+
+                    //             $("#heading").text("Add yourself");
+                    //             $("#question-number").text(questionNumber +
+                    //                 ".");
+                    //             $("#actual-question").text(questionText);
+                    //             $("#option_1").text(option_1);
+                    //             $('#option_1').attr('data-value', option_1);
+
+                    //             $("#option_2").text(option_2);
+                    //             $('#option_2').attr('data-value', option_2);
+
+                    //             $("#option_3").text(option_3);
+                    //             $('#option_3').attr('data-value', option_3);
+
+                    //             $("#option_4").text(option_4);
+                    //             $('#option_4').attr('data-value', option_4);
+
+                    //         });
+
+
+                    //     }
+
+                    // });
                 });
 
                 // Show the modal

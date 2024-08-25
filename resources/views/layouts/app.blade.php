@@ -8,11 +8,12 @@
 
     <title>{{ config('app.name', 'Laravel') }}</title>
 
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.bunny.net">
     <link href="https://fonts.bunny.net/css?family=figtree:400,500,600&display=swap" rel="stylesheet" />
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
 
     <!-- Scripts -->
     @vite(['resources/css/app.css', 'resources/js/app.js'])
@@ -32,13 +33,9 @@
         @endisset
 
         <!-- Page Content -->
-        <div class="py-4 px-4 mx-auto max-w-7xl lg:py-4">
-
-            <main>
-                {{ $slot }}
-            </main>
-
-        </div>
+        <main>
+            {{ $slot }}
+        </main>
     </div>
 </body>
 

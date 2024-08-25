@@ -1,31 +1,30 @@
 <?php
+
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class AddNewColumnToExamQuestionsTable extends Migration
+return new class extends Migration
 {
     /**
      * Run the migrations.
-     *
-     * @return void
      */
-    public function up()
+    public function up(): void
     {
         Schema::table('exam_questions', function (Blueprint $table) {
-            $table->string('set')->nullable(); // Change the column name and type as needed
+            // Add unique constraint to question_number
+            $table->unsignedBigInteger('question_number')->unique()->change();
         });
     }
 
     /**
      * Reverse the migrations.
-     *
-     * @return void
      */
-    public function down()
+    public function down(): void
     {
         Schema::table('exam_questions', function (Blueprint $table) {
-            $table->dropColumn('set'); // Change the column name accordingly
+             // Remove unique constraint from question_number
+             $table->dropUnique(['question_number']);
         });
     }
-}
+};

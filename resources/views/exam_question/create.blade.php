@@ -3,6 +3,12 @@
     <form method="POST" action="{{ route('exam_question.store') }}" enctype="multipart/form-data"
         class="py-4 px-4 mx-auto max-w-2xl lg:py-4">
         @csrf
+        <div class="mb-2">
+            <label class="block mb-2 text-sm font-medium text-gray-900" for="set_number">Set Number:</label>
+            <input type="number"
+                class="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+                id="set_number" name="set_number" required>
+        </div>
 
         <div class="grid gap-4 sm:grid-cols-[1fr_3fr] sm:gap-6">
             <div class="mb-2">
@@ -91,6 +97,7 @@
             <select
                 class="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
                 id="correct_answer" name="correct_answer">
+                <option value="">None</option>
                 <option value="option_1">Option 1</option>
                 <option value="option_2">Option 2</option>
                 <option value="option_3">Option 3</option>
