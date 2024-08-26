@@ -8,7 +8,9 @@
             </div>
 
             <div>
-                <p class="modal_set_number font-medium">UBT Set 1</p>
+                <p class="modal_set_number font-medium">
+                    {{-- Auto Gen --}}
+                </p>
             </div>
 
             <div>

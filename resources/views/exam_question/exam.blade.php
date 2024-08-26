@@ -112,22 +112,63 @@
 
             <div class="lower-section flex justify-around border text-xl p-4 mt-2 bg-white">
                 <button
-                    class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-2xl px-4 py-2">Previous
+                    class="previous-question-btn text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-2xl px-4 py-2">Previous
                     Question</button>
                 <button
                     class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-2xl px-4 py-2">Question
                     List</button>
                 <button
-                    class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-2xl px-4 py-2">Next
+                    class="next-question-btn text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-2xl px-4 py-2">Next
                     Question</button>
             </div>
         </div>
 
         <script>
             $(document).ready(function() {
+                const MAX_QUESTION = 40;
+                const MIN_QUESTION = 1;
+
                 // Retrieve the set number and question number
                 const setNumber = sessionStorage.getItem('currentSetNumber');
                 const questionNumber = sessionStorage.getItem('currentQuestionNumber');
+
+                var q_num = questionNumber.replace(setNumber + "_", "");
+                var q_num_int = parseInt(q_num, 10); // Ensure base 10 conversion
+
+                $('.next-question-btn').on('click', function() {
+                    q_num_int += 1;
+
+                    console.log(q_num_int);
+
+                    if (q_num_int <= MAX_QUESTION) {
+
+
+                        // Store set number and question number in session storage
+                        sessionStorage.setItem('currentSetNumber', setNumber);
+                        sessionStorage.setItem('currentQuestionNumber', setNumber + "_" + q_num_int);
+
+                        let url = "{{ route('exam_question.start_exam') }}"
+
+                        window.location.href = url;
+                    }
+                });
+
+
+                $('.previous-question-btn').on('click', function() {
+                    q_num_int -= 1;
+
+                    if (q_num_int >= MIN_QUESTION) {
+
+                    // Store set number and question number in session storage
+                    sessionStorage.setItem('currentSetNumber', setNumber);
+                    sessionStorage.setItem('currentQuestionNumber', setNumber + "_" + q_num_int);
+
+                    let url = "{{ route('exam_question.start_exam') }}"
+
+                    window.location.href = url;
+
+                    }
+                });
 
 
                 $.ajax({
@@ -191,14 +232,17 @@
                                 'questionNumber': questionNumber,
                             },
                             success: function(is_answer_response) {
+                                if (is_answer_response) {
 
-                                const answerId = is_answer_response.data.ans.answer;
+                                    const answerId = is_answer_response.data.ans.answer;
 
-                                // Select the element by ID
-                                var element = $("#" + answerId);
+                                    // Select the element by ID
+                                    var element = $("#" + answerId);
 
-                                // Add the 'option-active' class to the parent element
-                                element.closest('.option-div').addClass('option-active');
+                                    // Add the 'option-active' class to the parent element
+                                    element.closest('.option-div').addClass('option-active');
+
+                                }
                             }
                         });
 
@@ -219,15 +263,9 @@
                     // Get the data-value attribute directly from the clicked option's span with the option-data class
                     var chosenOption = $(this).find('.option-data').data('value');
 
-                    // console.log(chosenOption);
-                    console.log(questionNumber);
-                    // console.log(setNumber);
-                    // questionNumber
-
-
                     // Make an AJAX request to store the user's choice
                     $.ajax({
-                        url: '/answer/store-user-choice', // Replace with your URL to handle the storage
+                        url: '/answer/store-user-choice',
                         method: 'POST',
                         data: {
                             'chosenOption': chosenOption,

@@ -6,7 +6,7 @@ use App\Models\Answer;
 use App\Models\ExamQuestion;
 use Illuminate\Http\Request;
 
-use Illuminate\Support\Facades\Log; // Import the Log facade
+use Illuminate\Support\Facades\Log;
 
 class AnswerController extends Controller
 {
@@ -66,24 +66,20 @@ class AnswerController extends Controller
 
                     $is_correct = ($exam_question->correct_answer === $chosenOption);
 
-
-                    // Check if the question exists before inserting
-                    // $questionExists = ExamQuestion::where('id', $question_number)->exists();
-
-                    // if (!$questionExists) {
-
-
-                    Answer::create([
-                        'candidate_id' => $candidate_id,
-                        'question_num' => $question_number,
-                        'answer' => $chosenOption,
-                        'is_correct' => $is_correct,
-                        'set' => $setNumber
-                    ]);
+                    Answer::updateOrCreate(
+                        [
+                            'candidate_id' => $candidate_id,
+                            'question_num' => $question_number,
+                            'set' => $setNumber
+                        ],
+                        [
+                            'answer' => $chosenOption,
+                            'is_correct' => $is_correct
+                        ]
+                    );
 
                     return response()->json([
                         'success' => true,
-                        'message' => 'Option saved successfully',
                         'data' => [
                             'candidate_id' => $candidate_id,
                             'question_number' => $question_number,
