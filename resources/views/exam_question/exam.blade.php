@@ -66,7 +66,6 @@
                         </p>
                     </div>
 
-
                     <div class="option-div cursor-pointer border text-2xl p-4">
                         <p class="flex items-center">
                             <span
@@ -78,7 +77,6 @@
                             </span>
                         </p>
                     </div>
-
 
                     <div class="option-div cursor-pointer border text-2xl p-4">
                         <p class="flex items-center">
@@ -106,7 +104,6 @@
 
                     </div>
 
-
                 </div>
             </div>
 
@@ -115,178 +112,200 @@
                     class="previous-question-btn text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-2xl px-4 py-2">Previous
                     Question</button>
                 <button
-                    class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-2xl px-4 py-2">Question
+                    class="question-list-btn text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-2xl px-4 py-2">Question
                     List</button>
                 <button
                     class="next-question-btn text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-2xl px-4 py-2">Next
                     Question</button>
             </div>
         </div>
+    </div>
 
-        <script>
-            // Wait for the entire page to load
-            $(window).on('load', function() {
+    @include('exam_question.exam_table')
 
-                // Show the content
-                $('#exam').fadeIn(700);
+    <script>
+        // Wait for the entire page to load
+        $(window).on('load', function() {
+            // Show the content
+            $('#exam').fadeIn(700);
+        });
+
+        $(document).ready(function() {
+            const MAX_QUESTION = 40;
+            const MIN_QUESTION = 1;
+
+            $('.question-list-btn').on('click', function() {
+
+                // Show the modal
+                $("#exam_table_popup").removeClass('hidden');
+
+                // To remove this item from sessionStorage
+                sessionStorage.removeItem('currentQuestionNumber');
+
+                $('.question-item').on('click', function(e) {
+                    const questionNumber = $(this).data('question-number');
+                    console.log('Question item clicked: ' + questionNumber + ' of set: ' +
+                        setNumber);
+
+                    formated_questionNumber = setNumber + "_" + questionNumber;
+
+                    console.log(formated_questionNumber);
+
+                    // Store set number and question number in session storage
+                    sessionStorage.setItem('currentSetNumber', setNumber);
+                    sessionStorage.setItem('currentQuestionNumber', formated_questionNumber);
+
+                    let url = "{{ route('exam_question.start_exam') }}"
+
+                    window.location.href = url;
+                });
+
             });
 
-            $(document).ready(function() {
-                const MAX_QUESTION = 40;
-                const MIN_QUESTION = 1;
 
-                // Retrieve the set number and question number
-                const setNumber = sessionStorage.getItem('currentSetNumber');
-                const questionNumber = sessionStorage.getItem('currentQuestionNumber');
+            // Retrieve the set number and question number
+            const setNumber = sessionStorage.getItem('currentSetNumber');
+            const questionNumber = sessionStorage.getItem('currentQuestionNumber');
 
-                var q_num = questionNumber.replace(setNumber + "_", "");
-                var q_num_int = parseInt(q_num, 10); // Ensure base 10 conversion
+            var q_num = questionNumber.replace(setNumber + "_", "");
+            var q_num_int = parseInt(q_num, 10);
 
-                $('.next-question-btn').on('click', function() {
-                    q_num_int += 1;
+            $('.next-question-btn').on('click', function() {
+                q_num_int += 1;
 
-                    console.log(q_num_int);
+                console.log(q_num_int);
 
-                    if (q_num_int <= MAX_QUESTION) {
+                if (q_num_int <= MAX_QUESTION) {
 
+                    // Store set number and question number in session storage
+                    sessionStorage.setItem('currentSetNumber', setNumber);
+                    sessionStorage.setItem('currentQuestionNumber', setNumber + "_" + q_num_int);
 
-                        // Store set number and question number in session storage
-                        sessionStorage.setItem('currentSetNumber', setNumber);
-                        sessionStorage.setItem('currentQuestionNumber', setNumber + "_" + q_num_int);
+                    let url = "{{ route('exam_question.start_exam') }}"
 
-                        let url = "{{ route('exam_question.start_exam') }}"
-
-                        window.location.href = url;
-                    }
-                });
+                    window.location.href = url;
+                }
+            });
 
 
-                $('.previous-question-btn').on('click', function() {
-                    q_num_int -= 1;
+            $('.previous-question-btn').on('click', function() {
+                q_num_int -= 1;
 
-                    if (q_num_int >= MIN_QUESTION) {
+                if (q_num_int >= MIN_QUESTION) {
 
-                        // Store set number and question number in session storage
-                        sessionStorage.setItem('currentSetNumber', setNumber);
-                        sessionStorage.setItem('currentQuestionNumber', setNumber + "_" + q_num_int);
+                    // Store set number and question number in session storage
+                    sessionStorage.setItem('currentSetNumber', setNumber);
+                    sessionStorage.setItem('currentQuestionNumber', setNumber + "_" + q_num_int);
 
-                        let url = "{{ route('exam_question.start_exam') }}"
+                    let url = "{{ route('exam_question.start_exam') }}"
 
-                        window.location.href = url;
+                    window.location.href = url;
 
-                    }
-                });
+                }
+            });
 
+            $.ajax({
+                url: '/exam_question/exam',
+                method: 'GET',
+                data: {
+                    'setNumber': setNumber,
+                    'questionNumber': questionNumber,
+                },
+                success: function(response) {
 
-                $.ajax({
-                    url: '/exam_question/exam',
-                    method: 'GET',
-                    data: {
-                        'setNumber': setNumber,
-                        'questionNumber': questionNumber,
-                    },
-                    success: function(response) {
+                    console.log(response)
 
-                        console.log(response)
+                    // Show the modal
+                    $("#exam_table_popup").addClass('hidden');
 
-                        // Show the modal
-                        $("#exam_table_popup").addClass('hidden');
+                    // Iterate over each question
+                    response.success.forEach(function(question) {
+                        // Extract data from each question object
 
-                        // Iterate over each question
-                        response.success.forEach(function(question) {
-                            // Extract data from each question object
+                        var questionNumber = question.question_number
+                            .replace(question.set + "_", "");
+                        var questionType = question.question_type;
+                        var questionText = question.question;
+                        var answerType = question.answer_type;
+                        var option_1 = question.option1;
+                        var option_2 = question.option2;
+                        var option_3 = question.option3;
+                        var option_4 = question.option4;
+                        var set = question.set;
 
-                            var questionNumber = question.question_number
-                                .replace(question.set + "_", "");
-                            var questionType = question.question_type;
-                            var questionText = question.question;
-                            var answerType = question.answer_type;
-                            var option_1 = question.option1;
-                            var option_2 = question.option2;
-                            var option_3 = question.option3;
-                            var option_4 = question.option4;
-                            var set = question.set;
+                        $("#heading").text("Add yourself");
+                        $("#question-number").text(questionNumber +
+                            ".");
+                        $("#actual-question").text(questionText);
+                        $("#option_1").text(option_1);
+                        $('#option_1').attr('data-value', option_1);
 
-                            // // Store set number and question number in session storage
-                            // sessionStorage.setItem('currentSetNumber', set);
-                            // sessionStorage.setItem('currentQuestionNumber',
-                            //     questionNumber);
+                        $("#option_2").text(option_2);
+                        $('#option_2').attr('data-value', option_2);
 
-                            $("#heading").text("Add yourself");
-                            $("#question-number").text(questionNumber +
-                                ".");
-                            $("#actual-question").text(questionText);
-                            $("#option_1").text(option_1);
-                            $('#option_1').attr('data-value', option_1);
+                        $("#option_3").text(option_3);
+                        $('#option_3').attr('data-value', option_3);
 
-                            $("#option_2").text(option_2);
-                            $('#option_2').attr('data-value', option_2);
+                        $("#option_4").text(option_4);
+                        $('#option_4').attr('data-value', option_4);
 
-                            $("#option_3").text(option_3);
-                            $('#option_3').attr('data-value', option_3);
+                    });
 
-                            $("#option_4").text(option_4);
-                            $('#option_4').attr('data-value', option_4);
-
-                        });
-
-                        $.ajax({
-                            url: '/answer/is-answer',
-                            method: 'GET',
-                            data: {
-                                'setNumber': setNumber,
-                                'questionNumber': questionNumber,
-                            },
-                            success: function(is_answer_response) {
-                                if (is_answer_response) {
-
-                                    const answerId = is_answer_response.data.ans.answer;
-
-                                    // Select the element by ID
-                                    var element = $("#" + answerId);
-
-                                    // Add the 'option-active' class to the parent element
-                                    element.closest('.option-div').addClass('option-active');
-
-                                }
-                            }
-                        });
-
-
-
-                    }
-
-                });
-
-                // Select all option elements
-                $('.option-div').on('click', function() {
-                    // Remove 'option-active' class from all options
-                    $('.option-div').removeClass('option-active');
-
-                    // Add 'option-active' class to the clicked option
-                    $(this).addClass('option-active');
-
-                    // Get the data-value attribute directly from the clicked option's span with the option-data class
-                    var chosenOption = $(this).find('.option-data').data('value');
-
-                    // Make an AJAX request to store the user's choice
                     $.ajax({
-                        url: '/answer/store-user-choice',
-                        method: 'POST',
+                        url: '/answer/is-answer',
+                        method: 'GET',
                         data: {
-                            'chosenOption': chosenOption,
-                            'question_number': questionNumber,
                             'setNumber': setNumber,
-                            '_token': '{{ csrf_token() }}' // Include CSRF token for security
+                            'questionNumber': questionNumber,
                         },
-                        success: function(response) {
-                            console.log('Option saved successfully:', response);
-                        },
-                        error: function(xhr, status, error) {
-                            console.error('Failed to save option:', error);
+                        success: function(is_answer_response) {
+                            if (is_answer_response) {
+
+                                const answerId = is_answer_response.data.ans.answer;
+
+                                // Select the element by ID
+                                var element = $("#" + answerId);
+
+                                // Add the 'option-active' class to the parent element
+                                element.closest('.option-div').addClass('option-active');
+
+                            }
                         }
                     });
+
+                }
+
+            });
+
+            // Select all option elements
+            $('.option-div').on('click', function() {
+                // Remove 'option-active' class from all options
+                $('.option-div').removeClass('option-active');
+
+                // Add 'option-active' class to the clicked option
+                $(this).addClass('option-active');
+
+                // Get the data-value attribute directly from the clicked option's span with the option-data class
+                var chosenOption = $(this).find('.option-data').data('value');
+
+                // Make an AJAX request to store the user's choice
+                $.ajax({
+                    url: '/answer/store-user-choice',
+                    method: 'POST',
+                    data: {
+                        'chosenOption': chosenOption,
+                        'question_number': questionNumber,
+                        'setNumber': setNumber,
+                        '_token': '{{ csrf_token() }}' // Include CSRF token for security
+                    },
+                    success: function(response) {
+                        console.log('Option saved successfully:', response);
+                    },
+                    error: function(xhr, status, error) {
+                        console.error('Failed to save option:', error);
+                    }
                 });
             });
-        </script>
+        });
+    </script>
 </x-app-layout>

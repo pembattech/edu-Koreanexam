@@ -41,14 +41,12 @@
                 <div class="right-question-item grid grid-cols-5 gap-4">
 
                     @for ($i = 1; $i <= 20; $i++)
-
-                            <p data-question-number= "{{ $i }}"
-                                class="question-item cursor-pointer hover:font-bold border-2 border-black p-4 text-center">
-                                {{ $i }}
-                            </p>
+                        <p data-question-number= "{{ $i }}"
+                            class="question-item cursor-pointer hover:font-bold border-2 border-black p-4 text-center">
+                            {{ $i }}
+                        </p>
                     @endfor
                 </div>
-
 
             </div>
 
@@ -66,8 +64,6 @@
                 </div>
             </div>
 
-
-
         </div>
 
         <div class="lower-section flex justify-around border text-xl p-4 mt-2 bg-white">
@@ -78,73 +74,4 @@
 
         </div>
     </div>
-
-    <div id="closePopup" class="cursor-pointer">Close</div>
 </div>
-
-
-
-<script>
-    // $(document).ready(function() {
-    //     // Attach event listener to question items within the modal after data-set is updated
-    //     $('.question-item').on('click', function(e) {
-    //         const setNumber = $(".mid-section").data('set');
-    //         const questionNumber = $(this).data('question-number');
-    //         console.log('Clicked question ' + questionNumber + ' of set: ' + setNumber);
-    //     });
-    // });
-
-    // $.ajax({
-    //     url: '/exam_question/exam_table',
-    //     method: 'GET',
-    //     data: {
-    //         'setNumber': setNumber
-    //     },
-    //     success: function(response) {
-    //         // Get the 'success' data from the response
-    //         var examSetQuestions = response.success;
-
-    //         var formattedSetName = setNumber.replace('set_', 'Set ').replace(/(\d+)/,
-    //             function(match) {
-    //                 return match.padStart(2, '0');
-    //             });
-    //         $(".modal_set_number").text("UBT " + formattedSetName);
-
-
-    //         // Show the modal
-    //         $("#exam_table_popup").removeClass('hidden');
-
-
-    //         // const right_question_section = $(".right-question-item");
-
-    //         // // Clear any existing content in the right_question_section
-    //         // right_question_section.html('');
-
-
-
-    //         // // Loop through the array of exam set questions
-    //         // examSetQuestions.forEach(function(question, index) {
-    //         //     if (question.question_type === 'text') {
-    //         //         // Create a new <p> tag for text questions
-    //         //         var textQuestionHtml = `<p class="question-item cursor-pointer hover:font-bold border-2 border-black p-4 text-center">
-    //     //                 Question ${index + 1}: ${question.question}
-    //     //             </p>`;
-    //         //         // Append the <p> tag to the right_question_section
-    //         //         right_question_section.append(textQuestionHtml);
-    //         //     }
-
-    //         //     if (question.question_type === 'image') {
-    //         //         // Create a new <p> tag for image questions (you can modify the content as needed)
-    //         //         var imageQuestionHtml = `<p class="question-item cursor-pointer hover:font-bold border-2 border-black p-4 text-center">
-    //     //                 Question ${index + 1}: <img src="/path/to/images/${question.question}" alt="Question Image">
-    //     //             </p>`;
-    //         //         // Append the <p> tag to the right_question_section
-    //         //         right_question_section.append(imageQuestionHtml);
-    //         //     }
-    //         // });
-
-
-
-    //     }
-    // });
-</script>

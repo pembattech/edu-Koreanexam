@@ -25,9 +25,7 @@
 
     </div>
 
-
     @include('exam_question.exam_table')
-
 
     <script>
         $(document).ready(function() {
@@ -43,18 +41,15 @@
                         return match.padStart(2, '0');
                     });
 
-                console.log('clicked' + " " + setNumber);
-
                 $(".modal_set_number").text("UBT " + formattedSetName);
+
+                // Show the modal
+                $("#exam_table_popup").removeClass('hidden');
 
                 $('.question-item').on('click', function(e) {
                     const questionNumber = $(this).data('question-number');
-                    console.log('Question item clicked: ' + questionNumber + ' of set: ' +
-                        setNumber);
 
                     formated_questionNumber = setNumber + "_" + questionNumber;
-
-                    console.log(formated_questionNumber);
 
                     // Store set number and question number in session storage
                     sessionStorage.setItem('currentSetNumber', setNumber);
@@ -66,17 +61,8 @@
 
                 });
 
-                // Show the modal
-                $("#exam_table_popup").removeClass('hidden');
-
             });
 
-            // Hide the popup on close button click
-            $('#closePopup').on('click', function() {
-                $('#exam_table_popup').addClass('hidden');
-
-                $('.mid-section').attr('data-set', "");
-            });
         });
     </script>
 </x-app-layout>
