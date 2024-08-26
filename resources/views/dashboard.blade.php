@@ -5,5 +5,8 @@
         </h2>
     </x-slot>
 
+    <script>
+        $("#navbar").removeClass('hidden');
+    </script>
 
 </x-app-layout>

@@ -1,6 +1,6 @@
 <x-app-layout>
 
-    <div id="exam_popup" class="fixed inset-0 bg-gray-100 h-screen">
+    <div id="exam" class="hidden fixed inset-0 bg-gray-100 h-screen">
 
         <div class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
             <div class="topbar flex justify-between border text-xl p-4 bg-white">
@@ -124,6 +124,13 @@
         </div>
 
         <script>
+            // Wait for the entire page to load
+            $(window).on('load', function() {
+
+                // Show the content
+                $('#exam').fadeIn(700);
+            });
+
             $(document).ready(function() {
                 const MAX_QUESTION = 40;
                 const MIN_QUESTION = 1;
@@ -159,13 +166,13 @@
 
                     if (q_num_int >= MIN_QUESTION) {
 
-                    // Store set number and question number in session storage
-                    sessionStorage.setItem('currentSetNumber', setNumber);
-                    sessionStorage.setItem('currentQuestionNumber', setNumber + "_" + q_num_int);
+                        // Store set number and question number in session storage
+                        sessionStorage.setItem('currentSetNumber', setNumber);
+                        sessionStorage.setItem('currentQuestionNumber', setNumber + "_" + q_num_int);
 
-                    let url = "{{ route('exam_question.start_exam') }}"
+                        let url = "{{ route('exam_question.start_exam') }}"
 
-                    window.location.href = url;
+                        window.location.href = url;
 
                     }
                 });
@@ -184,7 +191,6 @@
 
                         // Show the modal
                         $("#exam_table_popup").addClass('hidden');
-                        $("#exam_popup").removeClass('hidden');
 
                         // Iterate over each question
                         response.success.forEach(function(question) {
