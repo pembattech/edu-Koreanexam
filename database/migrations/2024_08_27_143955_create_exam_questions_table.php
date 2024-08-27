@@ -10,7 +10,7 @@ class CreateExamQuestionsTable extends Migration
     {
         Schema::create('exam_questions', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('question_number');
+            $table->text('question_number');
             $table->enum('question_type', ['text', 'image', 'audio']);
             $table->text('question');
             $table->enum('answer_type', ['text', 'image', 'audio']);

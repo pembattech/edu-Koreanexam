@@ -18,8 +18,13 @@ class AnswerController extends Controller
             $question_number = $request->input('questionNumber');
             $setNumber = $request->input('setNumber');
 
+            // Get today's date
+            $today = now()->startOfDay();
+
+
             $answers = Answer::query()
                 ->select('answer')
+                // ->whereDate('created_at', $today) // Filter by today's date
                 ->where('question_num', $question_number)
                 ->where('set', $setNumber)
                 ->first();
@@ -66,11 +71,15 @@ class AnswerController extends Controller
 
                     $is_correct = ($exam_question->correct_answer === $chosenOption);
 
+                    // Get today's date
+                    $today = now()->startOfDay();
+
                     Answer::updateOrCreate(
                         [
                             'candidate_id' => $candidate_id,
                             'question_num' => $question_number,
-                            'set' => $setNumber
+                            'set' => $setNumber,
+                            // 'created_at' => $today,
                         ],
                         [
                             'answer' => $chosenOption,

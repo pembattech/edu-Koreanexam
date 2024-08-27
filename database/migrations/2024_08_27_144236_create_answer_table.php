@@ -14,10 +14,11 @@ return new class extends Migration
         Schema::create('answers', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('candidate_id');
-            $table->unsignedBigInteger('question_num');
+            $table->text('question_num');
             $table->text('answer');
             $table->boolean('is_correct')->default(false);
             $table->text('set');
+            $table->timestamp('exam_start_time');
             $table->timestamps();
 
             // Foreign keys

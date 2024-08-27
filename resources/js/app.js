@@ -56,6 +56,8 @@ $(document).ready(function () {
             sessionStorage.setItem('currentSetNumber', setNumber);
             sessionStorage.setItem('currentQuestionNumber', formated_questionNumber);
 
+            console.log(setNumber, formated_questionNumber);
+
             exam_show(setNumber, formated_questionNumber);
 
         });
