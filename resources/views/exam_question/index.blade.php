@@ -25,44 +25,11 @@
 
     </div>
 
+    
     @include('exam_question.exam_table')
 
-    <script>
-        $(document).ready(function() {
-            $("#navbar").removeClass('hidden');
+    @include('exam_question.exam');
+    
 
-            $('.attemptButton').on('click', function(e) {
 
-                var setNumber = $(this).data('set-number');
-                console.log('clicked' + " " + setNumber);
-
-                var formattedSetName = setNumber.replace('set_', 'Set ').replace(/(\d+)/,
-                    function(match) {
-                        return match.padStart(2, '0');
-                    });
-
-                $(".modal_set_number").text("UBT " + formattedSetName);
-
-                // Show the modal
-                $("#exam_table_popup").removeClass('hidden');
-
-                $('.question-item').on('click', function(e) {
-                    const questionNumber = $(this).data('question-number');
-
-                    formated_questionNumber = setNumber + "_" + questionNumber;
-
-                    // Store set number and question number in session storage
-                    sessionStorage.setItem('currentSetNumber', setNumber);
-                    sessionStorage.setItem('currentQuestionNumber', formated_questionNumber);
-
-                    let url = "{{ route('exam_question.start_exam') }}"
-
-                    window.location.href = url;
-
-                });
-
-            });
-
-        });
-    </script>
 </x-app-layout>

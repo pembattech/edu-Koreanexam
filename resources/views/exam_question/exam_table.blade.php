@@ -49,25 +49,3 @@
     </div>
 </div>
 
-<script>
-    // Retrieve the JSON string from session storage
-    let storedArray = sessionStorage.getItem("lst_choosen_option");
-
-    // Convert the JSON string back to an array
-    let myArray = JSON.parse(storedArray);
-
-    // Loop through the array and add the 'complete' class to the corresponding question-item
-    myArray.forEach(item => {
-        // Extract the question number from the item (assuming the format 'set_x_y')
-        let parts = item.split('_');
-        let questionNumber = parts[2]; // 'y' in 'set_x_y'
-
-        // Find the question item with the matching data-question-number
-        let questionElement = document.querySelector(`[data-question-number="${questionNumber}"]`);
-
-        // Add the 'complete' class if the element exists
-        if (questionElement) {
-            questionElement.classList.add('answered');
-        }
-    });
-</script>
