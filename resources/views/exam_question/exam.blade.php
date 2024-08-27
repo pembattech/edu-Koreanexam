@@ -3,33 +3,8 @@
     <div id="exam" class="hidden fixed inset-0 bg-gray-100 h-screen">
 
         <div class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
-            <div class="topbar flex justify-between border text-xl p-4 bg-white">
 
-                <div>
-                    <p class="font-medium">{{ auth()->user()->name }}</p>
-                </div>
-
-                <div>
-                    <p class="font-medium">UBT Set 1</p>
-                </div>
-
-                <div>
-                    <p class="font-medium">
-                        Remaining: 40
-                    </p>
-                </div>
-
-                <div>
-                    <p class="font-medium">
-                        Attempt: 0
-                    </p>
-                </div>
-
-                <div>
-                    <p class="font-medium">39:34</p>
-                </div>
-
-            </div>
+            @include('exam_question.topbar')
 
             <div class="mid-section grid gap-4 grid-cols-[2fr_1fr] border text-xl mt-2 p-4 bg-white">
 
@@ -131,8 +106,6 @@
         });
 
         $(document).ready(function() {
-            const MAX_QUESTION = 40;
-            const MIN_QUESTION = 1;
 
             $('.question-list-btn').on('click', function() {
 
@@ -300,6 +273,34 @@
                     },
                     success: function(response) {
                         console.log('Option saved successfully:', response);
+
+                        // Initialize an empty array
+                        let myArray = [];
+
+                        // Store the empty array in session storage if it doesn't already exist
+                        if (!sessionStorage.getItem("lst_choosen_option")) {
+                            sessionStorage.setItem("lst_choosen_option", JSON.stringify(
+                                myArray));
+                        }
+
+                        // Retrieve the array from session storage
+                        let storedArray = sessionStorage.getItem("lst_choosen_option");
+
+                        // Parse the JSON string back to an array
+                        myArray = storedArray ? JSON.parse(storedArray) : [];
+
+                        // Check if the item already exists in the array
+                        if (!myArray.includes(questionNumber)) {
+                            myArray.push(
+                            questionNumber); // Add the item only if it doesn't exist
+                        }
+
+                        // Update the session storage with the modified array
+                        sessionStorage.setItem("lst_choosen_option", JSON.stringify(myArray));
+
+                        // Output the updated array to the console
+                        console.log(myArray);
+
                     },
                     error: function(xhr, status, error) {
                         console.error('Failed to save option:', error);

@@ -1,35 +1,8 @@
 <div id="exam_table_popup" class=" hidden fixed inset-0 bg-gray-100 h-screen">
 
     <div class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
-        <div class="topbar flex justify-between border text-xl p-4 bg-white">
-
-            <div>
-                <p class="font-medium">{{ auth()->user()->name }}</p>
-            </div>
-
-            <div>
-                <p class="modal_set_number font-medium">
-                    {{-- Auto Gen --}}
-                </p>
-            </div>
-
-            <div>
-                <p class="font-medium">
-                    Remaining: 40
-                </p>
-            </div>
-
-            <div>
-                <p class="font-medium">
-                    Attempt: 0
-                </p>
-            </div>
-
-            <div>
-                <p class="font-medium">39:34</p>
-            </div>
-
-        </div>
+        
+        @include('exam_question.topbar')
 
         <div class="mid-section grid gap-4 grid-cols-[1fr_1fr] text-xl mt-2 p-4 bg-white">
             <div class="border">
@@ -75,3 +48,26 @@
         </div>
     </div>
 </div>
+
+<script>
+    // Retrieve the JSON string from session storage
+    let storedArray = sessionStorage.getItem("lst_choosen_option");
+
+    // Convert the JSON string back to an array
+    let myArray = JSON.parse(storedArray);
+
+    // Loop through the array and add the 'complete' class to the corresponding question-item
+    myArray.forEach(item => {
+        // Extract the question number from the item (assuming the format 'set_x_y')
+        let parts = item.split('_');
+        let questionNumber = parts[2]; // 'y' in 'set_x_y'
+
+        // Find the question item with the matching data-question-number
+        let questionElement = document.querySelector(`[data-question-number="${questionNumber}"]`);
+
+        // Add the 'complete' class if the element exists
+        if (questionElement) {
+            questionElement.classList.add('answered');
+        }
+    });
+</script>
