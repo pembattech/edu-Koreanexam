@@ -342,6 +342,25 @@ $(document).ready(function () {
         return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
     }
 
+    $('.finish_exam-btn').on('click', function () {
+        let exam_start_time = sessionStorage.getItem('exam_start_time')
+
+        $.ajax({
+            url: '/exam_score/store',
+            method: 'POST',
+            data: {
+                "exam_start_time": exam_start_time,
+                _token: $('meta[name="csrf-token"]').attr('content'),
+            },
+            success: function (response) {
+                console.log(response);
+            },
+            error: function (xhr, status, error) {
+                console.error('Failed to save option:', error);
+            }
+        })
+    });
+
 
 
 

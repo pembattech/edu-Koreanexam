@@ -18,35 +18,38 @@
                 </div>
             </div>
 
+            <div class="flex">
 
-            <div class="flex gap-2 items-center">
-                <div class="sidebar-item">
-                    <a href="{{ route('exam_question.index') }}">
-                        Exam
-                    </a>
+                <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
+                    <x-nav-link :href="route('exam_question.index')" :active="request()->routeIs('exam_question.index')">
+                        {{ __('Exam') }}
+                    </x-nav-link>
                 </div>
-                <div class="sidebar-item">
-                    <a href="#">
-                        Chapter Test
-                    </a>
+
+                {{-- <div class="sidebar-item">
+                    <x-nav-link :href="#" :active="request()->routeIs('request()->')">
+                        {{ __('Chapter Test') }}
+                    </x-nav-link>
+                </div> --}}
+
+                <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
+                    <x-nav-link :href="route('exam_score.result')" :active="request()->routeIs('exam_score.result')">
+                        {{ __('Result') }}
+                    </x-nav-link>
                 </div>
-                <div class="sidebar-item">
-                    <a href="#">
-                        Result
-                    </a>
-                </div>
+
+                @if (Auth()->user()->isAdmin())
+                    <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
+                        <x-nav-link :href="route('exam_question.create')" :active="request()->routeIs('exam_question.create')">
+                            {{ __('Add Exam') }}
+                        </x-nav-link>
+                    </div>
+                @endif
+
             </div>
 
             <!-- Settings Dropdown -->
             <div class="hidden sm:flex sm:items-center sm:ms-6">
-
-                @if (Auth()->user()->isAdmin())
-                    <div class="sidebar-item">
-                        <a href="{{ route('exam_question.create') }}">
-                            Add Exam
-                        </a>
-                    </div>
-                @endif
 
                 <x-dropdown align="right" width="48">
                     <x-slot name="trigger">

@@ -28,8 +28,7 @@
     
     @include('exam_question.exam_table')
 
-    @include('exam_question.exam');
+    @include('exam_question.exam')
     
-
 
 </x-app-layout>
