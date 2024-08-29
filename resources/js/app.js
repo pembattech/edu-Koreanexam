@@ -48,6 +48,8 @@ $(document).ready(function () {
         // Store set number and question number in session storage
         sessionStorage.removeItem('currentSetNumber');
         sessionStorage.removeItem('currentQuestionNumber');
+        sessionStorage.removeItem('lst_choosen_option');
+
 
         sessionStorage.setItem('exam_start_time', currentDateTime);
 
@@ -132,6 +134,30 @@ $(document).ready(function () {
         // Show the modal
         $("#exam_table_popup").removeClass('hidden');
 
+        if (sessionStorage.getItem("lst_choosen_option")) {
+
+            // Retrieve the JSON string from session storage
+            let storedArray = sessionStorage.getItem("lst_choosen_option");
+
+            // Convert the JSON string back to an array
+            let myArray = JSON.parse(storedArray);
+
+            // Loop through the array and add the 'complete' class to the corresponding question-item
+            myArray.forEach(item => {
+                // Extract the question number from the item (assuming the format 'set_x_y')
+                let parts = item.split('_');
+                let questionNumber = parts[2]; // 'y' in 'set_x_y'
+
+                // Find the question item with the matching data-question-number
+                let questionElement = document.querySelector(`[data-question-number="${questionNumber}"]`);
+
+                // Add the 'complete' class if the element exists
+                if (questionElement) {
+                    questionElement.classList.add('answered');
+                }
+            });
+        }
+
     });
 
     // Select all option elements
@@ -163,32 +189,32 @@ $(document).ready(function () {
             success: function (response) {
                 console.log('Option saved successfully:', response);
 
-                // // Initialize an empty array
-                // let myArray = [];
+                // Initialize an empty array
+                let myArray = [];
 
-                // // Store the empty array in session storage if it doesn't already exist
-                // if (!sessionStorage.getItem("lst_choosen_option")) {
-                //     sessionStorage.setItem("lst_choosen_option", JSON.stringify(
-                //         myArray));
-                // }
+                // Store the empty array in session storage if it doesn't already exist
+                if (!sessionStorage.getItem("lst_choosen_option")) {
+                    sessionStorage.setItem("lst_choosen_option", JSON.stringify(
+                        myArray));
+                }
 
-                // // Retrieve the array from session storage
-                // let storedArray = sessionStorage.getItem("lst_choosen_option");
+                // Retrieve the array from session storage
+                let storedArray = sessionStorage.getItem("lst_choosen_option");
 
-                // // Parse the JSON string back to an array
-                // myArray = storedArray ? JSON.parse(storedArray) : [];
+                // Parse the JSON string back to an array
+                myArray = storedArray ? JSON.parse(storedArray) : [];
 
-                // // Check if the item already exists in the array
-                // if (!myArray.includes(questionNumber)) {
-                //     myArray.push(
-                //         questionNumber); // Add the item only if it doesn't exist
-                // }
+                // Check if the item already exists in the array
+                if (!myArray.includes(questionNumber)) {
+                    myArray.push(
+                        questionNumber); // Add the item only if it doesn't exist
+                }
 
-                // // Update the session storage with the modified array
-                // sessionStorage.setItem("lst_choosen_option", JSON.stringify(myArray));
+                // Update the session storage with the modified array
+                sessionStorage.setItem("lst_choosen_option", JSON.stringify(myArray));
 
-                // // Output the updated array to the console
-                // console.log(myArray);
+                // Output the updated array to the console
+                console.log(myArray);
 
             },
             error: function (xhr, status, error) {
@@ -327,26 +353,7 @@ $(document).ready(function () {
 
 
 // // exam_question: exam_table
-// // Retrieve the JSON string from session storage
-// let storedArray = sessionStorage.getItem("lst_choosen_option");
 
-// // Convert the JSON string back to an array
-// let myArray = JSON.parse(storedArray);
-
-// // Loop through the array and add the 'complete' class to the corresponding question-item
-// myArray.forEach(item => {
-//     // Extract the question number from the item (assuming the format 'set_x_y')
-//     let parts = item.split('_');
-//     let questionNumber = parts[2]; // 'y' in 'set_x_y'
-
-//     // Find the question item with the matching data-question-number
-//     let questionElement = document.querySelector(`[data-question-number="${questionNumber}"]`);
-
-//     // Add the 'complete' class if the element exists
-//     if (questionElement) {
-//         questionElement.classList.add('answered');
-//     }
-// });
 
 // // exam_question: exam
 
