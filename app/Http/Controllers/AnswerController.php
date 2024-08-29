@@ -17,16 +17,13 @@ class AnswerController extends Controller
 
             $question_number = $request->input('questionNumber');
             $setNumber = $request->input('setNumber');
-
-            // Get today's date
-            $today = now()->startOfDay();
-
+            $exam_start_time = $request->input('exam_start_time');
 
             $answers = Answer::query()
                 ->select('answer')
-                // ->whereDate('created_at', $today) // Filter by today's date
                 ->where('question_num', $question_number)
                 ->where('set', $setNumber)
+                ->where('exam_start_time', $exam_start_time)
                 ->first();
 
             if ($answers) {
@@ -52,6 +49,7 @@ class AnswerController extends Controller
             $question_number = $request->input('question_number');
             $setNumber = $request->input('setNumber');
             $chosenOption = $request->input('chosenOption');
+            $exam_start_time = $request->input('exam_start_time');
             $candidate_id = auth()->user()->id;
 
             try {
@@ -71,15 +69,12 @@ class AnswerController extends Controller
 
                     $is_correct = ($exam_question->correct_answer === $chosenOption);
 
-                    // Get today's date
-                    $today = now()->startOfDay();
-
                     Answer::updateOrCreate(
                         [
                             'candidate_id' => $candidate_id,
                             'question_num' => $question_number,
                             'set' => $setNumber,
-                            // 'created_at' => $today,
+                            'exam_start_time' => $exam_start_time,
                         ],
                         [
                             'answer' => $chosenOption,
@@ -115,62 +110,5 @@ class AnswerController extends Controller
         } else {
             return redirect('exam_question');
         }
-    }
-
-
-    /**
-     * Display a listing of the resource.
-     */
-    public function index()
-    {
-        //
-    }
-
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request)
-    {
-        //
-    }
-
-    /**
-     * Display the specified resource.
-     */
-    public function show(Answer $answer)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(Answer $answer)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, Answer $answer)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(Answer $answer)
-    {
-        //
     }
 }

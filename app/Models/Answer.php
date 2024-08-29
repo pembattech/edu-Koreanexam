@@ -14,6 +14,7 @@ class Answer extends Model
         'answer',
         'is_correct',
         'set',
+        'exam_start_time'
     ];
 
     /**
