@@ -32,8 +32,13 @@
                         </td>
                         <td class="px-6 py-4">
 
-                            <a href="{{ route('exam_score.detail_result') }}"
-                                class="font-medium text-blue-600 dark:text-blue-500 hover:underline">Show</a>
+                            <form action="{{ route('exam_score.detail_result') }}" method="GET">
+                                <input type="hidden" name="exam_start_time" value="{{ $exam_score->exam_start_time }}">
+                                <button class="font-medium text-blue-600 dark:text-blue-500 hover:underline">Show</button>
+                            </form>
+
+                            {{-- <a href="{{ route('exam_score.detail_result') }}"
+                                class="font-medium text-blue-600 dark:text-blue-500 hover:underline">Show</a> --}}
                         </td>
                     </tr>
                 @endforeach

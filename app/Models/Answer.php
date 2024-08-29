@@ -25,11 +25,9 @@ class Answer extends Model
         return $this->belongsTo(User::class, 'candidate_id');
     }
 
-    /**
-     * Define a relationship with the ExamQuestion model.
-     */
-    public function question()
+    // Define the relationship with ExamQuestion
+    public function examQuestion()
     {
-        return $this->belongsTo(ExamQuestion::class, 'question_id');
+        return $this->belongsTo(ExamQuestion::class, 'question_num', 'question_number');
     }
 }

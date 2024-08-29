@@ -35,11 +35,18 @@ class ExamScoresController extends Controller
         return view('exam_score.result', ['exams_score' => $exam_scores]);
     }
 
-    public function detail_result(Request $request){
-        $exam_start_time = $request->input('exam_start_time');
+    public function detail_result(Request $request)
+    {
 
-        return view('exam_score.detail_result');
+        // dd($request);
+        $exam_start_time = $request->query('exam_start_time');
 
+        $answered_questions = Answer::query()
+        ->where('exam_start_time', $exam_start_time)
+        ->with(['examQuestion']) // Load the related exam question using Eloquent relationships
+        ->get();
+
+        return view('exam_score.detail_result', ['answered_questions' => $answered_questions]);
     }
 
     /**
