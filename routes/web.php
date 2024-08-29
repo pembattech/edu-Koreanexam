@@ -23,6 +23,7 @@ Route::middleware('auth')->group(function () {
 
     Route::get('exam_score', [ExamScoresController::class, 'index'])->name('exam_score.result');
     Route::post('exam_score/store', [ExamScoresController::class, 'store'])->name('exam_score.store');
+    Route::get('exam_score/detail', [ExamScoresController::class, 'detail_result'])->name('exam_score.detail_result');
 
 
 

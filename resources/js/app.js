@@ -354,8 +354,10 @@ $(document).ready(function () {
             },
             success: function (response) {
                 console.log(response);
-            },
-            error: function (xhr, status, error) {
+
+                 window.location.href = "/";
+                },
+                error: function (xhr, status, error) {
                 console.error('Failed to save option:', error);
             }
         })

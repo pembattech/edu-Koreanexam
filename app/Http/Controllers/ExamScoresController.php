@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Answer;
 use App\Models\ExamScore;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class ExamScoresController extends Controller
 {
@@ -15,11 +16,30 @@ class ExamScoresController extends Controller
     {
         $candidate_id = auth()->user()->id;
 
-        $exam_score = ExamScore::query()
+        $exam_scores = ExamScore::query()
             ->where('candidate_id', $candidate_id)
-            ->get();
+            ->get()
+            ->map(function ($score) use ($candidate_id) {
+                $correct_answers_count = DB::table('answers')
+                    ->where('candidate_id', $candidate_id)
+                    ->where('exam_start_time', $score->exam_start_time) // Using exam_start_time from ExamScore
+                    ->where('is_correct', true)
+                    ->count();
 
-        return view('exam_score.result', ['exams_score' => $exam_score]);
+                $score->correct_answers_count = $correct_answers_count;
+
+                return $score;
+            });
+
+
+        return view('exam_score.result', ['exams_score' => $exam_scores]);
+    }
+
+    public function detail_result(Request $request){
+        $exam_start_time = $request->input('exam_start_time');
+
+        return view('exam_score.detail_result');
+
     }
 
     /**
