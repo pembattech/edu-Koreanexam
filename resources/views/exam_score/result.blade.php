@@ -20,6 +20,7 @@
             </thead>
             <tbody class="text-base">
                 @foreach ($exams_score as $exam_score)
+
                     <tr class="bg-white border-b hover:bg-gray-50">
                         <th scope="row" class="px-6 py-4 font-medium  whitespace-nowrap">
                             {{ $exam_score->exam_start_time }}

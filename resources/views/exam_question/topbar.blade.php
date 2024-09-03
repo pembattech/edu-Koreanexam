@@ -11,14 +11,14 @@
     </div>
 
     <div>
-        <p class="font-medium">
+        <p class="font-medium w-36">
             Remaining:
             <span class="remaining-num">40</span>
         </p>
     </div>
 
     <div>
-        <p class="font-medium">
+        <p class="font-medium w-28">
             Attempt:
             <span class="attempted-num">0</span>
         </p>
@@ -26,7 +26,7 @@
 
     <div>
         <p class="font-medium">
-            <span class="exam-timer"></span>
+            <span class="exam-timer inline-block w-14"></span>
         </p>
     </div>
 
