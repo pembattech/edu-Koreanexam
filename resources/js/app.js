@@ -14,28 +14,33 @@ $(document).ready(function () {
 
     $("#navbar").removeClass('hidden');
 
-    if (sessionStorage.getItem("lst_choosen_option")) {
-
-        // Retrieve the JSON string from session storage
-        let storedArray = sessionStorage.getItem("lst_choosen_option");
-
-        // Convert the JSON string back to an array
-        let myArray = JSON.parse(storedArray);
-
-        // Count the number of elements in the array
-        let count = myArray.length;
-
-        $('#attempted-num').text(count);
-        $('#remaining-num').text(MAX_QUESTION - count);
-    } else {
-
-        $('#attempted-num').text('0');
-        $('#remaining-num').text(MAX_QUESTION);
-
-    }
-
-
     $('.attemptButton').on('click', function (e) {
+        // Set the time for the countdown (50 minutes in seconds)
+        let time = 50 * 60;
+
+        // Function to update the timer every second
+        function updateTimer() {
+            const minutes = Math.floor(time / 60);
+            const seconds = time % 60;
+
+            // Display the timer in MM:SS format
+            $('.exam-timer').text(`${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`);
+
+            // Decrease time by 1 second
+            if (time > 0) {
+                time--;
+            } else {
+                // Timer reaches 0
+                clearInterval(timerInterval);
+                $('.exam-timer').text("Time's up!");
+            }
+        }
+
+        // Call updateTimer every 1 second
+        const timerInterval = setInterval(updateTimer, 1000);
+
+        // Initialize the timer display
+        updateTimer();
 
         const currentDateTime = getFormattedDateTime();
         console.log(currentDateTime);
@@ -107,6 +112,8 @@ $(document).ready(function () {
             q_num_int += 1;
             updateQuestion(setNumber, q_num_int);
         }
+
+
     });
 
     // Event listener for the previous question button
@@ -215,6 +222,9 @@ $(document).ready(function () {
 
                 // Output the updated array to the console
                 console.log(myArray);
+
+                count_remaining__attempt();
+
 
             },
             error: function (xhr, status, error) {
@@ -342,6 +352,32 @@ $(document).ready(function () {
         return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
     }
 
+    function count_remaining__attempt() {
+
+        if (sessionStorage.getItem("lst_choosen_option")) {
+            console.log('counting!');
+
+            // Retrieve the JSON string from session storage
+            let storedArray = sessionStorage.getItem("lst_choosen_option");
+
+            // Convert the JSON string back to an array
+            let myArray = JSON.parse(storedArray);
+
+            // Count the number of elements in the array
+            let count = myArray.length;
+
+            $('.attempted-num').text(count);
+            $('.remaining-num').text(MAX_QUESTION - count);
+        } else {
+            console.log('erased!');
+
+            $('.attempted-num').text('0');
+            $('.remaining-num').text(MAX_QUESTION);
+
+        }
+
+    }
+
     $('.finish_exam-btn').on('click', function () {
         let exam_start_time = sessionStorage.getItem('exam_start_time')
 
@@ -355,9 +391,9 @@ $(document).ready(function () {
             success: function (response) {
                 console.log(response);
 
-                 window.location.href = "/";
-                },
-                error: function (xhr, status, error) {
+                window.location.href = "/";
+            },
+            error: function (xhr, status, error) {
                 console.error('Failed to save option:', error);
             }
         })

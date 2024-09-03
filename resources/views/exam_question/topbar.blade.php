@@ -13,21 +13,21 @@
     <div>
         <p class="font-medium">
             Remaining:
-            <span id="remaining-num"></span>
+            <span class="remaining-num">40</span>
         </p>
     </div>
 
     <div>
         <p class="font-medium">
             Attempt:
-            <span id="attempted-num"></span>
+            <span class="attempted-num">0</span>
         </p>
     </div>
 
     <div>
-        <p class="font-medium">39:34</p>
+        <p class="font-medium">
+            <span class="exam-timer"></span>
+        </p>
     </div>
 
 </div>
-
-
