@@ -410,6 +410,165 @@ $(document).ready(function () {
         })
     });
 
+    // Add Exam
+    $('#questionForm').on('submit', function (e) {
+        e.preventDefault(); // Prevent the form from submitting normally
+
+        let isValid = true;
+
+        if (!$('#set_number').val()) {
+            $('#set_number_error').removeClass('hidden');
+            isValid = false;
+        } else {
+            $('#set_number_error').addClass('hidden');
+        }
+
+        if (!$('#question_number').val()) {
+            $('#question_number_error').removeClass('hidden');
+            isValid = false;
+        } else {
+            $('#question_number_error').addClass('hidden');
+        }
+
+        if (!$('#question').val()) {
+            $('#question_error').removeClass('hidden');
+            isValid = false;
+        } else {
+            $('#question_error').addClass('hidden');
+        }
+
+        if (!$('#question_type').val()) {
+            $('#question_type_error').removeClass('hidden');
+            isValid = false;
+        } else {
+            $('#question_type_error').addClass('hidden');
+        }
+
+        if (!$('#question_description').val()) {
+            $('#question_description_error').removeClass('hidden');
+            isValid = false;
+        } else {
+            $('#question_description_error').addClass('hidden');
+        }
+
+        if (!$('#answer_type').val()) {
+            $('#answer_type_error').removeClass('hidden');
+            isValid = false;
+        } else {
+            $('#answer_type_error').addClass('hidden');
+        }
+
+        if (!$('#option_1').val()) {
+            $('#option_1_error').removeClass('hidden');
+            isValid = false;
+        } else {
+            $('#option_1_error').addClass('hidden');
+        }
+
+        if (!$('#option_2').val()) {
+            $('#option_2_error').removeClass('hidden');
+            isValid = false;
+        } else {
+            $('#option_2_error').addClass('hidden');
+        }
+
+        if (!$('#option_3').val()) {
+            $('#option_3_error').removeClass('hidden');
+            isValid = false;
+        } else {
+            $('#option_3_error').addClass('hidden');
+        }
+
+        if (!$('#option_4').val()) {
+            $('#option_4_error').removeClass('hidden');
+            isValid = false;
+        } else {
+            $('#option_4_error').addClass('hidden');
+        }
+
+        if (!$('#correct_answer').val()) {
+            $('#correct_answer_error').removeClass('hidden');
+            isValid = false;
+        } else {
+            $('#correct_answer_error').addClass('hidden');
+        }
+
+        console.log(isValid);
+
+        console.log($('#set_number').val());
+        console.log($('#question_number').val());
+        console.log($('#question').val());
+        console.log($('#question_type').val());
+        console.log($('#question_description_error').val());
+        // console.log($('#answer_type').val());
+        // console.log($('#option_1_error').val());
+        // console.log($('#option_2_error').val());
+        // console.log($('#option_3_error').val());
+        // console.log($('#option_4_error').val());
+        // console.log($('#correct_answer').val());
+
+        if (isValid) {
+
+            let formData = new FormData(this);
+
+            $.ajax({
+                url: $(this).attr('action'),
+                method: 'POST',
+                data: formData,
+                contentType: false, // Important for file uploads
+                processData: false, // Important for file uploads
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr(
+                        'content') // CSRF token
+                },
+                success: function (response) {
+                    // Handle success response
+                    console.log('Success:', response);
+
+                    // Display the popup
+                    $('#popup').removeClass('hidden');
+                },
+                error: function (xhr) {
+                    // Handle error response
+                    console.log('Error:', xhr.responseText);
+                }
+            });
+        }
+    });
+
+    // Close the popup
+    $('#closePopup').on('click', function () {
+        $('#popup').addClass('hidden');
+    });
+
+
+    // Add another question
+    $('#addAnotherQuestion').on('click', function () {
+        // Hide the popup
+        $('#popup').addClass('hidden');
+
+        // Reset the form fields except for set_number and question_number
+        $('#questionForm').find('input[type="text"], textarea, input[type="file"]').val('');
+        $('#questionForm').find('select').val('');
+
+        // Reset image previews
+        $('#question_image_preview').attr('src', '').addClass('hidden');
+        $('#option_1_preview').attr('src', '').addClass('hidden');
+        $('#option_2_preview').attr('src', '').addClass('hidden');
+        $('#option_3_preview').attr('src', '').addClass('hidden');
+        $('#option_4_preview').attr('src', '').addClass('hidden');
+
+        // Preserve set_number and question_number values
+        let setNumber = $('#set_number').val();
+        $('#set_number').val(setNumber);
+
+        let questionNumberInput = $('#question_number');
+        let currentQuestionNumber = parseInt(questionNumberInput.val(), 10);
+        if (!isNaN(currentQuestionNumber)) {
+            questionNumberInput.val(currentQuestionNumber + 1);
+        }
+
+    });
 
 
 
