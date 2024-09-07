@@ -38,6 +38,34 @@ class ExamQuestionController extends Controller
      */
     public function store(Request $request)
     {
+
+        // try {
+
+        //     $data = $request->validate([
+        //         'set_number' => ['required', 'integer'],
+        //         'question_number' => ['required', 'unique:exam_questions'],
+        //         'question_type' => ['required', 'string'],
+        //         'question_description' => ['required_if:question_type,text', 'nullable', 'string'],
+        //         'question_description_image' => ['required_if:question_type,image', 'nullable', 'image', 'mimes:jpeg,png,jpg,gif,svg', 'max:2048'],
+        //         'answer_type' => ['required', 'string'],
+        //         'option_1' => ['required_if:answer_type,text', 'nullable', 'string'],
+        //         'option_1_image' => ['required_if:answer_type,image', 'nullable', 'image', 'mimes:jpeg,png,jpg,gif,svg', 'max:2048'],
+        //         'option_2' => ['required_if:answer_type,text', 'nullable', 'string'],
+        //         'option_2_image' => ['required_if:answer_type,image', 'nullable', 'image', 'mimes:jpeg,png,jpg,gif,svg', 'max:2048'],
+        //         'option_3' => ['required_if:answer_type,text', 'nullable', 'string'],
+        //         'option_3_image' => ['required_if:answer_type,image', 'nullable', 'image', 'mimes:jpeg,png,jpg,gif,svg', 'max:2048'],
+        //         'option_4' => ['required_if:answer_type,text', 'nullable', 'string'],
+        //         'option_4_image' => ['required_if:answer_type,image', 'nullable', 'image', 'mimes:jpeg,png,jpg,gif,svg', 'max:2048'],
+        //         'correct_answer' => ['required', 'string'],
+        //     ]);
+
+        //     dd($data);
+
+        // } catch (\Illuminate\Validation\ValidationException $e) {
+        //     // Step 3: Debugging validation errors
+        //     dd($e->errors());
+        // }
+
         if (!request()->user()->isAdmin()) {
             return redirect()->back();
         }
@@ -62,23 +90,11 @@ class ExamQuestionController extends Controller
             'correct_answer' => ['required', 'string'],
         ]);
 
-        // dd($data);
-
-        // // Handle the question description image if the question type is 'image'
-        // if ($request->question_type === 'image' && $request->hasFile('question_description_image')) {
-        //     $questionImageName = time() . '_question.' . $request->question_description_image->extension();
-        //     $request->question_description_image->move(public_path('exam_images'), $questionImageName);
-        //     $data['question_description'] = $questionImageName;
-        // }
-
         if ($request->hasFile('question_description_image')) {
             $imageName = time() . '.' . $request->question_description_image->extension();
             $request->question_description_image->move(public_path('exam_images'), $imageName);
             $data['question_description'] = $imageName;
         }
-
-
-
 
         // Handle the option images if the answer type is 'image'
         for ($i = 1; $i <= 4; $i++) {
@@ -94,8 +110,13 @@ class ExamQuestionController extends Controller
             }
         }
 
+
+        // dd($data);
+
+
+
         // Create the exam question
-        ExamQuestion::create([
+        $exam_question_create = ExamQuestion::create([
             "set" => "set_" . $data['set_number'],
             "question_number" => "set_" . $data['set_number'] . "_" . $data['question_number'],
             "question_type" => $data['question_type'],
@@ -108,7 +129,23 @@ class ExamQuestionController extends Controller
             "correct_answer" => $data['correct_answer'],
         ]);
 
-        return redirect()->route('exam_question.index')->with('success', 'Exam question created successfully.');
+
+        if ($exam_question_create) {
+            return response()->json(['success' => true]);
+        }
+
+
+        // // Storing user data in session
+        // session(['user_id' => 1, 'user_name' => 'John Doe']);
+
+        // // Retrieving user data from session
+        // $userName = session('user_name'); // Outputs: John Doe
+
+
+        // dd($userName);
+
+
+        // return redirect()->route('exam_question.index')->with('success', 'Exam question created successfully.');
     }
 
     // public function exam_table()

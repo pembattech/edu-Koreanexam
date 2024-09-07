@@ -13,8 +13,10 @@ Route::middleware('auth')->group(function () {
     })->name('dashboard');
 
     Route::get('exam_question/exam_table', [ExamQuestionController::class, 'exam_table']);
-    
+
     Route::get('exam_question/exam', [ExamQuestionController::class, 'exam'])->name('exam_question.start_exam');
+
+    Route::post('/exam_question', [ExamQuestionController::class, 'store']);
 
     Route::resource('exam_question', ExamQuestionController::class);
 
@@ -24,9 +26,6 @@ Route::middleware('auth')->group(function () {
     Route::get('exam_score', [ExamScoresController::class, 'index'])->name('exam_score.result');
     Route::post('exam_score/store', [ExamScoresController::class, 'store'])->name('exam_score.store');
     Route::get('exam_score/detail', [ExamScoresController::class, 'detail_result'])->name('exam_score.detail_result');
-
-
-
 });
 
 Route::middleware('auth')->group(function () {

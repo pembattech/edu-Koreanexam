@@ -9,6 +9,7 @@ Alpine.start();
 
 // exam_question: index
 $(document).ready(function () {
+
     const MAX_QUESTION = 40;
     const MIN_QUESTION = 1;
 
@@ -252,6 +253,7 @@ $(document).ready(function () {
                 'questionNumber': questionNumber,
             },
             success: function (response) {
+                console.log(response);
 
                 if (response.success.length == 0) {
 
@@ -286,11 +288,20 @@ $(document).ready(function () {
                         var option_2 = question.option2;
                         var option_3 = question.option3;
                         var option_4 = question.option4;
+                        var q_type = question.question_type;
 
                         $("#heading").text("Add yourself");
                         $("#question-number").text(questionNumber +
                             ".");
-                        $("#actual-question").text(questionText);
+
+                        if (q_type == 'audio') {
+                            // 
+                        } else if (q_type == 'image') {
+                            $("#actual-question").html(`<img src="/exam_images/${questionText}" />`);
+                        } else {
+                            $("#actual-question").text(questionText);
+                        }
+
                         $("#option_1").text(option_1);
                         $('#option_1').attr('data-value', option_1);
 
