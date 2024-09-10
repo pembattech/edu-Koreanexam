@@ -277,6 +277,7 @@ $(document).ready(function () {
                     // Show the modal
                     $("#exam_table_popup").addClass('hidden');
 
+                    console.log(response);
                     // Iterate over each question
                     response.success.forEach(function (question) {
                         // Extract data from each question object
@@ -289,6 +290,7 @@ $(document).ready(function () {
                         var option_3 = question.option3;
                         var option_4 = question.option4;
                         var q_type = question.question_type;
+                        var ans_type = question.answer_type;
 
                         $("#heading").text("Add yourself");
                         $("#question-number").text(questionNumber +
@@ -302,17 +304,36 @@ $(document).ready(function () {
                             $("#actual-question").text(questionText);
                         }
 
-                        $("#option_1").text(option_1);
-                        $('#option_1').attr('data-value', option_1);
+                        if (ans_type == 'audio') {
+                            // 
+                        } else if (ans_type == 'image') {
 
-                        $("#option_2").text(option_2);
-                        $('#option_2').attr('data-value', option_2);
+                            $("#option_1").html(`<img src="/exam_images/${option_1}" />`);
+                            $('#option_1').attr('data-value', option_1);
 
-                        $("#option_3").text(option_3);
-                        $('#option_3').attr('data-value', option_3);
+                            $("#option_2").html(`<img src="/exam_images/${option_2}" />`);
+                            $('#option_2').attr('data-value', option_2);
 
-                        $("#option_4").text(option_4);
-                        $('#option_4').attr('data-value', option_4);
+                            $("#option_3").html(`<img src="/exam_images/${option_3}" />`);
+                            $('#option_3').attr('data-value', option_3);
+
+                            $("#option_4").html(`<img src="/exam_images/${option_4}" />`);
+                            $('#option_4').attr('data-value', option_4);
+
+                        } else {
+
+                            $("#option_1").text(option_1);
+                            $('#option_1').attr('data-value', option_1);
+
+                            $("#option_2").text(option_2);
+                            $('#option_2').attr('data-value', option_2);
+
+                            $("#option_3").text(option_3);
+                            $('#option_3').attr('data-value', option_3);
+
+                            $("#option_4").text(option_4);
+                            $('#option_4').attr('data-value', option_4);
+                        }
 
                     });
 
@@ -445,10 +466,19 @@ $(document).ready(function () {
         }
 
         if (!$('#question_description').val()) {
-            $('#question_description_error').removeClass('hidden');
-            isValid = false;
+            if (!$('#question_type').val() || $('#question_type').val() == 'text') {
+                $('#question_description_error').removeClass('hidden');
+                isValid = false;
+            }
         } else {
             $('#question_description_error').addClass('hidden');
+        }
+
+        if ($('#question_type').val() === 'image' && (!$('#question_description_image').prop('files') || $('#question_description_image').prop('files').length === 0)) {
+            $('#question_description_image_error').removeClass('hidden');
+            isValid = false;
+        } else {
+            $('#question_description_image_error').addClass('hidden');
         }
 
         if (!$('#answer_type').val()) {
@@ -458,32 +488,74 @@ $(document).ready(function () {
             $('#answer_type_error').addClass('hidden');
         }
 
+        // QuestionType = Text
         if (!$('#option_1').val()) {
-            $('#option_1_error').removeClass('hidden');
-            isValid = false;
+            if (!$('#answer_type').val() || $('#answer_type').val() == 'text') {
+                $('#option_1_error').removeClass('hidden');
+                isValid = false;
+            }
         } else {
             $('#option_1_error').addClass('hidden');
         }
 
         if (!$('#option_2').val()) {
-            $('#option_2_error').removeClass('hidden');
-            isValid = false;
+            if (!$('#answer_type').val() || $('#answer_type').val() == 'text') {
+                $('#option_2_error').removeClass('hidden');
+                isValid = false;
+            }
         } else {
             $('#option_2_error').addClass('hidden');
         }
 
         if (!$('#option_3').val()) {
-            $('#option_3_error').removeClass('hidden');
-            isValid = false;
+            if (!$('#answer_type').val() || $('#answer_type').val() == 'text') {
+                $('#option_3_error').removeClass('hidden');
+                isValid = false;
+            }
         } else {
             $('#option_3_error').addClass('hidden');
         }
 
         if (!$('#option_4').val()) {
-            $('#option_4_error').removeClass('hidden');
-            isValid = false;
+            if (!$('#answer_type').val() || $('#answer_type').val() == 'text') {
+                $('#option_4_error').removeClass('hidden');
+                isValid = false;
+            }
         } else {
             $('#option_4_error').addClass('hidden');
+        }
+
+        // Question Type = image
+        if ($('#answer_type').val() === 'image' && (!$('#option_1_image').prop('files') || $('#option_1_image').prop('files').length === 0)) {
+            $('#option_1_error').addClass('hidden');
+            $('#option_1_image_error').removeClass('hidden');
+            isValid = false;
+        } else {
+            $('#option_1_image_error').addClass('hidden');
+        }
+
+        if ($('#answer_type').val() === 'image' && (!$('#option_2_image').prop('files') || $('#option_2_image').prop('files').length === 0)) {
+            $('#option_2_error').addClass('hidden');
+            $('#option_2_image_error').removeClass('hidden');
+            isValid = false;
+        } else {
+            $('#option_2_image_error').addClass('hidden');
+        }
+
+        if ($('#answer_type').val() === 'image' && (!$('#option_3_image').prop('files') || $('#option_3_image').prop('files').length === 0)) {
+            $('#option_3_error').addClass('hidden');
+            $('#option_3_image_error').removeClass('hidden');
+            isValid = false;
+        } else {
+            $('#option_3_image_error').addClass('hidden');
+        }
+
+        if ($('#answer_type').val() === 'image' && (!$('#option_4_image').prop('files') || $('#option_4_image').prop('files').length === 0)) {
+            $('#option_4_error').addClass('hidden');
+            $('#option_4_image_error').removeClass('hidden');
+            isValid = false;
+        } else {
+            $('#option_4_image_error').addClass('hidden');
         }
 
         if (!$('#correct_answer').val()) {
@@ -493,23 +565,14 @@ $(document).ready(function () {
             $('#correct_answer_error').addClass('hidden');
         }
 
-        console.log(isValid);
-
-        console.log($('#set_number').val());
-        console.log($('#question_number').val());
-        console.log($('#question').val());
-        console.log($('#question_type').val());
-        console.log($('#question_description_error').val());
-        // console.log($('#answer_type').val());
-        // console.log($('#option_1_error').val());
-        // console.log($('#option_2_error').val());
-        // console.log($('#option_3_error').val());
-        // console.log($('#option_4_error').val());
-        // console.log($('#correct_answer').val());
-
         if (isValid) {
 
             let formData = new FormData(this);
+
+            // Loop through the formData entries to see what's inside
+            for (let pair of formData.entries()) {
+                console.log(pair[0] + ': ' + pair[1]);
+            }
 
             $.ajax({
                 url: $(this).attr('action'),
@@ -569,6 +632,73 @@ $(document).ready(function () {
         }
 
     });
+
+    // let currentQuestionNumber; // Global variable to store question number
+
+    // // When a question is clicked, populate the question number in the popup
+    // $('.populate-question-number').on('click', function () {
+    //     currentQuestionNumber = $(this).data('question-number'); // Store in global variable
+    //     $('#popup-title').text('Question ' + currentQuestionNumber);
+    //     $('#popup-content').text('This is the content for question ' + currentQuestionNumber);
+
+    //     // Show the popup
+    //     $('#store_set_number_popup').removeClass('hidden');
+
+    //     $('#invalid-message').addClass('hidden');
+
+    //     // Reset input field
+    //     $('#setnumber-input').val('');
+    // });
+
+    // // Store value in session storage when the submit button is clicked
+    // $('#submit-setnumber').on('click', function () {
+    //     let setnumber = $('#setnumber-input').val();
+
+    //     if (setnumber) {
+    //         // Convert setnumber to an integer
+    //         setnumber = parseInt(setnumber);
+
+    //         if (!isNaN(setnumber)) {
+
+    //             $.ajax({
+    //                 url: '/exam_question/exam',
+    //                 method: 'GET',
+    //                 data: {
+    //                     'setNumber': 'set_' + setnumber,
+    //                     'questionNumber': 'set_' + setnumber + "_" + currentQuestionNumber,
+    //                 },
+    //                 success: function (response) {
+    //                     console.log(response);
+    //                     if (response.success.length === 0) {
+    //                         // Array is empty, show a message
+    //                         console.log('Invalid set number or Question number.');
+    //                         $('#invalid-message').removeClass('hidden');
+
+    //                     } else {
+
+    //                         // Array is not empty, process the items
+    //                         console.log('Items found:', response.success);
+    //                     }
+    //                 }
+    //             });
+
+    //             // Store the question number and setnumber (as an integer) in session storage
+    //             sessionStorage.setItem('edit-qn', JSON.stringify([setnumber, currentQuestionNumber]));
+    //             alert('Set number saved for question ' + currentQuestionNumber);
+    //         } else {
+    //             alert('Please enter a valid number.');
+    //         }
+    //     } else {
+    //         alert('Please enter an answer.');
+    //     }
+    // });
+
+    // // Close the popup
+    // $('#store_set_number-close-popup').on('click', function () {
+    //     $('#store_set_number_popup').addClass('hidden');
+    // });
+
+
 
 
 

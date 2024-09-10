@@ -61,11 +61,18 @@ class AnswerController extends Controller
 
                 if ($exam_question) {
 
-                    // Use regular expression to capture the part after the last '_'
+                    // Extract the suffix after the last underscore
                     preg_match('/_(.+)$/', $chosenOption, $matches);
+                    $suffix = $matches[1] ?? ''; // Get the matched suffix or an empty string if not matched
+
+                    // Define a pattern to match unwanted image extensions
+                    $extensionsPattern = '/\.(jpeg|png|jpg|gif|svg)$/i';
+
+                    // Remove unwanted extensions from the suffix
+                    $cleanedSuffix = preg_replace($extensionsPattern, '', $suffix);
 
                     // $matches[1] contains the part after the last '_'
-                    $chosenOption = $matches[1];
+                    $chosenOption = $cleanedSuffix;
 
                     $is_correct = ($exam_question->correct_answer === $chosenOption);
 

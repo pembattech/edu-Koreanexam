@@ -3,7 +3,8 @@
     <div class="grid grid-cols-2 gap-4">
 
         <div>
-            <h1 class="mb-4 text-2xl font-extrabold leading-none tracking-tight md:text-3xl lg:text-4xl text-gray-600">Question</h1>
+            <h1 class="mb-4 text-2xl font-extrabold leading-none tracking-tight md:text-3xl lg:text-4xl text-gray-600">
+                Question</h1>
 
 
             <form method="POST" action="{{ route('exam_question.store') }}" enctype="multipart/form-data"
@@ -12,7 +13,8 @@
                 <div class="grid gap-4 sm:grid-cols-[1fr_1fr] sm:gap-6">
 
                     <div class="mb-2">
-                        <label class="block mb-2 text-base font-medium text-gray-900" for="set_number">Set Number:</label>
+                        <label class="block mb-2 text-base font-medium text-gray-900" for="set_number">Set
+                            Number:</label>
                         <input type="number"
                             class="bg-white bg-opacity-20 backdrop-filter backdrop-blur-lg shadow-sm border-2 border-transparent text-gray-900 text-sm rounded-lg focus:border-2 focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
                             id="set_number" name="set_number" required>
@@ -74,6 +76,8 @@
                     <p id="question_description_error" class="text-red-500 font-medium text-base hidden">Question
                         description is
                         required.</p>
+
+                    <p id="question_description_image_error" class="text-red-500 font-medium text-base hidden">Please upload an image.</p>
                 </div>
 
                 <div class="mb-2">
@@ -100,6 +104,9 @@
                         <img id="option_1_preview" class="mt-2 hidden" style="max-width: 100%; height: auto;" />
                         <p id="option_1_error" class="text-red-500 font-medium text-base hidden">Option 1 is required.
                         </p>
+
+                    <p id="option_1_image_error" class="text-red-500 font-medium text-base hidden">Please upload an image.</p>
+
                     </div>
 
                     <div class="mb-2">
@@ -110,6 +117,9 @@
                         <img id="option_2_preview" class="mt-2 hidden" style="max-width: 100%; height: auto;" />
                         <p id="option_2_error" class="text-red-500 font-medium text-base hidden">Option 2 is required.
                         </p>
+
+                    <p id="option_2_image_error" class="text-red-500 font-medium text-base hidden">Please upload an image.</p>
+
                     </div>
 
                     <div class="mb-2">
@@ -120,6 +130,9 @@
                         <img id="option_3_preview" class="mt-2 hidden" style="max-width: 100%; height: auto;" />
                         <p id="option_3_error" class="text-red-500 font-medium text-base hidden">Option 3 is required.
                         </p>
+
+                    <p id="option_3_image_error" class="text-red-500 font-medium text-base hidden">Please upload an image.</p>
+
                     </div>
 
                     <div class="mb-2">
@@ -130,6 +143,9 @@
                         <img id="option_4_preview" class="mt-2 hidden" style="max-width: 100%; height: auto;" />
                         <p id="option_4_error" class="text-red-500 font-medium text-base hidden">Option 4 is required.
                         </p>
+
+                    <p id="option_4_image_error" class="text-red-500 font-medium text-base hidden">Please upload an image.</p>
+
                     </div>
                 </div>
 
@@ -139,11 +155,11 @@
                     <select
                         class="bg-white bg-opacity-20 backdrop-filter backdrop-blur-lg shadow-sm border-2 border-transparent text-gray-900 text-sm rounded-lg focus:border-2 focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
                         id="correct_answer" name="correct_answer">
-                        <option  class="bg-blue-300" value="">Select Correct Option</option>
-                        <option  class="bg-blue-300" value="option_1">Option 1</option>
-                        <option  class="bg-blue-300" value="option_2">Option 2</option>
-                        <option  class="bg-blue-300" value="option_3">Option 3</option>
-                        <option  class="bg-blue-300" value="option_4">Option 4</option>
+                        <option class="bg-blue-300" value="">Select Correct Option</option>
+                        <option class="bg-blue-300" value="option_1">Option 1</option>
+                        <option class="bg-blue-300" value="option_2">Option 2</option>
+                        <option class="bg-blue-300" value="option_3">Option 3</option>
+                        <option class="bg-blue-300" value="option_4">Option 4</option>
                     </select>
                     <p id="correct_answer_error" class="text-red-500 font-medium text-base hidden">Correct answer is
                         required.
@@ -174,21 +190,39 @@
 
 
         <div>
-            <h1 class="mb-4 text-2xl font-extrabold leading-none tracking-tight md:text-3xl lg:text-4xl text-gray-600">Question Number</h1>
+            <h1 class="mb-4 text-2xl font-extrabold leading-none tracking-tight md:text-3xl lg:text-4xl text-gray-600">
+                Question Number</h1>
 
             <div class="flex flex-wrap gap-4 px-4">
                 @for ($i = 1; $i <= 40; $i++)
                     <p data-question-number="{{ $i }}"
-                        class="question-item bg-white bg-opacity-20 backdrop-filter backdrop-blur-lg cursor-pointer border-2 h-16 w-16 text-sm hover:font-bold border-black flex items-center justify-center">
+                        class="populate-question-number bg-white bg-opacity-20 backdrop-filter backdrop-blur-lg cursor-pointer border-2 h-16 w-16 text-sm hover:font-bold border-black flex items-center justify-center">
                         {{ $i }}
                     </p>
                 @endfor
             </div>
 
+            <!-- Popup HTML -->
+            <div id="store_set_number_popup"
+                class="fixed z-50 inset-0 bg-gray-500 bg-opacity-75 flex items-center justify-center hidden">
+                <div class="bg-white p-8 rounded shadow-lg w-1/2">
+                    <h2 id="popup-title" class="text-xl font-bold mb-4">Question Popup</h2>
+                    <p id="popup-content" class="text-base">Content goes here...</p>
+
+                    <p class="text-red-500 font-medium text-base hidden" id="invalid-message">Invalid set number or Question number.</p>
+                    
+                    <!-- Input field -->
+                    <input type="text" id="setnumber-input" class="border p-2 w-full"
+                        placeholder="Enter set number.">
+
+                    <button id="submit-setnumber" class="mt-4 bg-blue-500 text-white py-2 px-4 rounded">Submit</button>
+                    <button id="store_set_number-close-popup"
+                        class="mt-4 bg-red-500 text-white py-2 px-4 rounded">Close</button>
+                </div>
+            </div>
         </div>
 
     </div>
-
 
 
 
