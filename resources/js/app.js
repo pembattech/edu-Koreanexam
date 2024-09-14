@@ -80,13 +80,14 @@ $(document).ready(function () {
 
             console.log(setNumber, formated_questionNumber);
 
+            $('.next-question-btn').removeClass('hidden');
+            $('.submit-exam-btn').addClass('hidden')
+
             exam_show(setNumber, formated_questionNumber);
 
         });
 
     });
-
-
 
 
     // Function to update session storage and fetch exam
@@ -95,6 +96,23 @@ $(document).ready(function () {
         let new_q_num = setNumber + "_" + new_q_num_int;
         sessionStorage.setItem('currentSetNumber', setNumber);
         sessionStorage.setItem('currentQuestionNumber', new_q_num);
+
+        const new_currentQuestionNumber = sessionStorage.getItem('currentQuestionNumber');
+        const new_setNumber = sessionStorage.getItem('currentSetNumber');
+
+        const new_targetQuestionNumber = `${new_setNumber}_40`;
+
+        if (new_currentQuestionNumber == new_targetQuestionNumber) {
+
+            $('.next-question-btn').addClass('hidden');
+            $('.submit-exam-btn').removeClass('hidden')
+
+        } else {
+
+            $('.submit-exam-btn').addClass('hidden')
+            $('.next-question-btn').removeClass('hidden');
+        }
+
         fetch_exam(setNumber, new_q_num);
     }
 
@@ -103,7 +121,6 @@ $(document).ready(function () {
         // Retrieve the set number and question number from session storage
         let setNumber = sessionStorage.getItem('currentSetNumber');
         let questionNumber = sessionStorage.getItem('currentQuestionNumber');
-
 
         // Extract the numeric part of the question number
         let q_num = questionNumber.replace(setNumber + "_", "");
@@ -114,7 +131,6 @@ $(document).ready(function () {
             updateQuestion(setNumber, q_num_int);
         }
 
-
     });
 
     // Event listener for the previous question button
@@ -122,7 +138,6 @@ $(document).ready(function () {
         // Retrieve the set number and question number from session storage
         let setNumber = sessionStorage.getItem('currentSetNumber');
         let questionNumber = sessionStorage.getItem('currentQuestionNumber');
-
 
         // Extract the numeric part of the question number
         let q_num = questionNumber.replace(setNumber + "_", "");
@@ -132,6 +147,25 @@ $(document).ready(function () {
             q_num_int -= 1;
             updateQuestion(setNumber, q_num_int);
         }
+    });
+
+    // Show the popup
+    function exam_finish_confirmation_showPopup() {
+        $('#exam_finish_confirmation_popup').removeClass('hidden');
+    }
+
+    // Hide the popup
+    function exam_finish_confirmation_hidePopup() {
+        $('#exam_finish_confirmation_popup').addClass('hidden');
+    }
+
+    $('.submit-exam-btn').on('click', function () {
+        $('#exam_finish_confirmation_popup').removeClass('hidden');
+    });
+
+    // Handle cancel button click
+    $('#exam_finish_confirmation_cancel-popup').on('click', function () {
+        exam_finish_confirmation_hidePopup();
     });
 
 
@@ -221,11 +255,7 @@ $(document).ready(function () {
                 // Update the session storage with the modified array
                 sessionStorage.setItem("lst_choosen_option", JSON.stringify(myArray));
 
-                // Output the updated array to the console
-                console.log(myArray);
-
                 count_remaining__attempt();
-
 
             },
             error: function (xhr, status, error) {
@@ -235,13 +265,13 @@ $(document).ready(function () {
     });
 
 
-
     function exam_show(setNumber, questionNumber) {
         $('#exam').removeClass('hidden');
 
         fetch_exam(setNumber, questionNumber);
 
     }
+
 
     function fetch_exam(setNumber, questionNumber) {
 
@@ -253,8 +283,6 @@ $(document).ready(function () {
                 'questionNumber': questionNumber,
             },
             success: function (response) {
-                console.log(response);
-
                 if (response.success.length == 0) {
 
                     var questionNumber = sessionStorage.getItem('currentQuestionNumber').replace(sessionStorage.getItem('currentSetNumber') + "_", "");
@@ -277,7 +305,6 @@ $(document).ready(function () {
                     // Show the modal
                     $("#exam_table_popup").addClass('hidden');
 
-                    console.log(response);
                     // Iterate over each question
                     response.success.forEach(function (question) {
                         // Extract data from each question object
@@ -297,7 +324,6 @@ $(document).ready(function () {
                             ".");
 
                         if (q_type == 'audio') {
-                            console.log("audio");
                             // Create an audio element and set its source
                             const audioElement = `
                                 <audio controls>
@@ -312,7 +338,6 @@ $(document).ready(function () {
                         }
 
                         if (ans_type == 'audio') {
-                            
                             const option_1_audioElement = `
                             <audio controls>
                             <source src="/exam_assets/audio/option_audio/${option_1}" type="audio/mpeg">
@@ -348,7 +373,7 @@ $(document).ready(function () {
 
                             $("#option_4").html(option_4_audioElement);
                             $('#option_4').attr('data-value', option_4);
-                            
+
                         } else if (ans_type == 'image') {
 
                             $("#option_1").html(`<img class="h-auto max-w-40" src = "/exam_assets/images/option_image/${option_1}" /> `);
@@ -424,13 +449,12 @@ $(document).ready(function () {
         const minutes = String(now.getMinutes()).padStart(2, '0');
         const seconds = String(now.getSeconds()).padStart(2, '0');
 
-        return `${ year } -${ month } -${ day } ${ hours }:${ minutes }:${ seconds } `;
+        return `${year} -${month} -${day} ${hours}:${minutes}:${seconds} `;
     }
 
     function count_remaining__attempt() {
 
         if (sessionStorage.getItem("lst_choosen_option")) {
-            console.log('counting!');
 
             // Retrieve the JSON string from session storage
             let storedArray = sessionStorage.getItem("lst_choosen_option");
@@ -464,7 +488,6 @@ $(document).ready(function () {
                 _token: $('meta[name="csrf-token"]').attr('content'),
             },
             success: function (response) {
-                console.log(response);
 
                 window.location.href = "/";
             },
@@ -524,7 +547,6 @@ $(document).ready(function () {
             $('#question_description_image_error').addClass('hidden');
         }
 
-        // Validate audio file input
         if ($('#question_type').val() === 'audio' && (!$('#question_description_audio').prop('files') || $('#question_description_audio').prop('files').length === 0)) {
             $('#question_description_audio_error').removeClass('hidden');
             isValid = false;
@@ -669,8 +691,6 @@ $(document).ready(function () {
                         'content') // CSRF token
                 },
                 success: function (response) {
-                    // Handle success response
-                    console.log('Success:', response);
 
                     // Display the popup
                     $('#popup').removeClass('hidden');
@@ -784,25 +804,7 @@ $(document).ready(function () {
     //     $('#store_set_number_popup').addClass('hidden');
     // });
 
-
-
-
-
-
-
-
 });
 
-
-
-// // exam_question: exam_table
-
-
-// // exam_question: exam
-
-// // Wait for the entire page to load
-// $(window).on('load', function () {
-//     // Show the content
 //     $('#exam').fadeIn(700);
-// });
 

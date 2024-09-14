@@ -90,6 +90,29 @@
             <button
                 class="next-question-btn text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-2xl px-4 py-2">Next
                 Question</button>
+            <button
+                class="submit-exam-btn hidden text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-2xl px-4 py-2">Submit Exam</button>
         </div>
     </div>
+
+    <div id="exam_finish_confirmation_popup"
+        class="fixed inset-0 z-50 bg-gray-500 bg-opacity-75 flex items-center justify-center hidden">
+        <div class="bg-white p-8 rounded-lg shadow-lg w-full max-w-md">
+            <h2 id="popup-title" class="text-xl font-bold mb-4">Confirmation</h2>
+            <p id="popup-content" class="text-base">Are you sure you want to submit the exam?</p>
+
+
+            <div class="mt-4 flex justify-end space-x-4">
+                <button
+                    class="finish_exam-btn bg-blue-500 text-white py-2 px-4 rounded-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                    Confirm
+                </button>
+                <button id="exam_finish_confirmation_cancel-popup"
+                    class="bg-red-500 text-white py-2 px-4 rounded-md hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-red-500">
+                    Cancel
+                </button>
+            </div>
+        </div>
+    </div>
+
 </div>
