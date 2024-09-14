@@ -297,27 +297,70 @@ $(document).ready(function () {
                             ".");
 
                         if (q_type == 'audio') {
-                            // 
+                            console.log("audio");
+                            // Create an audio element and set its source
+                            const audioElement = `
+                                <audio controls>
+                                    <source src="/exam_assets/audio/question_audio/${questionText}" type="audio/mpeg">
+                                        Your browser does not support the audio element.
+                                </audio>`;
+                            $("#actual-question").html(audioElement);
                         } else if (q_type == 'image') {
-                            $("#actual-question").html(`<img src="/exam_images/${questionText}" />`);
+                            $("#actual-question").html(`<img class="h-auto max-w-md" src = "/exam_assets/images/question_image/${questionText}" /> `);
                         } else {
                             $("#actual-question").text(questionText);
                         }
 
                         if (ans_type == 'audio') {
-                            // 
-                        } else if (ans_type == 'image') {
+                            
+                            const option_1_audioElement = `
+                            <audio controls>
+                            <source src="/exam_assets/audio/option_audio/${option_1}" type="audio/mpeg">
+                            Your browser does not support the audio element.
+                            </audio>`;
 
-                            $("#option_1").html(`<img src="/exam_images/${option_1}" />`);
+                            $("#option_1").html(option_1_audioElement);
                             $('#option_1').attr('data-value', option_1);
 
-                            $("#option_2").html(`<img src="/exam_images/${option_2}" />`);
+                            const option_2_audioElement = `
+                            <audio controls>
+                            <source src="/exam_assets/audio/option_audio/${option_2}" type="audio/mpeg">
+                            Your browser does not support the audio element.
+                            </audio>`;
+
+                            $("#option_2").html(option_2_audioElement);
                             $('#option_2').attr('data-value', option_2);
 
-                            $("#option_3").html(`<img src="/exam_images/${option_3}" />`);
+                            const option_3_audioElement = `
+                            <audio controls>
+                            <source src="/exam_assets/audio/option_audio/${option_3}" type="audio/mpeg">
+                            Your browser does not support the audio element.
+                            </audio>`;
+
+                            $("#option_3").html(option_3_audioElement);
                             $('#option_3').attr('data-value', option_3);
 
-                            $("#option_4").html(`<img src="/exam_images/${option_4}" />`);
+                            const option_4_audioElement = `
+                            <audio controls>
+                            <source src="/exam_assets/audio/option_audio/${option_4}" type="audio/mpeg">
+                            Your browser does not support the audio element.
+                            </audio>`;
+
+                            $("#option_4").html(option_4_audioElement);
+                            $('#option_4').attr('data-value', option_4);
+                            
+                        } else if (ans_type == 'image') {
+
+                            $("#option_1").html(`<img class="h-auto max-w-40" src = "/exam_assets/images/option_image/${option_1}" /> `);
+                            $('#option_1').attr('data-value', option_1);
+
+                            $("#option_2").html(`<img class="h-auto max-w-40" src = "/exam_assets/images/option_image/${option_2}" /> `);
+                            $('#option_2').attr('data-value', option_2);
+
+                            $("#option_3").html(`<img class="h-auto max-w-40" src = "/exam_assets/images/option_image/${option_3}" /> `);
+                            $('#option_3').attr('data-value', option_3);
+
+                            $("#option_4").html(`<img class="h-auto max-w-40" src = "/exam_assets/images/option_image/${option_4}" /> `);
                             $('#option_4').attr('data-value', option_4);
 
                         } else {
@@ -381,7 +424,7 @@ $(document).ready(function () {
         const minutes = String(now.getMinutes()).padStart(2, '0');
         const seconds = String(now.getSeconds()).padStart(2, '0');
 
-        return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
+        return `${ year } -${ month } -${ day } ${ hours }:${ minutes }:${ seconds } `;
     }
 
     function count_remaining__attempt() {
@@ -481,6 +524,14 @@ $(document).ready(function () {
             $('#question_description_image_error').addClass('hidden');
         }
 
+        // Validate audio file input
+        if ($('#question_type').val() === 'audio' && (!$('#question_description_audio').prop('files') || $('#question_description_audio').prop('files').length === 0)) {
+            $('#question_description_audio_error').removeClass('hidden');
+            isValid = false;
+        } else {
+            $('#question_description_audio_error').addClass('hidden');
+        }
+
         if (!$('#answer_type').val()) {
             $('#answer_type_error').removeClass('hidden');
             isValid = false;
@@ -558,6 +609,39 @@ $(document).ready(function () {
             $('#option_4_image_error').addClass('hidden');
         }
 
+        // Question Type = audio
+        if ($('#answer_type').val() === 'audio' && (!$('#option_1_audio').prop('files') || $('#option_1_audio').prop('files').length === 0)) {
+            $('#option_1_error').addClass('hidden');
+            $('#option_1_audio_error').removeClass('hidden');
+            isValid = false;
+        } else {
+            $('#option_1_audio_error').addClass('hidden');
+        }
+
+        if ($('#answer_type').val() === 'audio' && (!$('#option_2_audio').prop('files') || $('#option_2_audio').prop('files').length === 0)) {
+            $('#option_2_error').addClass('hidden');
+            $('#option_2_audio_error').removeClass('hidden');
+            isValid = false;
+        } else {
+            $('#option_2_audio_error').addClass('hidden');
+        }
+
+        if ($('#answer_type').val() === 'audio' && (!$('#option_3_audio').prop('files') || $('#option_3_audio').prop('files').length === 0)) {
+            $('#option_3_error').addClass('hidden');
+            $('#option_3_audio_error').removeClass('hidden');
+            isValid = false;
+        } else {
+            $('#option_3_audio_error').addClass('hidden');
+        }
+
+        if ($('#answer_type').val() === 'audio' && (!$('#option_4_audio').prop('files') || $('#option_4_audio').prop('files').length === 0)) {
+            $('#option_4_error').addClass('hidden');
+            $('#option_4_audio_error').removeClass('hidden');
+            isValid = false;
+        } else {
+            $('#option_4_audio_error').addClass('hidden');
+        }
+
         if (!$('#correct_answer').val()) {
             $('#correct_answer_error').removeClass('hidden');
             isValid = false;
@@ -602,6 +686,8 @@ $(document).ready(function () {
     // Close the popup
     $('#closePopup').on('click', function () {
         $('#popup').addClass('hidden');
+
+        $('#questionForm')[0].reset();
     });
 
 

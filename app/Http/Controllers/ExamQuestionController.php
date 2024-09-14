@@ -78,36 +78,52 @@ class ExamQuestionController extends Controller
             'question_type' => ['required', 'string'],
             'question_description' => ['required_if:question_type,text', 'string'],
             'question_description_image' => ['required_if:question_type,image', 'image', 'mimes:jpeg,png,jpg,gif,svg', 'max:2048'],
+            'question_description_audio' => [
+                'required_if:question_type,audio',
+                'mimetypes:audio/mpeg,audio/mp4,audio/wav,audio/x-wav,audio/wave',
+                'max:2048'
+            ],
             'answer_type' => ['required', 'string'],
             'option_1' => ['required_if:answer_type,text', 'string'],
             'option_1_image' => ['required_if:answer_type,image', 'image', 'mimes:jpeg,png,jpg,gif,svg', 'max:2048'],
+            'option_1_audio' => ['required_if:answer_type,audio', 'mimetypes:audio/mpeg,audio/mp4,audio/wav,audio/x-wav,audio/wave', 'max:20480'], // Adjust max size as needed
             'option_2' => ['required_if:answer_type,text', 'string'],
             'option_2_image' => ['required_if:answer_type,image', 'image', 'mimes:jpeg,png,jpg,gif,svg', 'max:2048'],
+            'option_2_audio' => ['required_if:answer_type,audio', 'mimetypes:audio/mpeg,audio/mp4,audio/wav,audio/x-wav,audio/wave', 'max:20480'], // Adjust max size as needed
             'option_3' => ['required_if:answer_type,text', 'string'],
             'option_3_image' => ['required_if:answer_type,image', 'image', 'mimes:jpeg,png,jpg,gif,svg', 'max:2048'],
+            'option_3_audio' => ['required_if:answer_type,audio', 'mimetypes:audio/mpeg,audio/mp4,audio/wav,audio/x-wav,audio/wave', 'max:20480'], // Adjust max size as needed
             'option_4' => ['required_if:answer_type,text', 'string'],
             'option_4_image' => ['required_if:answer_type,image', 'image', 'mimes:jpeg,png,jpg,gif,svg', 'max:2048'],
+            'option_4_audio' => ['required_if:answer_type,audio', 'mimetypes:audio/mpeg,audio/mp4,audio/wav,audio/x-wav,audio/wave', 'max:20480'], // Adjust max size as needed
             'correct_answer' => ['required', 'string'],
         ]);
 
-        // dd($data);
-
-
-        if ($request->hasFile('question_description_image')) {
+        // Handle the question description image or audio file
+        if ($request->question_type === 'image' && $request->hasFile('question_description_image')) {
             $imageName = time() . '.' . $request->question_description_image->extension();
-            $request->question_description_image->move(public_path('exam_images'), $imageName);
+            $request->question_description_image->move(public_path('exam_assets/images/question_image'), $imageName);
             $data['question_description'] = $imageName;
+        } elseif ($request->question_type === 'audio' && $request->hasFile('question_description_audio')) {
+            $audioName = time() . '.' . $request->question_description_audio->extension();
+            $request->question_description_audio->move(public_path('exam_assets/audio/question_audio'), $audioName);
+            $data['question_description'] = $audioName;
         }
 
-        // Handle the option images if the answer type is 'image'
+        // Handle the option images or audio files if the answer type is 'image' or 'audio'
         for ($i = 1; $i <= 4; $i++) {
             $optionKey = 'option_' . $i;
             $optionImageKey = 'option_' . $i . '_image';
-            if ($request->answer_type === 'image' && $request->hasFile($optionImageKey)) {
+            $optionAudioKey = 'option_' . $i . '_audio';
 
+            if ($request->answer_type === 'image' && $request->hasFile($optionImageKey)) {
                 $optionImageName = time() . '_option_' . $i . '.' . $request->$optionImageKey->extension();
-                $request->$optionImageKey->move(public_path('exam_images'), $optionImageName);
+                $request->$optionImageKey->move(public_path('exam_assets/images/option_image'), $optionImageName);
                 $data[$optionKey] = $optionImageName;
+            } elseif ($request->answer_type === 'audio' && $request->hasFile($optionAudioKey)) {
+                $optionAudioName = time() . '_option_' . $i . '.' . $request->$optionAudioKey->extension();
+                $request->$optionAudioKey->move(public_path('exam_assets/audio/option_audio'), $optionAudioName);
+                $data[$optionKey] = $optionAudioName;
             } else {
                 $data[$optionKey] = $request->$optionKey . '_option_' . $i;
             }

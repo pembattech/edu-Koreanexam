@@ -1,4 +1,4 @@
-<div id="exam" class="hidden fixed inset-0 bg-gray-100 h-screen">
+<div id="exam" class="hidden fixed inset-0 bg-gray-100 overflow-auto">
 
     <div class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
 
@@ -19,7 +19,7 @@
                     </p>
                 </div>
 
-                <div class="exam_question py-4">
+                <div class="exam_question py-4 flex items-center justify-center">
                     <p id="actual-question" class="font-normal text-2xl text-center">
                         {{-- Auto Generate --}}
                     </p>

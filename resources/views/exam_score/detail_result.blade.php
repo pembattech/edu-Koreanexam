@@ -1,5 +1,5 @@
 <x-app-layout>
-    <div class="bg-gray-100">
+    
 
         <div class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
 
@@ -24,14 +24,14 @@
 
                 </div>
 
-                <div class="mid-section mb-4 grid gap-4 grid-cols-[2fr_1fr] text-xl p-4 bg-white">
+                <div class="mid-section rounded-tr-md rounded-bl-md rounded-br-md mb-4 grid gap-4 grid-cols-[2fr_1fr] text-xl p-4 bg-white">
 
                     <div class="bg-white overflow-auto">
 
                         <div class="exam_question_description">
                             <p class="font-semibold text-2xl">
                                 <span id="question-number">
-                                    {{ str_replace($question_item->set . "_", ' ', $question_item->question_num) }}.
+                                    {{ str_replace($question_item->set . '_', ' ', $question_item->question_num) }}.
                                 </span>
                                 <span id="heading">
                                     Topic
@@ -39,10 +39,25 @@
                             </p>
                         </div>
 
-                        <div class="exam_question py-4">
-                            <p id="actual-question" class="font-normal text-2xl text-center">
-                                {{ $question_item->examQuestion->question }}
-                            </p>
+                        <div class="exam_question py-4 flex items-center justify-center">
+
+                            @if ($question_item->examQuestion->question_type == 'text')
+                                <p id="actual-question" class="font-normal text-black text-2xl text-center">
+                                    {{ $question_item->examQuestion->question }}
+
+                                </p>
+                            @elseif ($question_item->examQuestion->question_type == 'image')
+                                <img class="h-auto max-w-md" src="{{ asset('exam_assets/images/question_image/' . $question_item->examQuestion->question) }}"
+                                    alt="Question Image">
+                            @elseif ($question_item->examQuestion->question_type == 'audio')
+                                <audio controls>
+                                    <source
+                                        src="{{ asset('exam_assets/audio/question_audio/' . $question_item->examQuestion->question) }}"
+                                        type="audio/mpeg">
+                                    Your browser does not support the audio element.
+                                </audio>
+                            @endif
+
                         </div>
                     </div>
 
@@ -62,7 +77,23 @@
                                         {{ $index + 1 }}
                                     </span>
                                     <span id="{{ $option_id }}" class="option-data ml-2">
-                                        {{ $question_item->examQuestion->$option }}
+
+                                        @if ($question_item->examQuestion->answer_type == 'text')
+                                            <span id="actual-question" class="font-normal text-black text-2xl text-center">
+                                                {{ $question_item->examQuestion->$option }}
+
+                                            </span>
+                                        @elseif ($question_item->examQuestion->answer_type == 'image')
+                                            <img class= "h-auto max-w-40" src="{{ asset('exam_assets/images/option_image/' . $question_item->examQuestion->$option) }}"
+                                                alt="Option Image">
+                                        @elseif ($question_item->examQuestion->answer_type == 'audio')
+                                            <audio controls>
+                                                <source
+                                                    src="{{ asset('exam_assets/audio/option_audio/' . $question_item->examQuestion->$option) }}"
+                                                    type="audio/mpeg">
+                                                Your browser does not support the audio element.
+                                            </audio>
+                                        @endif
                                     </span>
                                 </p>
                             </div>
@@ -72,5 +103,4 @@
             @endforeach
 
         </div>
-    </div>
 </x-app-layout>

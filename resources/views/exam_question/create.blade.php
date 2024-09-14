@@ -1,4 +1,14 @@
 <x-app-layout>
+    @if ($errors->any())
+        <div class="alert alert-danger">
+            <ul>
+                @foreach ($errors->all() as $error)
+                    <li>{{ $error }}</li>
+                @endforeach
+            </ul>
+        </div>
+    @endif
+
 
     <div class="grid grid-cols-2 gap-4">
 
@@ -73,11 +83,18 @@
                         id="question_description" name="question_description"></textarea>
                     <img id="question_image_preview" class="mt-2 hidden" style="max-width: 100%; height: auto;" />
 
+                    <audio id="question_audio_preview" class="mt-2 hidden" controls></audio>
+
+
                     <p id="question_description_error" class="text-red-500 font-medium text-base hidden">Question
                         description is
                         required.</p>
 
-                    <p id="question_description_image_error" class="text-red-500 font-medium text-base hidden">Please upload an image.</p>
+                    <p id="question_description_image_error" class="text-red-500 font-medium text-base hidden">Please
+                        upload an image.</p>
+
+                    <p id="question_description_audio_error" class="text-red-500 font-medium text-base hidden">Please
+                        upload an audio.</p>
                 </div>
 
                 <div class="mb-2">
@@ -102,10 +119,19 @@
                             class="bg-white bg-opacity-20 backdrop-filter backdrop-blur-lg shadow-sm border-2 border-transparent text-gray-900 text-sm rounded-lg focus:border-2 focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
                             id="option_1" name="option_1">
                         <img id="option_1_preview" class="mt-2 hidden" style="max-width: 100%; height: auto;" />
+
+                        <audio id="option_1_audio_preview" class="hidden" controls></audio>
+
                         <p id="option_1_error" class="text-red-500 font-medium text-base hidden">Option 1 is required.
                         </p>
 
-                    <p id="option_1_image_error" class="text-red-500 font-medium text-base hidden">Please upload an image.</p>
+                        <p id="option_1_image_error" class="text-red-500 font-medium text-base hidden">Please upload
+                            an
+                            image.</p>
+
+                        <p id="option_1_audio_error" class="text-red-500 font-medium text-base hidden">Please upload
+                            an
+                            audio.</p>
 
                     </div>
 
@@ -115,10 +141,17 @@
                             class="bg-white bg-opacity-20 backdrop-filter backdrop-blur-lg shadow-sm border-2 border-transparent text-gray-900 text-sm rounded-lg focus:border-2 focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
                             id="option_2" name="option_2">
                         <img id="option_2_preview" class="mt-2 hidden" style="max-width: 100%; height: auto;" />
+
+                        <audio id="option_2_audio_preview" class="hidden" controls></audio>
+
                         <p id="option_2_error" class="text-red-500 font-medium text-base hidden">Option 2 is required.
                         </p>
 
-                    <p id="option_2_image_error" class="text-red-500 font-medium text-base hidden">Please upload an image.</p>
+                        <p id="option_2_image_error" class="text-red-500 font-medium text-base hidden">Please upload
+                            an image.</p>
+
+                        <p id="option_2_audio_error" class="text-red-500 font-medium text-base hidden">Please upload
+                            an audio.</p>
 
                     </div>
 
@@ -128,10 +161,17 @@
                             class="bg-white bg-opacity-20 backdrop-filter backdrop-blur-lg shadow-sm border-2 border-transparent text-gray-900 text-sm rounded-lg focus:border-2 focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
                             id="option_3" name="option_3">
                         <img id="option_3_preview" class="mt-2 hidden" style="max-width: 100%; height: auto;" />
+
+                        <audio id="option_3_audio_preview" class="hidden" controls></audio>
+
                         <p id="option_3_error" class="text-red-500 font-medium text-base hidden">Option 3 is required.
                         </p>
 
-                    <p id="option_3_image_error" class="text-red-500 font-medium text-base hidden">Please upload an image.</p>
+                        <p id="option_3_image_error" class="text-red-500 font-medium text-base hidden">Please upload
+                            an image.</p>
+
+                        <p id="option_3_audio_error" class="text-red-500 font-medium text-base hidden">Please upload
+                            an audio.</p>
 
                     </div>
 
@@ -141,10 +181,17 @@
                             class="bg-white bg-opacity-20 backdrop-filter backdrop-blur-lg shadow-sm border-2 border-transparent text-gray-900 text-sm rounded-lg focus:border-2 focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
                             id="option_4" name="option_4">
                         <img id="option_4_preview" class="mt-2 hidden" style="max-width: 100%; height: auto;" />
+
+                        <audio id="option_4_audio_preview" class="hidden" controls></audio>
+
                         <p id="option_4_error" class="text-red-500 font-medium text-base hidden">Option 4 is required.
                         </p>
 
-                    <p id="option_4_image_error" class="text-red-500 font-medium text-base hidden">Please upload an image.</p>
+                        <p id="option_4_image_error" class="text-red-500 font-medium text-base hidden">Please upload
+                            an image.</p>
+
+                        <p id="option_4_audio_error" class="text-red-500 font-medium text-base hidden">Please upload
+                            an audio.</p>
 
                     </div>
                 </div>
@@ -209,13 +256,15 @@
                     <h2 id="popup-title" class="text-xl font-bold mb-4">Question Popup</h2>
                     <p id="popup-content" class="text-base">Content goes here...</p>
 
-                    <p class="text-red-500 font-medium text-base hidden" id="invalid-message">Invalid set number or Question number.</p>
-                    
+                    <p class="text-red-500 font-medium text-base hidden" id="invalid-message">Invalid set number or
+                        Question number.</p>
+
                     <!-- Input field -->
                     <input type="text" id="setnumber-input" class="border p-2 w-full"
                         placeholder="Enter set number.">
 
-                    <button id="submit-setnumber" class="mt-4 bg-blue-500 text-white py-2 px-4 rounded">Submit</button>
+                    <button id="submit-setnumber"
+                        class="mt-4 bg-blue-500 text-white py-2 px-4 rounded">Submit</button>
                     <button id="store_set_number-close-popup"
                         class="mt-4 bg-red-500 text-white py-2 px-4 rounded">Close</button>
                 </div>
@@ -224,18 +273,17 @@
 
     </div>
 
-
-
-
     <script>
         function handleQuestionTypeChange() {
             const questionType = document.getElementById('question_type').value;
             const questionDescriptionContainer = document.getElementById('question_description_container');
             const questionImagePreview = document.getElementById('question_image_preview');
+            const questionAudioPreview = document.getElementById('question_audio_preview');
 
-            // Check if the current element is a file input or textarea
-            const currentElement = document.getElementById('question_description_image') || document.getElementById(
-                'question_description');
+            // Check if the current element is a file input, textarea, or audio element
+            const currentElement = document.getElementById('question_description_image') ||
+                document.getElementById('question_description_audio') ||
+                document.getElementById('question_description');
 
             if (questionType === 'image') {
                 // Create a new file input for the image
@@ -244,12 +292,29 @@
                 fileInput.name = 'question_description_image';
                 fileInput.id = 'question_description_image';
                 fileInput.className = currentElement.className; // Reuse the class name
+                fileInput.accept = 'image/*'; // Accept only image files
                 fileInput.onchange = function() {
                     previewImage(fileInput, questionImagePreview);
                 };
 
                 currentElement.replaceWith(fileInput);
                 questionImagePreview.classList.remove('hidden');
+                questionAudioPreview.classList.add('hidden');
+            } else if (questionType === 'audio') {
+                // Create a new file input for the audio
+                const fileInput = document.createElement('input');
+                fileInput.type = 'file';
+                fileInput.name = 'question_description_audio';
+                fileInput.id = 'question_description_audio';
+                fileInput.className = currentElement.className; // Reuse the class name
+                fileInput.accept = 'audio/*'; // Accept only audio files
+                fileInput.onchange = function() {
+                    previewAudio(fileInput, questionAudioPreview);
+                };
+
+                currentElement.replaceWith(fileInput);
+                questionImagePreview.classList.add('hidden');
+                questionAudioPreview.classList.remove('hidden');
             } else {
                 // Create a new textarea for the text
                 const textarea = document.createElement('textarea');
@@ -259,6 +324,7 @@
 
                 currentElement.replaceWith(textarea);
                 questionImagePreview.classList.add('hidden');
+                questionAudioPreview.classList.add('hidden');
             }
         }
 
@@ -266,25 +332,53 @@
             const answerType = document.getElementById('answer_type').value;
 
             for (let i = 1; i <= 4; i++) {
-                // Get the current element (either the text input or the file input)
-                const currentElement = document.getElementById('option_' + i + '_image') || document.getElementById(
-                    'option_' + i);
+                // Get the current element (either the text input, image input, or audio input)
+                const currentElement = document.getElementById('option_' + i + '_image') ||
+                    document.getElementById('option_' + i + '_audio') ||
+                    document.getElementById('option_' + i);
                 const optionPreview = document.getElementById('option_' + i + '_preview');
+                const optionAudioPreview = document.getElementById('option_' + i + '_audio_preview');
 
                 if (currentElement) {
-                    if (answerType === 'image') {
+                    if (answerType == 'image') {
+                        // Create a new file input for the image
                         const fileInput = document.createElement('input');
                         fileInput.type = 'file';
                         fileInput.name = 'option_' + i + '_image';
                         fileInput.id = 'option_' + i + '_image';
                         fileInput.className = currentElement.className;
+                        fileInput.accept = 'image/*'; // Accept only image files
                         fileInput.onchange = function() {
                             previewImage(fileInput, optionPreview);
                         };
 
                         currentElement.replaceWith(fileInput);
                         optionPreview.classList.remove('hidden');
+                    } else if (answerType == 'audio') {
+                        // Create a new file input for the audio
+                        const fileInput = document.createElement('input');
+                        fileInput.type = 'file';
+                        fileInput.name = 'option_' + i + '_audio';
+                        fileInput.id = 'option_' + i + '_audio';
+                        fileInput.className = currentElement.className;
+                        fileInput.accept = 'audio/*'; // Accept only audio files
+                        fileInput.onchange = function() {
+                            previewAudio(fileInput, optionAudioPreview); // You need to implement this function
+                        };
+
+                        console.log(answerType)
+                        console.log(fileInput, optionAudioPreview)
+
+                        currentElement.replaceWith(fileInput);
+                        
+                        optionPreview.classList.add('hidden');
+                        
+                        console.log(optionAudioPreview);
+                        optionAudioPreview.classList.remove('hidden');
+
+
                     } else {
+                        // Create a new text input for the text
                         const textInput = document.createElement('input');
                         textInput.type = 'text';
                         textInput.name = 'option_' + i;
@@ -299,6 +393,7 @@
         }
 
 
+
         function previewImage(input, previewElement) {
             const file = input.files[0];
             const reader = new FileReader();
@@ -310,6 +405,17 @@
             if (file) {
                 reader.readAsDataURL(file);
             }
+        }
+
+        // Function to preview the selected audio
+        function previewAudio(fileInput, previewElement) {
+            const file = fileInput.files[0];
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                previewElement.src = e.target.result;
+                previewElement.classList.remove('hidden');
+            };
+            reader.readAsDataURL(file);
         }
     </script>
 
