@@ -44,6 +44,10 @@
                             number
                             is
                             required</span>
+
+                        <span class="text-red-500 font-medium text-base hidden" id="question_number_l40_error">Only up
+                            to 40 is allowed.</span>
+
                     </div>
 
                 </div>
@@ -52,7 +56,7 @@
                     <label class="block mb-2 text-base font-medium text-gray-900" for="question">Question:</label>
                     <input type="text"
                         class="bg-white bg-opacity-20 backdrop-filter backdrop-blur-lg shadow-sm border-2 border-transparent text-gray-900 text-sm rounded-lg focus:border-2 focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
-                        id="question" name="question" required>
+                        id="question" name="heading" required>
 
                     <span class="text-red-500 font-medium text-base hidden" id="question_error">Question is
                         required</span>
@@ -370,9 +374,9 @@
                         console.log(fileInput, optionAudioPreview)
 
                         currentElement.replaceWith(fileInput);
-                        
+
                         optionPreview.classList.add('hidden');
-                        
+
                         console.log(optionAudioPreview);
                         optionAudioPreview.classList.remove('hidden');
 
@@ -419,10 +423,4 @@
         }
     </script>
 
-    {{-- <script>
-        $(document).ready(function() {
-            
-
-        });
-    </script> --}}
 </x-app-layout>

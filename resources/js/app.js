@@ -211,6 +211,9 @@ $(document).ready(function () {
         // Add 'option-active' class to the clicked option
         $(this).addClass('option-active');
 
+        // Adding warning to answer atleast one question before submitting.
+        $('.total_answered_0').addClass('hidden');
+
         let exam_start_time = sessionStorage.getItem('exam_start_time');
         var chosenOption = $(this).find('.option-data').data('value'); // Get the data-value attribute directly from the clicked option's span with the option-data class
         let questionNumber = sessionStorage.getItem('currentQuestionNumber');
@@ -288,6 +291,8 @@ $(document).ready(function () {
                     var questionNumber = sessionStorage.getItem('currentQuestionNumber').replace(sessionStorage.getItem('currentSetNumber') + "_", "");
                     $("#question-number").text(questionNumber + ".");
 
+                    $("#heading").text("");
+
                     $("#actual-question").text('No question!');
 
                     $("#option_1").text("");
@@ -307,10 +312,12 @@ $(document).ready(function () {
 
                     // Iterate over each question
                     response.success.forEach(function (question) {
+                        console.log(question);
                         // Extract data from each question object
 
                         var questionNumber = question.question_number
                             .replace(question.set + "_", "");
+                        var headingText = question.heading;
                         var questionText = question.question;
                         var option_1 = question.option1;
                         var option_2 = question.option2;
@@ -319,7 +326,7 @@ $(document).ready(function () {
                         var q_type = question.question_type;
                         var ans_type = question.answer_type;
 
-                        $("#heading").text("Add yourself");
+                        $("#heading").text(headingText);
                         $("#question-number").text(questionNumber +
                             ".");
 
@@ -489,7 +496,13 @@ $(document).ready(function () {
             },
             success: function (response) {
 
-                window.location.href = "/";
+                console.log(response);
+
+                if (response.total_answered == 0) {
+                    $('.total_answered_0').removeClass('hidden');
+                }
+
+                // window.location.href = "/";
             },
             error: function (xhr, status, error) {
                 console.error('Failed to save option:', error);
@@ -515,6 +528,12 @@ $(document).ready(function () {
             isValid = false;
         } else {
             $('#question_number_error').addClass('hidden');
+
+            if ($('#question_number').val() > 40) {
+                $('#question_number_l40_error').removeClass('hidden');
+            } else {
+                $('#question_number_l40_error').addClass('hidden');
+            }
         }
 
         if (!$('#question').val()) {

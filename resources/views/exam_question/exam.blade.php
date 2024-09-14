@@ -101,6 +101,8 @@
             <h2 id="popup-title" class="text-xl font-bold mb-4">Confirmation</h2>
             <p id="popup-content" class="text-base">Are you sure you want to submit the exam?</p>
 
+            <p class="total_answered_0 hidden text-red-500 text-2xl p-2 font-semibold text-center">Submission failed: Please answer at least one question before submitting the exam.</p>
+
 
             <div class="mt-4 flex justify-end space-x-4">
                 <button

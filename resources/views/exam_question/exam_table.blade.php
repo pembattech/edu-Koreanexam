@@ -1,7 +1,7 @@
 <div id="exam_table_popup" class=" hidden fixed inset-0 bg-gray-100 h-screen">
 
     <div class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
-        
+
         @include('exam_question.topbar')
 
         <div class="mid-section grid gap-4 grid-cols-[1fr_1fr] text-xl mt-2 p-4 bg-white">
@@ -39,6 +39,8 @@
 
         </div>
 
+        <p class="total_answered_0 hidden text-red-500 text-2xl p-2 font-semibold text-center">Submission failed: Please answer at least one question before submitting the exam.</p>
+
         <div class="lower-section flex justify-around border text-xl p-4 mt-2 bg-white">
 
             <button
@@ -48,4 +50,3 @@
         </div>
     </div>
 </div>
-

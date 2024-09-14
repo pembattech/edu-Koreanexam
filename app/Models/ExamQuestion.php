@@ -10,6 +10,7 @@ class ExamQuestion extends Model
     protected $fillable = [
         'set',
         'question_number',
+        'heading',
         'question_type',
         'question',
         'answer_type',

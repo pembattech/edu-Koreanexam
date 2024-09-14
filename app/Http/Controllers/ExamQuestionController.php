@@ -75,6 +75,7 @@ class ExamQuestionController extends Controller
         $data = $request->validate([
             'set_number' => ['required', 'integer'],
             'question_number' => ['required', 'unique:exam_questions'],
+            'heading' => ['required', 'string'],
             'question_type' => ['required', 'string'],
             'question_description' => ['required_if:question_type,text', 'string'],
             'question_description_image' => ['required_if:question_type,image', 'image', 'mimes:jpeg,png,jpg,gif,svg', 'max:2048'],
@@ -138,6 +139,7 @@ class ExamQuestionController extends Controller
         $exam_question_create = ExamQuestion::create([
             "set" => "set_" . $data['set_number'],
             "question_number" => "set_" . $data['set_number'] . "_" . $data['question_number'],
+            "heading" => $data['heading'],
             "question_type" => $data['question_type'],
             "question" => $data['question_description'],
             "answer_type" => $data['answer_type'],

@@ -63,7 +63,7 @@ class ExamScoresController extends Controller
                 ->get()
                 ->count();
 
-            if ($count_answer) {
+            if ($count_answer > 0) {
 
                 ExamScore::create([
                     'candidate_id' => $candidate_id,
@@ -72,6 +72,8 @@ class ExamScoresController extends Controller
                 ]);
 
                 return response()->json(['total_answered' => $count_answer]);
+            } else {
+                return response()->json(['total_answered' => 0]);
             }
         }
 
