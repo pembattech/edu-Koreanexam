@@ -486,12 +486,14 @@ $(document).ready(function () {
 
     $('.finish_exam-btn').on('click', function () {
         let exam_start_time = sessionStorage.getItem('exam_start_time')
+        let exam_set_number = sessionStorage.getItem('currentSetNumber')
 
         $.ajax({
             url: '/exam_score/store',
             method: 'POST',
             data: {
                 "exam_start_time": exam_start_time,
+                "set_number": exam_set_number,
                 _token: $('meta[name="csrf-token"]').attr('content'),
             },
             success: function (response) {

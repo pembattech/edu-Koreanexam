@@ -11,6 +11,7 @@ class ExamScore extends Model
         'candidate_id',
         'exam_start_time',
         'korean_score',
+        'set_number'
     ];
 
 

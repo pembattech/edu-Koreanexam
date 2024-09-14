@@ -56,6 +56,7 @@ class ExamScoresController extends Controller
     {
         if ($request->ajax()) {
             $exam_start_time = $request->input('exam_start_time');
+            $set_number = $request->input('set_number');
             $candidate_id = auth()->user()->id;
 
             $count_answer = Answer::query()
@@ -68,6 +69,7 @@ class ExamScoresController extends Controller
                 ExamScore::create([
                     'candidate_id' => $candidate_id,
                     'exam_start_time' => $exam_start_time,
+                    'set_number' => $set_number,
                     'korean_score' => $count_answer,
                 ]);
 
