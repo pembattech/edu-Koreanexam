@@ -5,12 +5,20 @@ use App\Http\Controllers\ExamQuestionController;
 use App\Http\Controllers\ExamScoresController;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Redirect;
+
+Route::get('/', function () {
+    
+    if (Auth::check()) {
+        return Redirect::route('exam_question.index');
+    }
+
+    return view('dashboard');
+
+})->name('dashboard');
 
 Route::middleware('auth')->group(function () {
-
-    Route::get('/', function () {
-        return view('dashboard');
-    })->name('dashboard');
 
     Route::get('exam_question/exam_table', [ExamQuestionController::class, 'exam_table']);
 

@@ -3,6 +3,8 @@
     <!-- Session Status -->
     <x-auth-session-status class="mb-4" :status="session('status')" />
 
+
+
     <form method="POST" action="{{ route('login') }}">
         @csrf
 
@@ -12,7 +14,7 @@
                 <div
                     class="absolute inset-0 bg-gradient-to-r from-cyan-400 to-sky-500 transform -skew-y-6 sm:skew-y-0 sm:-rotate-6 sm:rounded-3xl">
                 </div>
-                <div class="relative px-4 py-10 bg-white sm:rounded-3xl sm:p-20">
+                <div class="relative px-4 py-10 bg-white sm:rounded-3xl sm:p-16">
 
                     <div class="max-w-md mx-auto">
                         <div>
@@ -67,15 +69,15 @@
                             </div>
                         </div>
 
-                        <p class="text-gray-600 text-sm focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                        <p
+                            class="text-gray-600 text-sm focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
                             Don't have an account?
-                            <a class="underline  hover:text-gray-900"
-                            href="{{ route('register') }}">
-                            <span>
-                                Register here?
-                            </span>
-                        </a>
-                    </p>
+                            <a class="underline  hover:text-gray-900" href="{{ route('register') }}">
+                                <span>
+                                    Register here?
+                                </span>
+                            </a>
+                        </p>
                     </div>
                 </div>
             </div>

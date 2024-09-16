@@ -1,32 +1,29 @@
-<x-app-layout>
+<x-guest-layout>
 
-    <div class="z-0 p-1 flex flex-wrap items-center justify-center">
+    <div class="landing-container">
+        <header class="header">
+            <h1 class="title">Korean UBT Exam</h1>
+            <p class="subtitle">Master your skills with real-time results and detailed review options.</p>
 
-        <div
-            class="z-0 w-fit bg-white bg-opacity-20 backdrop-filter backdrop-blur-lg rounded-lg p-6 shadow-lg border border-white border-opacity-30 text-white m-4">
+            <a href="{{ route('login') }}">
+                <button class="start-btn">Start Your Journey</button>
+            </a>
 
-
-            <div>
-                <img class="w-40 h-40" src="{{ asset('assets/ubt.jpeg') }}" alt="">
-
+        </header>
+        <section class="features">
+            <div class="feature-item">
+                <h2>Instant Feedback</h2>
+                <p>Receive real-time results to gauge your performance.</p>
             </div>
-        </div>
-
-        <div
-            class="z-0 w-fit bg-white bg-opacity-20 backdrop-filter backdrop-blur-lg rounded-lg p-6 shadow-lg border border-white border-opacity-30 text-white m-4">
-
-
-            <div>
-                <img class="w-40" src="{{ asset('assets/ubt.jpeg') }}" alt="">
-
+            <div class="feature-item">
+                <h2>Track Progress</h2>
+                <p>Review past answers to identify areas for improvement.</p>
             </div>
-        </div>
-
+            <div class="feature-item">
+                <h2>Varied Question Sets</h2>
+                <p>Challenge yourself with diverse sets of questions.</p>
+            </div>
+        </section>
     </div>
 
-
-    <script>
-        $("#navbar").removeClass('hidden');
-    </script>
-
-</x-app-layout>
+</x-guest-layout>

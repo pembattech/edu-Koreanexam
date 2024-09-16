@@ -21,20 +21,48 @@
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
 
-<body class="font-sans antialiased">
-    <div class="min-h-screen bg-gradient-to-b from-blue-400 via-blue-300 to-blue-200">
+<body class="font-sans antialiased bg-black">
+
+
+    <div class="preloader-2" id= "loading">
+        <span class="line line-1"></span>
+        <span class="line line-2"></span>
+        <span class="line line-3"></span>
+        <span class="line line-4"></span>
+        <span class="line line-5"></span>
+        <span class="line line-6"></span>
+        <span class="line line-7"></span>
+        <span class="line line-8"></span>
+        <span class="line line-9"></span>
+        <div class="loading-txt">Loading</div>
+    </div>
+
+    <div id = "content" class="hidden min-h-screen bg-gradient-to-b from-blue-400 via-blue-300 to-blue-200">
+
         <div id="navbar" class="hidden">
-            {{-- <div id="navbar" class=""> --}}
 
             @include('layouts.navigation')
 
         </div>
 
-        <!-- Page Content -->
         <main class="max-w-7xl mx-auto p-4 sm:px-6 lg:px-8 ">
+
             {{ $slot }}
+
         </main>
+
     </div>
+
+    <script>
+        // jQuery to display content after the page has loaded
+        $(window).on('load', function() {
+            $('#loading').fadeOut(500, function() {
+                $('#content').fadeIn(500);
+
+            });
+
+        });
+    </script>
 </body>
 
 </html>
