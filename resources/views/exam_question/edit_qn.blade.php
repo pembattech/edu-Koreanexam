@@ -1,4 +1,14 @@
-<!-- Edit Question Drawer Component -->
+@if ($errors->any())
+    <div class="alert alert-danger">
+        <ul>
+            @foreach ($errors->all() as $error)
+                <li>{{ $error }}</li>
+            @endforeach
+        </ul>
+    </div>
+@endif
+
+
 <div id="edit-question-drawer"
     class="fixed top-0 left-0 z-50 w-full h-full p-4 overflow-y-auto transition-transform duration-700 transform -translate-x-full bg-gradient-to-b from-blue-400 via-blue-300 to-blue-200"
     tabindex="-1" aria-labelledby="edit-question-label">
@@ -14,7 +24,7 @@
     </button>
 
 
-    <form method="POST" action="{{ route('exam_question.store') }}" enctype="multipart/form-data"
+    <form method="POST" action="{{ route('exam_question.update_qn') }}" enctype="multipart/form-data"
         id= "editQuestionForm" class="px-4 mx-auto max-w-2xl" novalidate>
 
         <h1 class="mb-4 text-2xl font-extrabold leading-none tracking-tight md:text-3xl lg:text-4xl text-gray-600">
@@ -28,7 +38,9 @@
                     Number:</label>
                 <input type="number"
                     class="bg-white bg-opacity-20 backdrop-filter backdrop-blur-lg shadow-sm border-2 border-transparent text-gray-900 text-sm rounded-lg focus:border-2 focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
-                    id="edit_set_number" name="set_number" required disabled>
+                    id="edit_set_number" name="set_number" required readonly>
+
+
 
 
             </div>
@@ -38,7 +50,8 @@
                     Number:</label>
                 <input type="number"
                     class="bg-white bg-opacity-20 backdrop-filter backdrop-blur-lg shadow-sm border-2 border-transparent text-gray-900 text-sm rounded-lg focus:border-2 focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
-                    id="edit_question_number" name="question_number" required disabled>
+                    id="edit_question_number" name="question_number" required readonly>
+
 
             </div>
 
@@ -56,9 +69,8 @@
                 Description Type:</label>
             <select
                 class="bg-white bg-opacity-20 backdrop-filter backdrop-blur-lg shadow-sm border-2 border-transparent text-gray-900 text-sm rounded-lg focus:border-2 focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
-                id="edit_question_type" name="question_type" onchange="handleQuestionTypeChange()">
+                id="edit_question_type" name="question_type" onchange="edit__handleQuestionTypeChange()">
 
-                <option class="bg-blue-300" value="">Select Question Type</option>
                 <option class="bg-blue-300" value="text">Text</option>
                 <option class="bg-blue-300" value="image">Image</option>
                 <option class="bg-blue-300" value="audio">Audio</option>
@@ -83,8 +95,7 @@
             <label class="block mb-2 text-base font-medium text-gray-900" for="answer_type">Answer Type:</label>
             <select
                 class="bg-white bg-opacity-20 backdrop-filter backdrop-blur-lg shadow-sm border-2 border-transparent text-gray-900 text-sm rounded-lg focus:border-2 focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
-                id="edit_answer_type" name="answer_type" onchange="handleAnswerTypeChange()">
-                <option class="bg-blue-300" value="">Select Answer Type</option>
+                id="edit_answer_type" name="answer_type" onchange="edit__handleAnswerTypeChange()">
                 <option class="bg-blue-300" value="text">Text</option>
                 <option class="bg-blue-300" value="image">Image</option>
                 <option class="bg-blue-300" value="audio">Audio</option>
@@ -147,7 +158,6 @@
             <select
                 class="bg-white bg-opacity-20 backdrop-filter backdrop-blur-lg shadow-sm border-2 border-transparent text-gray-900 text-sm rounded-lg focus:border-2 focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
                 id="edit_correct_answer" name="correct_answer">
-                <option class="bg-blue-300" value="">Select Correct Option</option>
                 <option class="bg-blue-300" value="option_1">Option 1</option>
                 <option class="bg-blue-300" value="option_2">Option 2</option>
                 <option class="bg-blue-300" value="option_3">Option 3</option>
@@ -157,8 +167,173 @@
             </p>
         </div>
 
-        <button type="submit"
+        <p id="update-error-msg" class="text-red-500 font-semibold text-base mb-2"></p>
+
+        <div class="flex items-center justify-between">
+            <div>
+
+                <button type="submit" class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">Update</button>
+                <button type="button" id="cancel_edit_form" class="py-2.5 px-5 ms-3 text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-4 focus:ring-gray-100">Cancel</button>
+            </div>
+            
+            <button type="button" class="text-white bg-red-600 hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-red-300 dark:focus:ring-red-800 font-medium rounded-lg text-sm inline-flex items-center px-5 py-2.5 text-center">Delete</button>
+
+        </div>
+
+        {{-- <div class="flex items-center p-4 md:p-5 border-t border-gray-200 rounded-b dark:border-gray-600">
+            
+            <button type="submit"
             class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-base px-4 py-2 w-full mb-4">Submit</button>
+
+
+            <button type="button"
+                class="py-2.5 px-5 ms-3 text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-4 focus:ring-gray-100">Decline</button>
+        </div> --}}
+
     </form>
 
 </div>
+
+<script>
+    function edit__handleQuestionTypeChange() {
+        const edit__questionType = document.getElementById('edit_question_type').value;
+        const edit__questionDescriptionContainer = document.getElementById('edit_question_description_container');
+        const edit__questionImagePreview = document.getElementById('edit_question_image_preview');
+        const edit__questionAudioPreview = document.getElementById('edit_question_audio_preview');
+
+        // Check if the current element is a file input, textarea, or audio element
+        const edit__currentElement = document.getElementById('edit_question_description_image') ||
+            document.getElementById('edit_question_description_audio') ||
+            document.getElementById('edit_question_description');
+
+        if (edit__questionType === 'image') {
+            // Create a new file input for the image
+            const edit__fileInput = document.createElement('input');
+            edit__fileInput.type = 'file';
+            edit__fileInput.name = 'question_description_image';
+            edit__fileInput.id = 'edit_question_description_image';
+            edit__fileInput.className = edit__currentElement.className; // Reuse the class name
+            edit__fileInput.accept = 'image/*'; // Accept only image files
+            edit__fileInput.onchange = function() {
+                edit__previewImage(edit__fileInput, edit__questionImagePreview);
+            };
+
+            edit__currentElement.replaceWith(edit__fileInput);
+            edit__questionImagePreview.classList.remove('hidden');
+            edit__questionAudioPreview.classList.add('hidden');
+        } else if (edit__questionType === 'audio') {
+            // Create a new file input for the audio
+            const edit__fileInput = document.createElement('input');
+            edit__fileInput.type = 'file';
+            edit__fileInput.name = 'question_description_audio';
+            edit__fileInput.id = 'edit_question_description_audio';
+            edit__fileInput.className = edit__currentElement.className; // Reuse the class name
+            edit__fileInput.accept = 'audio/*'; // Accept only audio files
+            edit__fileInput.onchange = function() {
+                edit__previewAudio(edit__fileInput, edit__questionAudioPreview);
+            };
+
+            edit__currentElement.replaceWith(edit__fileInput);
+            edit__questionImagePreview.classList.add('hidden');
+            edit__questionAudioPreview.classList.remove('hidden');
+        } else {
+            // Create a new textarea for the text
+            const edit__textarea = document.createElement('textarea');
+            edit__textarea.name = 'question_description';
+            edit__textarea.id = 'edit_question_description';
+            edit__textarea.className = edit__currentElement.className; // Reuse the class name
+
+            edit__currentElement.replaceWith(edit__textarea);
+            edit__questionImagePreview.classList.add('hidden');
+            edit__questionAudioPreview.classList.add('hidden');
+        }
+    }
+
+    function edit__handleAnswerTypeChange() {
+        const edit__answerType = document.getElementById('edit_answer_type').value;
+
+        for (let i = 1; i <= 4; i++) {
+            // Get the current element (either the text input, image input, or audio input)
+            const edit__currentElement = document.getElementById('edit_option_' + i + '_image') ||
+                document.getElementById('edit_option_' + i + '_audio') ||
+                document.getElementById('edit_option_' + i);
+            const edit__optionPreview = document.getElementById('edit_option_' + i + '_preview');
+            const edit__optionAudioPreview = document.getElementById('edit_option_' + i + '_audio_preview');
+
+            if (edit__currentElement) {
+                if (edit__answerType == 'image') {
+                    // Create a new file input for the image
+                    const edit__fileInput = document.createElement('input');
+                    edit__fileInput.type = 'file';
+                    edit__fileInput.name = 'option_' + i + '_image';
+                    edit__fileInput.id = 'edit_option_' + i + '_image';
+                    edit__fileInput.className = edit__currentElement.className;
+                    edit__fileInput.accept = 'image/*'; // Accept only image files
+                    edit__fileInput.onchange = function() {
+                        edit__previewImage(edit__fileInput, edit__optionPreview);
+                    };
+
+                    edit__currentElement.replaceWith(edit__fileInput);
+                    edit__optionPreview.classList.remove('hidden');
+                    edit__optionAudioPreview.classList.add('hidden');
+
+                } else if (edit__answerType == 'audio') {
+                    // Create a new file input for the audio
+                    const edit__fileInput = document.createElement('input');
+                    edit__fileInput.type = 'file';
+                    edit__fileInput.name = 'option_' + i + '_audio';
+                    edit__fileInput.id = 'edit_option_' + i + '_audio';
+                    edit__fileInput.className = edit__currentElement.className;
+                    edit__fileInput.accept = 'audio/*'; // Accept only audio files
+                    edit__fileInput.onchange = function() {
+                        edit__previewAudio(edit__fileInput,
+                        edit__optionAudioPreview); // You need to implement this function
+                    };
+
+                    edit__currentElement.replaceWith(edit__fileInput);
+                    edit__optionPreview.classList.add('hidden');
+                    edit__optionAudioPreview.classList.remove('hidden');
+
+
+                } else {
+                    // Create a new text input for the text
+                    const edit__textInput = document.createElement('input');
+                    edit__textInput.type = 'text';
+                    edit__textInput.name = 'option_' + i;
+                    edit__textInput.id = 'edit_option_' + i;
+                    edit__textInput.className = edit__currentElement.className;
+
+                    edit__currentElement.replaceWith(edit__textInput);
+                    edit__optionPreview.classList.add('hidden');
+                    edit__optionAudioPreview.classList.add('hidden');
+                }
+            }
+        }
+    }
+
+
+
+    function edit__previewImage(input, previewElement) {
+        const edit__file = input.files[0];
+        const edit__reader = new FileReader();
+
+        edit__reader.onload = function(e) {
+            previewElement.src = e.target.result;
+        };
+
+        if (edit__file) {
+            edit__reader.readAsDataURL(edit__file);
+        }
+    }
+
+    // Function to preview the selected audio
+    function edit__previewAudio(fileInput, previewElement) {
+        const edit__file = fileInput.files[0];
+        const edit__reader = new FileReader();
+        edit__reader.onload = function(e) {
+            previewElement.src = e.target.result;
+            previewElement.classList.remove('hidden');
+        };
+        edit__reader.readAsDataURL(edit__file);
+    }
+</script>

@@ -26,6 +26,8 @@ Route::middleware('auth')->group(function () {
 
     Route::post('/exam_question', [ExamQuestionController::class, 'store']);
 
+    route::post('/exam_question/update', [ExamQuestionController::class, 'update_qn'])->name('exam_question.update_qn');
+
     Route::resource('exam_question', ExamQuestionController::class);
 
     Route::get('answer/is-answer', [AnswerController::class, 'is_answer'])->name('answer.is_answer');

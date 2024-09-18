@@ -1033,6 +1033,56 @@ $(document).ready(function () {
         $('#edit-question-drawer').addClass('-translate-x-full');
     });
 
+    $('#cancel_edit_form').on('click', function () {
+
+        $('#edit-question-drawer').addClass('-translate-x-full');
+    });
+
+    $('#editQuestionForm').on('submit', function (e) {
+        e.preventDefault(); // Prevent the form from submitting normally
+
+        // Create a FormData object to handle file uploads
+        var formData = new FormData($('#editQuestionForm')[0]);
+
+        // Debugging: Log FormData contents
+        for (var pair of formData.entries()) {
+            console.log(pair[0] + ': ' + pair[1]);
+        }
+
+        $.ajax({
+            url: $(this).attr('action'),
+            method: 'POST',
+            data: formData,
+            contentType: false, // Important for file uploads
+            processData: false, // Important for file uploads
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr(
+                    'content') // CSRF token
+            },
+            success: function (response) {
+
+                if (response.success) {
+
+                    $('#edit-question-drawer').addClass('-translate-x-full');
+
+                }
+
+            },
+            error: function (xhr) {
+                // Parse the JSON response
+                var errorResponse = JSON.parse(xhr.responseText);
+
+                // Display the error message
+                if (errorResponse.error) {
+                    $('#update-error-msg').text(errorResponse.error);
+                } else {
+                    $('#update-error-msg').text('An unexpected error occurred.');
+                }
+            }
+        });
+
+    });
+
     // Function to preview the selected image
     function previewImage(fileInput, previewElement) {
         const file = fileInput.files[0];

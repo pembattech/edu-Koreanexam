@@ -39,38 +39,9 @@ class ExamQuestionController extends Controller
     public function store(Request $request)
     {
 
-        // try {
-
-        //     $data = $request->validate([
-        //         'set_number' => ['required', 'integer'],
-        //         'question_number' => ['required', 'unique:exam_questions'],
-        //         'question_type' => ['required', 'string'],
-        //         'question_description' => ['required_if:question_type,text', 'string'],
-        //         'question_description_image' => ['required_if:question_type,image', 'image', 'mimes:jpeg,png,jpg,gif,svg', 'max:2048'],
-        //         'answer_type' => ['required', 'string'],
-        //         'option_1' => ['required_if:answer_type,text', 'string'],
-        //         'option_1_image' => ['required_if:answer_type,image', 'image', 'mimes:jpeg,png,jpg,gif,svg', 'max:2048'],
-        //         'option_2' => ['required_if:answer_type,text', 'string'],
-        //         'option_2_image' => ['required_if:answer_type,image', 'image', 'mimes:jpeg,png,jpg,gif,svg', 'max:2048'],
-        //         'option_3' => ['required_if:answer_type,text', 'string'],
-        //         'option_3_image' => ['required_if:answer_type,image', 'image', 'mimes:jpeg,png,jpg,gif,svg', 'max:2048'],
-        //         'option_4' => ['required_if:answer_type,text', 'string'],
-        //         'option_4_image' => ['required_if:answer_type,image', 'image', 'mimes:jpeg,png,jpg,gif,svg', 'max:2048'],
-        //         'correct_answer' => ['required', 'string'],
-        //     ]);
-
-        //     dd($data);
-
-        // } catch (\Illuminate\Validation\ValidationException $e) {
-        //     // Step 3: Debugging validation errors
-        //     dd($e->errors());
-        // }
-
         if (!request()->user()->isAdmin()) {
             return redirect()->back();
         }
-
-        // dd($request->all());
 
         $data = $request->validate([
             'set_number' => ['required', 'integer'],
@@ -245,9 +216,135 @@ class ExamQuestionController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, ExamQuestion $examQuestion)
+    public function update_qn(Request $request)
     {
-        //
+        if (!request()->user()->isAdmin()) {
+            return redirect()->back();
+        }
+
+        $data = $request->validate([
+            'set_number' => ['required', 'integer'],
+            'question_number' => ['required'],
+            'heading' => ['nullable', 'string'],
+            'question_type' => ['nullable', 'string'],
+            'question_description' => ['nullable', 'string'],
+            'question_description_image' => ['nullable', 'image', 'mimes:jpeg,png,jpg,gif,svg', 'max:2048'],
+            'question_description_audio' => [
+                'nullable',
+                'mimetypes:audio/mpeg,audio/mp4,audio/wav,audio/x-wav,audio/wave',
+                'max:2048'
+            ],
+            'answer_type' => ['nullable', 'string'],
+            'option_1' => ['nullable', 'string'],
+            'option_1_image' => ['nullable', 'image', 'mimes:jpeg,png,jpg,gif,svg', 'max:2048'],
+            'option_1_audio' => ['nullable', 'mimetypes:audio/mpeg,audio/mp4,audio/wav,audio/x-wav,audio/wave', 'max:20480'],
+            'option_2' => ['nullable', 'string'],
+            'option_2_image' => ['nullable', 'image', 'mimes:jpeg,png,jpg,gif,svg', 'max:2048'],
+            'option_2_audio' => ['nullable', 'mimetypes:audio/mpeg,audio/mp4,audio/wav,audio/x-wav,audio/wave', 'max:20480'],
+            'option_3' => ['nullable', 'string'],
+            'option_3_image' => ['nullable', 'image', 'mimes:jpeg,png,jpg,gif,svg', 'max:2048'],
+            'option_3_audio' => ['nullable', 'mimetypes:audio/mpeg,audio/mp4,audio/wav,audio/x-wav,audio/wave', 'max:20480'],
+            'option_4' => ['nullable', 'string'],
+            'option_4_image' => ['nullable', 'image', 'mimes:jpeg,png,jpg,gif,svg', 'max:2048'],
+            'option_4_audio' => ['nullable', 'mimetypes:audio/mpeg,audio/mp4,audio/wav,audio/x-wav,audio/wave', 'max:20480'],
+            'correct_answer' => ['nullable', 'string'],
+        ]);
+
+        // Fetch the existing exam question
+        $examQuestion = ExamQuestion::where([
+            "set" => "set_" . $data['set_number'],
+            "question_number" => "set_" . $data['set_number'] . "_" . $data['question_number']
+        ])->first();
+
+        // Check if question type or answer type has changed
+        $isQuestionTypeChanged = $examQuestion->question_type !== $request->question_type;
+        $isAnswerTypeChanged = $examQuestion->answer_type !== $request->answer_type;
+
+        // Validate new data if the question type or answer type has changed
+        if ($isQuestionTypeChanged) {
+            if ($request->question_type === 'image' && !$request->hasFile('question_description_image')) {
+                return response()->json(['error' => 'New question image is required when changing the question type to image.'], 400);
+            }
+            if ($request->question_type === 'audio' && !$request->hasFile('question_description_audio')) {
+                return response()->json(['error' => 'New question audio is required when changing the question type to audio.'], 400);
+            }
+            if ($request->question_type === 'text' && !$request->filled('question_description')) {
+                return response()->json(['error' => 'Question description is required when changing the question type to text.'], 400);
+            }
+        }
+
+        if ($isAnswerTypeChanged) {
+            for ($i = 1; $i <= 4; $i++) {
+                $optionRequestKey = 'option_' . $i;
+                $optionImageKey = 'option_' . $i . '_image';
+                $optionAudioKey = 'option_' . $i . '_audio';
+
+                if ($request->answer_type === 'image' && !$request->hasFile($optionImageKey)) {
+                    return response()->json(['error' => 'New image for option ' . $i . ' is required when changing the answer type to image.'], 400);
+                }
+                if ($request->answer_type === 'audio' && !$request->hasFile($optionAudioKey)) {
+                    return response()->json(['error' => 'New audio for option ' . $i . ' is required when changing the answer type to audio.'], 400);
+                }
+                if ($request->answer_type === 'text' && !$request->filled($optionRequestKey)) {
+                    return response()->json(['error' => 'Text for option ' . $i . ' is required when changing the answer type to text.'], 400);
+                }
+            }
+        }
+
+        // Handle the question description image or audio file
+        if ($request->question_type === 'image' && $request->hasFile('question_description_image')) {
+            $imageName = time() . '.' . $request->question_description_image->extension();
+            $request->question_description_image->move(public_path('exam_assets/images/question_image'), $imageName);
+            $examQuestion->question = $imageName;
+        } elseif ($request->question_type === 'audio' && $request->hasFile('question_description_audio')) {
+            $audioName = time() . '.' . $request->question_description_audio->extension();
+            $request->question_description_audio->move(public_path('exam_assets/audio/question_audio'), $audioName);
+            $examQuestion->question = $audioName;
+        } else if ($request->filled('question_description')) {
+            $examQuestion->question = $request->question_description;
+        }
+
+        // Handle the option images or audio files if the answer type is 'image' or 'audio'
+        for ($i = 1; $i <= 4; $i++) {
+            $optionKey = 'option' . $i; // Database column name without underscore
+            $optionRequestKey = 'option_' . $i; // Form input name with underscore
+            $optionImageKey = 'option_' . $i . '_image';
+            $optionAudioKey = 'option_' . $i . '_audio';
+
+            if ($request->answer_type === 'image' && $request->hasFile($optionImageKey)) {
+                $optionImageName = time() . '_option_' . $i . '.' . $request->$optionImageKey->extension();
+                $request->$optionImageKey->move(public_path('exam_assets/images/option_image'), $optionImageName);
+                $examQuestion->$optionKey = $optionImageName;
+            } elseif ($request->answer_type === 'audio' && $request->hasFile($optionAudioKey)) {
+                $optionAudioName = time() . '_option_' . $i . '.' . $request->$optionAudioKey->extension();
+                $request->$optionAudioKey->move(public_path('exam_assets/audio/option_audio'), $optionAudioName);
+                $examQuestion->$optionKey = $optionAudioName;
+            } elseif ($request->filled($optionRequestKey)) {
+                $examQuestion->$optionKey = $request->$optionRequestKey;
+            }
+        }
+
+
+        // Update other fields if provided
+        if ($request->filled('heading')) {
+            $examQuestion->heading = $data['heading'];
+        }
+        if ($request->filled('question_type')) {
+            $examQuestion->question_type = $data['question_type'];
+        }
+        if ($request->filled('answer_type')) {
+            $examQuestion->answer_type = $data['answer_type'];
+        }
+        if ($request->filled('correct_answer')) {
+            $examQuestion->correct_answer = $data['correct_answer'];
+        }
+
+        // Save the updated exam question
+        if ($examQuestion->save()) {
+            return response()->json(['success' => true]);
+        }
+
+        return response()->json(['error' => 'Failed to update question.'], 500);
     }
 
     /**
