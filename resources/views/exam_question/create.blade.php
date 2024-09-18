@@ -13,12 +13,13 @@
     <div class="grid grid-cols-2 gap-4">
 
         <div>
-            <h1 class="mb-4 text-2xl font-extrabold leading-none tracking-tight md:text-3xl lg:text-4xl text-gray-600">
-                Question</h1>
-
 
             <form method="POST" action="{{ route('exam_question.store') }}" enctype="multipart/form-data"
-                id= "questionForm" class="px-4 mx-auto max-w-2xl" novalidate>
+            id= "questionForm" class="px-4 mx-auto max-w-2xl" novalidate>
+
+            <h1 class="mb-4 text-2xl font-extrabold leading-none tracking-tight md:text-3xl lg:text-4xl text-gray-600">
+                Add Question</h1>
+                
                 @csrf
                 <div class="grid gap-4 sm:grid-cols-[1fr_1fr] sm:gap-6">
 
@@ -237,34 +238,49 @@
                 </div>
             </div>
 
+       @include('exam_question.edit_qn')
+
         </div>
 
 
         <div>
             <h1 class="mb-4 text-2xl font-extrabold leading-none tracking-tight md:text-3xl lg:text-4xl text-gray-600">
-                Question Number</h1>
+                Edit Question's Number</h1>
 
             <div class="flex flex-wrap gap-4 px-4">
                 @for ($i = 1; $i <= 40; $i++)
                     <p data-question-number="{{ $i }}"
-                        class="populate-question-number bg-white bg-opacity-20 backdrop-filter backdrop-blur-lg cursor-pointer border-2 h-16 w-16 text-sm hover:font-bold border-black flex items-center justify-center">
+                        class="question-num-item bg-white bg-opacity-20 backdrop-filter backdrop-blur-lg cursor-pointer border-2 h-16 w-16 text-sm hover:font-bold border-black flex items-center justify-center">
                         {{ $i }}
                     </p>
                 @endfor
             </div>
 
-            <!-- Popup HTML -->
             <div id="store_set_number_popup"
-                class="fixed z-50 inset-0 bg-gray-500 bg-opacity-75 flex items-center justify-center hidden">
-                <div class="bg-white p-8 rounded shadow-lg w-1/2">
-                    <h2 id="popup-title" class="text-xl font-bold mb-4">Question Popup</h2>
-                    <p id="popup-content" class="text-base">Content goes here...</p>
+                class="hidden fixed z-50 inset-0 bg-gray-500 bg-opacity-75 flex items-center justify-center">
+                <div class="bg-white p-8 rounded shadow-lg w-1/4">
+                                        
+                    <h2 id="Qno" class="text-2xl font-semibold">....</h2>
 
-                    <p class="text-red-500 font-medium text-base hidden" id="invalid-message">Invalid set number or
-                        Question number.</p>
+                    <div class="flex items-center gap-2 hidden" id= "setnum-container">
 
-                    <!-- Input field -->
-                    <input type="text" id="setnumber-input" class="border p-2 w-full"
+                        <p id="Setno" class="text-2xl font-semibold"></p>
+
+                        <div id="cancel_old_setno" class="hover:bg-gray-100 rounded-full p-2">
+
+                            <svg class="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
+                                fill="none" viewBox="0 0 14 14">
+                                <path stroke="#ef4444" stroke-linecap="round" stroke-linejoin="round"
+                                    stroke-width="2" d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6" />
+                            </svg>
+
+                        </div>
+
+                    </div>
+
+                    <p id="invalid-message" class="text-red-500 font-medium text-base hidden">Invalid set number.</p>
+
+                    <input type="text" id="setnumber-input" class="hidden border p-2 mt-2"
                         placeholder="Enter set number.">
 
                     <button id="submit-setnumber"
@@ -282,6 +298,7 @@
             const questionType = document.getElementById('question_type').value;
             const questionDescriptionContainer = document.getElementById('question_description_container');
             const questionImagePreview = document.getElementById('question_image_preview');
+            console.log(questionImagePreview);
             const questionAudioPreview = document.getElementById('question_audio_preview');
 
             // Check if the current element is a file input, textarea, or audio element

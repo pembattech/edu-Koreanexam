@@ -135,20 +135,26 @@ class ExamQuestionController extends Controller
 
 
 
-        // Create the exam question
-        $exam_question_create = ExamQuestion::create([
-            "set" => "set_" . $data['set_number'],
-            "question_number" => "set_" . $data['set_number'] . "_" . $data['question_number'],
-            "heading" => $data['heading'],
-            "question_type" => $data['question_type'],
-            "question" => $data['question_description'],
-            "answer_type" => $data['answer_type'],
-            "option1" => $data['option_1'],
-            "option2" => $data['option_2'],
-            "option3" => $data['option_3'],
-            "option4" => $data['option_4'],
-            "correct_answer" => $data['correct_answer'],
-        ]);
+        // Update or Create the exam question
+        $exam_question_create = ExamQuestion::updateOrCreate(
+            [
+                // Criteria to find the existing record
+                "set" => "set_" . $data['set_number'],
+                "question_number" => "set_" . $data['set_number'] . "_" . $data['question_number']
+            ],
+            [
+                // Data to create or update
+                "heading" => $data['heading'],
+                "question_type" => $data['question_type'],
+                "question" => $data['question_description'],
+                "answer_type" => $data['answer_type'],
+                "option1" => $data['option_1'],
+                "option2" => $data['option_2'],
+                "option3" => $data['option_3'],
+                "option4" => $data['option_4'],
+                "correct_answer" => $data['correct_answer'],
+            ]
+        );
 
 
         if ($exam_question_create) {

@@ -760,72 +760,297 @@ $(document).ready(function () {
 
     });
 
-    // let currentQuestionNumber; // Global variable to store question number
+    let editqn_QuestionNumber;
 
-    // // When a question is clicked, populate the question number in the popup
-    // $('.populate-question-number').on('click', function () {
-    //     currentQuestionNumber = $(this).data('question-number'); // Store in global variable
-    //     $('#popup-title').text('Question ' + currentQuestionNumber);
-    //     $('#popup-content').text('This is the content for question ' + currentQuestionNumber);
+    $('.question-num-item').on('click', function () {
+        editqn_QuestionNumber = $(this).data('question-number');
+        let editqn_SetNumber = '';
 
-    //     // Show the popup
-    //     $('#store_set_number_popup').removeClass('hidden');
+        if (sessionStorage.getItem('edit-qn')) {
 
-    //     $('#invalid-message').addClass('hidden');
+            $('#setnum-container').removeClass('hidden');
+            $('#setnumber-input').addClass('hidden');
 
-    //     // Reset input field
-    //     $('#setnumber-input').val('');
-    // });
+            editqn_SetNumber = JSON.parse(sessionStorage.getItem('edit-qn'))[0];
+            console.log(editqn_SetNumber);
+            $('#Setno').text("Set number: " + editqn_SetNumber)
+        } else {
 
-    // // Store value in session storage when the submit button is clicked
-    // $('#submit-setnumber').on('click', function () {
-    //     let setnumber = $('#setnumber-input').val();
+            $('#setnumber-input').val('');
+            $('#setnumber-input').removeClass('hidden');
 
-    //     if (setnumber) {
-    //         // Convert setnumber to an integer
-    //         setnumber = parseInt(setnumber);
+        }
 
-    //         if (!isNaN(setnumber)) {
+        $('#Qno').text("Question number: " + editqn_QuestionNumber);
 
-    //             $.ajax({
-    //                 url: '/exam_question/exam',
-    //                 method: 'GET',
-    //                 data: {
-    //                     'setNumber': 'set_' + setnumber,
-    //                     'questionNumber': 'set_' + setnumber + "_" + currentQuestionNumber,
-    //                 },
-    //                 success: function (response) {
-    //                     console.log(response);
-    //                     if (response.success.length === 0) {
-    //                         // Array is empty, show a message
-    //                         console.log('Invalid set number or Question number.');
-    //                         $('#invalid-message').removeClass('hidden');
+        $('#store_set_number_popup').removeClass('hidden');
 
-    //                     } else {
+        $('#invalid-message').addClass('hidden');
+    });
 
-    //                         // Array is not empty, process the items
-    //                         console.log('Items found:', response.success);
-    //                     }
-    //                 }
-    //             });
 
-    //             // Store the question number and setnumber (as an integer) in session storage
-    //             sessionStorage.setItem('edit-qn', JSON.stringify([setnumber, currentQuestionNumber]));
-    //             alert('Set number saved for question ' + currentQuestionNumber);
-    //         } else {
-    //             alert('Please enter a valid number.');
-    //         }
-    //     } else {
-    //         alert('Please enter an answer.');
-    //     }
-    // });
+    $('#cancel_old_setno').on('click', function () {
 
-    // // Close the popup
-    // $('#store_set_number-close-popup').on('click', function () {
-    //     $('#store_set_number_popup').addClass('hidden');
-    // });
+        $('#invalid-message').addClass('hidden');
+
+        $('#setnum-container').addClass('hidden');
+        $('#setnumber-input').removeClass('hidden');
+
+    });
+
+
+    $('#submit-setnumber').on('click', function () {
+        let setnumber = $('#setnumber-input').val();
+        console.log('dfd');
+        console.log(editqn_QuestionNumber);
+
+
+        if (setnumber) {
+            setnumber = parseInt(setnumber);
+
+            sessionStorage.setItem('edit-qn', JSON.stringify([setnumber, editqn_QuestionNumber]));
+        }
+
+        let get_setnum = JSON.parse(sessionStorage.getItem('edit-qn'))[0];
+        let get_qnum = editqn_QuestionNumber;
+
+        console.log(get_setnum, get_qnum)
+
+        $.ajax({
+            url: '/exam_question/exam',
+            method: 'GET',
+            data: {
+                'setNumber': 'set_' + get_setnum,
+                'questionNumber': 'set_' + get_setnum + "_" + get_qnum,
+            },
+            success: function (response) {
+
+                if (response.success.length <= 0) {
+
+                    console.log('Invalid set number.');
+                    $('#invalid-message').removeClass('hidden');
+
+                } else {
+
+                    $('#edit-question-drawer').removeClass('-translate-x-full');
+                    $('#editQuestionForm')[0].reset();
+
+                    $('#store_set_number_popup').addClass('hidden');
+
+
+                    console.log('Items found:', response.success);
+
+                    // Iterate over each question
+                    response.success.forEach(function (question) {
+                        console.log(question);
+                        // Extract data from each question object
+
+                        var set_number = get_setnum;
+                        var questionNumber = question.question_number.replace(question.set + "_", "");
+                        var headingText = question.heading;
+                        var q_type = question.question_type;
+                        var questionText = question.question;
+                        var option_1 = question.option1;
+                        var option_2 = question.option2;
+                        var option_3 = question.option3;
+                        var option_4 = question.option4;
+                        var ans_type = question.answer_type;
+                        var correct_answer = question.correct_answer;
+
+                        // Set the values of the inputs
+                        $("#edit_set_number").val(set_number);
+                        $("#edit_question").val(headingText);
+                        $("#edit_question_number").val(questionNumber);
+                        $("#edit_question_type").val(q_type);
+
+                        const questionType = q_type;
+                        const $questionDescriptionContainer = $('#edit_question_description_container');
+                        const $questionImagePreview = $('#edit_question_image_preview');
+                        const $questionAudioPreview = $('#edit_question_audio_preview');
+
+                        // Check if the current element is a file input, textarea, or audio element
+                        const $currentElement = $('#edit_question_description_image, #edit_question_description_audio, #edit_question_description');
+
+                        if (questionType === 'image') {
+                            // Create a new file input for the image
+                            const $fileInput = $('<input>', {
+                                type: 'file',
+                                name: 'question_description_image',
+                                id: 'edit_question_description_image',
+                                class: $currentElement.attr('class'),
+                                accept: 'image/*'
+                            }).on('change', function () {
+                                previewImage($fileInput[0], $questionImagePreview[0]);
+
+                            });
+
+                            $currentElement.replaceWith($fileInput);
+                            $questionImagePreview.removeClass('hidden');
+                            $questionAudioPreview.addClass('hidden');
+
+                            if (questionText) {
+
+                                const imageUrl = '/exam_assets/images/question_image/' + questionText;
+                                $questionImagePreview.attr('src', imageUrl).removeClass('hidden');
+
+                            }
+                        } else if (questionType === 'audio') {
+                            // Create a new file input for the audio
+                            const $fileInput = $('<input>', {
+                                type: 'file',
+                                name: 'question_description_audio',
+                                id: 'edit_question_description_audio',
+                                class: $currentElement.attr('class'),
+                                accept: 'audio/*'
+                            }).on('change', function () {
+                                previewAudio($fileInput[0], $questionAudioPreview[0]);
+                            });
+
+                            $currentElement.replaceWith($fileInput);
+                            $questionImagePreview.addClass('hidden');
+                            $questionAudioPreview.removeClass('hidden');
+
+                            if (questionText) {
+
+                                const audioURL = '/exam_assets/audio/question_audio/' + questionText;
+                                $questionAudioPreview.attr('src', audioURL).removeClass('hidden');
+
+                            }
+                        } else {
+                            // Create a new textarea for the text
+                            const $textarea = $('<textarea>', {
+                                name: 'question_description',
+                                id: 'edit_question_description',
+                                class: $currentElement.attr('class')
+                            });
+
+                            $currentElement.replaceWith($textarea);
+                            $questionImagePreview.addClass('hidden');
+                            $questionAudioPreview.addClass('hidden');
+
+                            // If it's a text question, set the text
+                            $textarea.val(questionText);
+                        }
+
+                        $("#edit_answer_type").val(ans_type);
+
+
+                        const options = [option_1, option_2, option_3, option_4];
+
+                        for (let i = 1; i <= 4; i++) {
+                            // Get the current element (either the text input, image input, or audio input)
+                            const currentElement = $('#edit_option_' + i + '_image')[0] ||
+                                $('#edit_option_' + i + '_audio')[0] ||
+                                $('#edit_option_' + i)[0];
+
+                            const optionPreview = $('#edit_option_' + i + '_preview');
+                            const optionAudioPreview = $('#edit_option_' + i + '_audio_preview');
+
+                            if (currentElement) {
+                                if (ans_type === 'image') {
+                                    // Create a new file input for the image
+                                    const $fileInput = $('<input>', {
+                                        type: 'file',
+                                        name: 'option_' + i + '_image',
+                                        id: 'edit_option_' + i + '_image',
+                                        class: currentElement.className,
+                                        accept: 'image/*'
+                                    }).on('change', function () {
+                                        previewImage(this, optionPreview[0]);
+                                    });
+
+                                    $(currentElement).replaceWith($fileInput);
+                                    optionPreview.removeClass('hidden');
+                                    optionAudioPreview.addClass('hidden');
+
+                                    // Set the existing image if available
+                                    if (options[i - 1]) {
+
+                                        const optionImageURL = '/exam_assets/images/option_image/' + options[i - 1];
+
+                                        optionPreview.attr('src', optionImageURL);
+                                    }
+                                } else if (ans_type === 'audio') {
+                                    // Create a new file input for the audio
+                                    const $fileInput = $('<input>', {
+                                        type: 'file',
+                                        name: 'option_' + i + '_audio',
+                                        id: 'edit_option_' + i + '_audio',
+                                        class: currentElement.className,
+                                        accept: 'audio/*'
+                                    }).on('change', function () {
+                                        previewAudio(this, optionAudioPreview[0]);
+                                    });
+
+                                    $(currentElement).replaceWith($fileInput);
+                                    optionPreview.addClass('hidden');
+                                    optionAudioPreview.removeClass('hidden');
+
+                                    if (options[i - 1]) {
+
+                                        const optionAudioURL = '/exam_assets/audio/option_audio/' + options[i - 1];
+
+                                        optionAudioPreview.attr('src', optionAudioURL);
+
+                                    }
+                                } else {
+                                    // Create a new text input for the text
+                                    const $textInput = $('<input>', {
+                                        type: 'text',
+                                        name: 'option_' + i,
+                                        id: 'edit_option_' + i,
+                                        class: currentElement.className
+                                    });
+
+                                    $(currentElement).replaceWith($textInput);
+                                    optionPreview.addClass('hidden');
+                                    optionAudioPreview.addClass('hidden');
+
+                                    // Set the value for the text option
+                                    if (options[i - 1]) {
+                                        $textInput.val(options[i - 1]);
+                                    }
+                                }
+                            }
+                        }
+
+                        $("#edit_correct_answer").val(correct_answer);
+
+                    });
+                }
+            }
+        });
+    });
+
+
+    $('#store_set_number-close-popup').on('click', function () {
+        $('#store_set_number_popup').addClass('hidden');
+    });
+
+
+    $('#close-edit-question-drawer').on('click', function () {
+
+        $('#edit-question-drawer').addClass('-translate-x-full');
+    });
+
+    // Function to preview the selected image
+    function previewImage(fileInput, previewElement) {
+        const file = fileInput.files[0];
+        const reader = new FileReader();
+        reader.onload = function (e) {
+            $(previewElement).attr('src', e.target.result).removeClass('hidden');
+        };
+        reader.readAsDataURL(file);
+    }
+
+    // Function to preview the selected audio
+    function previewAudio(fileInput, previewElement) {
+        const file = fileInput.files[0];
+        const reader = new FileReader();
+        reader.onload = function (e) {
+            $(previewElement).attr('src', e.target.result).removeClass('hidden');
+        };
+        reader.readAsDataURL(file);
+    }
 
 });
-
-//     $('#exam').fadeIn(700);
-
