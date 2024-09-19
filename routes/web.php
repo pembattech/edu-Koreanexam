@@ -21,13 +21,10 @@ Route::get('/', function () {
 Route::middleware('auth')->group(function () {
 
     Route::get('exam_question/exam_table', [ExamQuestionController::class, 'exam_table']);
-
     Route::get('exam_question/exam', [ExamQuestionController::class, 'exam'])->name('exam_question.start_exam');
-
     Route::post('/exam_question', [ExamQuestionController::class, 'store']);
-
     route::post('/exam_question/update', [ExamQuestionController::class, 'update_qn'])->name('exam_question.update_qn');
-
+    route::delete('/exam_question/delete/{question_number}', [ExamQuestionController::class, 'delete_qn'])->name('exam_question.delete_qn');
     Route::resource('exam_question', ExamQuestionController::class);
 
     Route::get('answer/is-answer', [AnswerController::class, 'is_answer'])->name('answer.is_answer');

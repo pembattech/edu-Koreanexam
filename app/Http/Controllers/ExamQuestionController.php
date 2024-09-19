@@ -101,69 +101,27 @@ class ExamQuestionController extends Controller
             }
         }
 
-
-        // dd($data);
-
-
-
-        // Update or Create the exam question
-        $exam_question_create = ExamQuestion::updateOrCreate(
-            [
-                // Criteria to find the existing record
-                "set" => "set_" . $data['set_number'],
-                "question_number" => "set_" . $data['set_number'] . "_" . $data['question_number']
-            ],
-            [
-                // Data to create or update
-                "heading" => $data['heading'],
-                "question_type" => $data['question_type'],
-                "question" => $data['question_description'],
-                "answer_type" => $data['answer_type'],
-                "option1" => $data['option_1'],
-                "option2" => $data['option_2'],
-                "option3" => $data['option_3'],
-                "option4" => $data['option_4'],
-                "correct_answer" => $data['correct_answer'],
-            ]
-        );
+        // Create the exam question
+        $exam_question_create = ExamQuestion::create([
+            "set" => "set_" . $data['set_number'],
+            "question_number" => "set_" . $data['set_number'] . "_" . $data['question_number'],
+            "heading" => $data['heading'],
+            "question_type" => $data['question_type'],
+            "question" => $data['question_description'],
+            "answer_type" => $data['answer_type'],
+            "option1" => $data['option_1'],
+            "option2" => $data['option_2'],
+            "option3" => $data['option_3'],
+            "option4" => $data['option_4'],
+            "correct_answer" => $data['correct_answer'],
+        ]);
 
 
         if ($exam_question_create) {
             return response()->json(['success' => true]);
         }
 
-
-        // // Storing user data in session
-        // session(['user_id' => 1, 'user_name' => 'John Doe']);
-
-        // // Retrieving user data from session
-        // $userName = session('user_name'); // Outputs: John Doe
-
-
-        // dd($userName);
-
-
-        // return redirect()->route('exam_question.index')->with('success', 'Exam question created successfully.');
     }
-
-    // public function exam_table()
-    // {
-    //     if (request()->ajax()) {
-
-    //         $questionNumber = request()->query('questionNumber');
-    //         $setNumber = request()->query('setNumber');
-
-    //         $exam_question = ExamQuestion::query()
-    //             ->where('question_number', $questionNumber)
-    //             ->where('set', $setNumber)
-    //             ->get();
-
-    //         return response()->json(['success' => $exam_question]);
-    //     } else {
-
-    //         return redirect("exam_question");
-    //     }
-    // }
 
     public function exam(Request $request)
     {
@@ -179,38 +137,8 @@ class ExamQuestionController extends Controller
 
             return response()->json(['success' => $exam_question]);
         }
-        // dd($request);
-        // $questionNumber = $number;
-
-        // Example query to get questions based on the set and question number
-        // $questions = ExamQuestion::where('set', $set)
-        //     ->where('question_number', $questionNumber)
-        //     ->get();
-
-        // // Example: returning the questions as a response
-        // return response()->json($questionNumber
-        // );
+    
         return view('exam_question.exam');
-    }
-
-
-
-    /**
-     * Display the specified resource.
-     */
-    public function show(ExamQuestion $examQuestion)
-    {
-        // $exam_question = ExamQuestion::query();
-
-        // return view()
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(ExamQuestion $examQuestion)
-    {
-        //
     }
 
     /**
@@ -324,7 +252,6 @@ class ExamQuestionController extends Controller
             }
         }
 
-
         // Update other fields if provided
         if ($request->filled('heading')) {
             $examQuestion->heading = $data['heading'];
@@ -350,8 +277,17 @@ class ExamQuestionController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(ExamQuestion $examQuestion)
+    public function delete_qn($question_number)
     {
-        //
+
+        if (!request()->user()->isAdmin()) {
+            return redirect()->back();
+        }
+
+        $question = ExamQuestion::where('question_number', $question_number)->firstOrFail();
+
+        $question->delete();
+
+        return response()->json(['success' => 'Question deleted successfully.']);
     }
 }

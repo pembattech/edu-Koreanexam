@@ -1,14 +1,3 @@
-@if ($errors->any())
-    <div class="alert alert-danger">
-        <ul>
-            @foreach ($errors->all() as $error)
-                <li>{{ $error }}</li>
-            @endforeach
-        </ul>
-    </div>
-@endif
-
-
 <div id="edit-question-drawer"
     class="fixed top-0 left-0 z-50 w-full h-full p-4 overflow-y-auto transition-transform duration-700 transform -translate-x-full bg-gradient-to-b from-blue-400 via-blue-300 to-blue-200"
     tabindex="-1" aria-labelledby="edit-question-label">
@@ -22,7 +11,6 @@
         </svg>
         <span class="sr-only">Close menu</span>
     </button>
-
 
     <form method="POST" action="{{ route('exam_question.update_qn') }}" enctype="multipart/form-data"
         id= "editQuestionForm" class="px-4 mx-auto max-w-2xl" novalidate>
@@ -39,10 +27,6 @@
                 <input type="number"
                     class="bg-white bg-opacity-20 backdrop-filter backdrop-blur-lg shadow-sm border-2 border-transparent text-gray-900 text-sm rounded-lg focus:border-2 focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
                     id="edit_set_number" name="set_number" required readonly>
-
-
-
-
             </div>
 
             <div class="mb-2">
@@ -51,8 +35,6 @@
                 <input type="number"
                     class="bg-white bg-opacity-20 backdrop-filter backdrop-blur-lg shadow-sm border-2 border-transparent text-gray-900 text-sm rounded-lg focus:border-2 focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
                     id="edit_question_number" name="question_number" required readonly>
-
-
             </div>
 
         </div>
@@ -75,7 +57,6 @@
                 <option class="bg-blue-300" value="image">Image</option>
                 <option class="bg-blue-300" value="audio">Audio</option>
             </select>
-
 
         </div>
 
@@ -100,8 +81,6 @@
                 <option class="bg-blue-300" value="image">Image</option>
                 <option class="bg-blue-300" value="audio">Audio</option>
             </select>
-
-
         </div>
 
         <div class="grid gap-4 sm:grid-cols-[1fr_1fr] sm:gap-4" id="edit_answer_options_container">
@@ -136,7 +115,6 @@
 
                 <audio id="edit_option_3_audio_preview" class="hidden" controls></audio>
 
-
             </div>
 
             <div class="mb-2">
@@ -147,8 +125,6 @@
                 <img id="edit_option_4_preview" class="mt-2 hidden" style="max-width: 100%; height: auto;" />
 
                 <audio id="edit_option_4_audio_preview" class="hidden" controls></audio>
-
-
             </div>
         </div>
 
@@ -172,27 +148,97 @@
         <div class="flex items-center justify-between">
             <div>
 
-                <button type="submit" class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">Update</button>
-                <button type="button" id="cancel_edit_form" class="py-2.5 px-5 ms-3 text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-4 focus:ring-gray-100">Cancel</button>
+                <button type="submit"
+                    class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">Update</button>
+                <button type="button" id="cancel_edit_form"
+                    class="py-2.5 px-5 ms-3 text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-4 focus:ring-gray-100">Cancel</button>
             </div>
-            
-            <button type="button" class="text-white bg-red-600 hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-red-300 dark:focus:ring-red-800 font-medium rounded-lg text-sm inline-flex items-center px-5 py-2.5 text-center">Delete</button>
 
+            <button type="button" id = "delete-warning"
+                class="text-white bg-red-600 hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-red-300 dark:focus:ring-red-800 font-medium rounded-lg text-sm inline-flex items-center px-5 py-2.5 text-center">Delete</button>
         </div>
-
-        {{-- <div class="flex items-center p-4 md:p-5 border-t border-gray-200 rounded-b dark:border-gray-600">
-            
-            <button type="submit"
-            class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-base px-4 py-2 w-full mb-4">Submit</button>
-
-
-            <button type="button"
-                class="py-2.5 px-5 ms-3 text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-4 focus:ring-gray-100">Decline</button>
-        </div> --}}
-
     </form>
 
 </div>
+
+<div id="delete-popup-modal" tabindex="-1"
+    class="hidden overflow-y-auto overflow-x-hidden fixed inset-0 z-50 flex justify-center items-center bg-gray-500 bg-opacity-75">
+    <div class="relative p-4 w-full max-w-md max-h-full">
+        <div class="relative bg-white rounded-lg shadow">
+            <button type="button"
+                class="absolute top-3 end-2.5 text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ms-auto inline-flex justify-center items-center"
+                data-modal-hide="delete-popup-modal">
+                <svg class="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none"
+                    viewBox="0 0 14 14">
+                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6" />
+                </svg>
+                <span class="sr-only">Close modal</span>
+            </button>
+            <div class="p-4 md:p-5 text-center">
+                <svg class="mx-auto mb-4 text-gray-400 w-12 h-12" aria-hidden="true"
+                    xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 20">
+                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M10 11V6m0 8h.01M19 10a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+                </svg>
+                <h3 class="mb-5 text-lg font-normal text-gray-500">Are you sure you want to
+                    delete this question?</h3>
+                <button id="confirm-delete" data-modal-hide="delete-popup-modal" type="button"
+                    class="text-white bg-red-600 hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-red-300 font-medium rounded-lg text-sm inline-flex items-center px-5 py-2.5 text-center">
+                    Yes, I'm sure
+                </button>
+                <button data-modal-hide="delete-popup-modal" type="button"
+                    class="py-2.5 px-5 ms-3 text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-4 focus:ring-gray-100">No,
+                    cancel</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    $(document).ready(function() {
+        function showModal() {
+            $('#delete-popup-modal').removeClass('hidden');
+        }
+
+        function hideModal() {
+            $('#delete-popup-modal').addClass('hidden');
+        }
+
+        $('[data-modal-hide="delete-popup-modal"]').on('click', function() {
+            hideModal();
+        });
+
+        $('#delete-warning').on('click', function() {
+            showModal();
+        });
+
+        // Handle the delete confirmation
+        $('#confirm-delete').on('click', function() {
+            var set_num = $('#edit_set_number').val();
+            var questionId = $('#edit_question_number').val();
+
+            let formatted_qnum = "set_" + set_num + "_" + questionId;
+
+            $.ajax({
+                url: '/exam_question/delete/' + formatted_qnum,
+                type: 'DELETE',
+                data: {
+                    _token: '{{ csrf_token() }}'
+                },
+                success: function(response) {
+                    $('#delete-popup-modal').addClass('hidden');
+                    $('#edit-question-drawer').addClass('-translate-x-full');
+
+                    alert('Question deleted successfully!');
+                },
+                error: function(xhr) {
+                    alert('An error occurred while deleting the question.');
+                }
+            });
+        });
+    });
+</script>
 
 <script>
     function edit__handleQuestionTypeChange() {
@@ -287,7 +333,7 @@
                     edit__fileInput.accept = 'audio/*'; // Accept only audio files
                     edit__fileInput.onchange = function() {
                         edit__previewAudio(edit__fileInput,
-                        edit__optionAudioPreview); // You need to implement this function
+                            edit__optionAudioPreview); // You need to implement this function
                     };
 
                     edit__currentElement.replaceWith(edit__fileInput);

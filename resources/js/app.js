@@ -44,7 +44,6 @@ $(document).ready(function () {
         updateTimer();
 
         const currentDateTime = getFormattedDateTime();
-        console.log(currentDateTime);
 
         if (sessionStorage.getItem('exam_start_time')) {
 
@@ -77,8 +76,6 @@ $(document).ready(function () {
             // Store set number and question number in session storage
             sessionStorage.setItem('currentSetNumber', setNumber);
             sessionStorage.setItem('currentQuestionNumber', formated_questionNumber);
-
-            console.log(setNumber, formated_questionNumber);
 
             $('.next-question-btn').removeClass('hidden');
             $('.submit-exam-btn').addClass('hidden')
@@ -232,7 +229,6 @@ $(document).ready(function () {
                 _token: $('meta[name="csrf-token"]').attr('content'),
             },
             success: function (response) {
-                console.log('Option saved successfully:', response);
 
                 // Initialize an empty array
                 let myArray = [];
@@ -312,9 +308,7 @@ $(document).ready(function () {
 
                     // Iterate over each question
                     response.success.forEach(function (question) {
-                        console.log(question);
                         // Extract data from each question object
-
                         var questionNumber = question.question_number
                             .replace(question.set + "_", "");
                         var headingText = question.heading;
@@ -475,7 +469,6 @@ $(document).ready(function () {
             $('.attempted-num').text(count);
             $('.remaining-num').text(MAX_QUESTION - count);
         } else {
-            console.log('erased!');
 
             $('.attempted-num').text('0');
             $('.remaining-num').text(MAX_QUESTION);
@@ -498,13 +491,11 @@ $(document).ready(function () {
             },
             success: function (response) {
 
-                console.log(response);
-
                 if (response.total_answered == 0) {
                     $('.total_answered_0').removeClass('hidden');
                 }
 
-                // window.location.href = "/";
+                window.location.href = "/";
             },
             error: function (xhr, status, error) {
                 console.error('Failed to save option:', error);
@@ -696,11 +687,6 @@ $(document).ready(function () {
 
             let formData = new FormData(this);
 
-            // Loop through the formData entries to see what's inside
-            for (let pair of formData.entries()) {
-                console.log(pair[0] + ': ' + pair[1]);
-            }
-
             $.ajax({
                 url: $(this).attr('action'),
                 method: 'POST',
@@ -772,7 +758,7 @@ $(document).ready(function () {
             $('#setnumber-input').addClass('hidden');
 
             editqn_SetNumber = JSON.parse(sessionStorage.getItem('edit-qn'))[0];
-            console.log(editqn_SetNumber);
+
             $('#Setno').text("Set number: " + editqn_SetNumber)
         } else {
 
@@ -801,10 +787,7 @@ $(document).ready(function () {
 
     $('#submit-setnumber').on('click', function () {
         let setnumber = $('#setnumber-input').val();
-        console.log('dfd');
-        console.log(editqn_QuestionNumber);
-
-
+        
         if (setnumber) {
             setnumber = parseInt(setnumber);
 
@@ -813,8 +796,6 @@ $(document).ready(function () {
 
         let get_setnum = JSON.parse(sessionStorage.getItem('edit-qn'))[0];
         let get_qnum = editqn_QuestionNumber;
-
-        console.log(get_setnum, get_qnum)
 
         $.ajax({
             url: '/exam_question/exam',
@@ -827,7 +808,6 @@ $(document).ready(function () {
 
                 if (response.success.length <= 0) {
 
-                    console.log('Invalid set number.');
                     $('#invalid-message').removeClass('hidden');
 
                 } else {
@@ -838,13 +818,9 @@ $(document).ready(function () {
                     $('#store_set_number_popup').addClass('hidden');
 
 
-                    console.log('Items found:', response.success);
-
                     // Iterate over each question
                     response.success.forEach(function (question) {
-                        console.log(question);
                         // Extract data from each question object
-
                         var set_number = get_setnum;
                         var questionNumber = question.question_number.replace(question.set + "_", "");
                         var headingText = question.heading;
@@ -1043,11 +1019,6 @@ $(document).ready(function () {
 
         // Create a FormData object to handle file uploads
         var formData = new FormData($('#editQuestionForm')[0]);
-
-        // Debugging: Log FormData contents
-        for (var pair of formData.entries()) {
-            console.log(pair[0] + ': ' + pair[1]);
-        }
 
         $.ajax({
             url: $(this).attr('action'),
