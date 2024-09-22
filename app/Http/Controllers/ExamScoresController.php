@@ -14,25 +14,32 @@ class ExamScoresController extends Controller
      */
     public function index()
     {
-        $candidate_id = auth()->user()->id;
+        if (auth()->check() && auth()->user()->is_admin) {
 
-        $exam_scores = ExamScore::query()
-            ->where('candidate_id', $candidate_id)
-            ->get()
-            ->map(function ($score) use ($candidate_id) {
-                $correct_answers_count = DB::table('answers')
-                    ->where('candidate_id', $candidate_id)
-                    ->where('exam_start_time', $score->exam_start_time) // Using exam_start_time from ExamScore
-                    ->where('is_correct', true)
-                    ->count();
+            return view('exam_score.admin_result');
 
-                $score->correct_answers_count = $correct_answers_count;
+        } else {
 
-                return $score;
-            });
+            $candidate_id = auth()->user()->id;
+
+            $exam_scores = ExamScore::query()
+                ->where('candidate_id', $candidate_id)
+                ->get()
+                ->map(function ($score) use ($candidate_id) {
+                    $correct_answers_count = DB::table('answers')
+                        ->where('candidate_id', $candidate_id)
+                        ->where('exam_start_time', $score->exam_start_time) // Using exam_start_time from ExamScore
+                        ->where('is_correct', true)
+                        ->count();
+
+                    $score->correct_answers_count = $correct_answers_count;
+
+                    return $score;
+                });
 
 
-        return view('exam_score.result', ['exams_score' => $exam_scores]);
+            return view('exam_score.result', ['exams_score' => $exam_scores]);
+        }
     }
 
     public function detail_result(Request $request)
@@ -42,9 +49,9 @@ class ExamScoresController extends Controller
         $exam_start_time = $request->query('exam_start_time');
 
         $answered_questions = Answer::query()
-        ->where('exam_start_time', $exam_start_time)
-        ->with(['examQuestion']) // Load the related exam question using Eloquent relationships
-        ->get();
+            ->where('exam_start_time', $exam_start_time)
+            ->with(['examQuestion']) // Load the related exam question using Eloquent relationships
+            ->get();
 
         return view('exam_score.detail_result', ['answered_questions' => $answered_questions]);
     }

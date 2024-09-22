@@ -65,8 +65,8 @@ class AnswerController extends Controller
                     preg_match('/_(.+)$/', $chosenOption, $matches);
                     $suffix = $matches[1] ?? ''; // Get the matched suffix or an empty string if not matched
 
-                    // Define a pattern to match unwanted image extensions
-                    $extensionsPattern = '/\.(jpeg|png|jpg|gif|svg)$/i';
+                    // Define a pattern to match unwanted image and audio extensions
+                    $extensionsPattern = '/\.(jpeg|png|jpg|gif|svg|mp3|mp4|wav|x-wav|wave)$/i';
 
                     // Remove unwanted extensions from the suffix
                     $cleanedSuffix = preg_replace($extensionsPattern, '', $suffix);
