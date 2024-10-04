@@ -30,4 +30,5 @@ class Answer extends Model
     {
         return $this->belongsTo(ExamQuestion::class, 'question_num', 'question_number');
     }
+
 }

@@ -21,8 +21,14 @@ class ExamQuestion extends Model
         'correct_answer',
     ];
     
-    public function answers()
-    {
-        return $this->hasMany(Answer::class);
-    }
+    // public function answers()
+    // {
+    //     return $this->hasMany(Answer::class);
+    // }
+
+//     public function answers()
+// {
+//     return $this->hasMany(Answer::class, 'question_num', 'question_number');
+// }
+
 }

@@ -14,32 +14,32 @@ class ExamScoresController extends Controller
      */
     public function index()
     {
-        if (auth()->check() && auth()->user()->is_admin) {
+        // if (auth()->check() && auth()->user()->is_admin) {
 
-            return view('exam_score.admin_result');
+        //     return view('exam_score.admin_result');
 
-        } else {
+        // } else {
 
-            $candidate_id = auth()->user()->id;
+        $candidate_id = auth()->user()->id;
 
-            $exam_scores = ExamScore::query()
-                ->where('candidate_id', $candidate_id)
-                ->get()
-                ->map(function ($score) use ($candidate_id) {
-                    $correct_answers_count = DB::table('answers')
-                        ->where('candidate_id', $candidate_id)
-                        ->where('exam_start_time', $score->exam_start_time) // Using exam_start_time from ExamScore
-                        ->where('is_correct', true)
-                        ->count();
+        $exam_scores = ExamScore::query()
+            ->where('candidate_id', $candidate_id)
+            ->get()
+            ->map(function ($score) use ($candidate_id) {
+                $correct_answers_count = DB::table('answers')
+                    ->where('candidate_id', $candidate_id)
+                    ->where('exam_start_time', $score->exam_start_time) // Using exam_start_time from ExamScore
+                    ->where('is_correct', true)
+                    ->count();
 
-                    $score->correct_answers_count = $correct_answers_count;
+                $score->correct_answers_count = $correct_answers_count;
 
-                    return $score;
-                });
+                return $score;
+            });
 
 
-            return view('exam_score.result', ['exams_score' => $exam_scores]);
-        }
+        return view('exam_score.result', ['exams_score' => $exam_scores]);
+        // }
     }
 
     public function detail_result(Request $request)
@@ -66,10 +66,19 @@ class ExamScoresController extends Controller
             $set_number = $request->input('set_number');
             $candidate_id = auth()->user()->id;
 
-            $count_answer = Answer::query()
+            // Retrieve the collection of answers
+            $retrive_answer = Answer::query()
                 ->where('exam_start_time', $exam_start_time)
-                ->get()
-                ->count();
+                ->get();
+
+            // Count the number of records in the collection
+            $count_answer = $retrive_answer->count();
+
+            // Get all the 'is_correct' values from the collection
+            $correct_answers = $retrive_answer->pluck('is_correct');
+
+            // Count the total number of correct answers
+            $total_correct = $correct_answers->sum();
 
             if ($count_answer > 0) {
 
@@ -80,7 +89,7 @@ class ExamScoresController extends Controller
                     'korean_score' => $count_answer,
                 ]);
 
-                return response()->json(['total_answered' => $count_answer]);
+                return response()->json(['total_answered' => $count_answer, 'total_correct' => $total_correct]);
             } else {
                 return response()->json(['total_answered' => 0]);
             }

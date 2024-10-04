@@ -1,7 +1,9 @@
 <div class="topbar flex justify-between border text-xl p-4 bg-white">
 
     <div>
-        <p class="font-medium">{{ auth()->user()->name }}</p>
+        <p class="font-medium">
+            {{ Str::limit(auth()->user()->name, 15) }}
+        </p>
     </div>
 
     <div>

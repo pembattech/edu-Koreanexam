@@ -333,7 +333,7 @@ $(document).ready(function () {
                                 </audio>`;
                             $("#actual-question").html(audioElement);
                         } else if (q_type == 'image') {
-                            $("#actual-question").html(`<img class="h-auto max-w-md" src = "/exam_assets/images/question_image/${questionText}" /> `);
+                            $("#actual-question").html(`<img class="h-auto max-w-md w-64 sm:w-64 md:w-80 lg:w-96" src = "/exam_assets/images/question_image/${questionText}" /> `);
                         } else {
                             $("#actual-question").text(questionText);
                         }
@@ -377,30 +377,30 @@ $(document).ready(function () {
 
                         } else if (ans_type == 'image') {
 
-                            $("#option_1").html(`<img class="h-auto max-w-40" src = "/exam_assets/images/option_image/${option_1}" /> `);
+                            $("#option_1").html(`<img class="h-auto max-w-40 w-16 sm:w-20 md:w-24 lg:w-40" src = "/exam_assets/images/option_image/${option_1}" /> `);
                             $('#option_1').attr('data-value', option_1);
 
-                            $("#option_2").html(`<img class="h-auto max-w-40" src = "/exam_assets/images/option_image/${option_2}" /> `);
+                            $("#option_2").html(`<img class="h-auto max-w-40 w-16 sm:w-20 md:w-24 lg:w-40" src = "/exam_assets/images/option_image/${option_2}" /> `);
                             $('#option_2').attr('data-value', option_2);
 
-                            $("#option_3").html(`<img class="h-auto max-w-40" src = "/exam_assets/images/option_image/${option_3}" /> `);
+                            $("#option_3").html(`<img class="h-auto max-w-40 w-16 sm:w-20 md:w-24 lg:w-40" src = "/exam_assets/images/option_image/${option_3}" /> `);
                             $('#option_3').attr('data-value', option_3);
 
-                            $("#option_4").html(`<img class="h-auto max-w-40" src = "/exam_assets/images/option_image/${option_4}" /> `);
+                            $("#option_4").html(`<img class="h-auto max-w-40 w-16 sm:w-20 md:w-24 lg:w-40" src = "/exam_assets/images/option_image/${option_4}" /> `);
                             $('#option_4').attr('data-value', option_4);
 
                         } else {
 
-                            $("#option_1").text(option_1);
+                            $("#option_1").text(option_1.replace('_option_1', ''));
                             $('#option_1').attr('data-value', option_1);
 
-                            $("#option_2").text(option_2);
+                            $("#option_2").text(option_2.replace('_option_2', ''));
                             $('#option_2').attr('data-value', option_2);
 
-                            $("#option_3").text(option_3);
+                            $("#option_3").text(option_3.replace('_option_3', ''));
                             $('#option_3').attr('data-value', option_3);
 
-                            $("#option_4").text(option_4);
+                            $("#option_4").text(option_4.replace('_option_4', ''));
                             $('#option_4').attr('data-value', option_4);
                         }
 
@@ -491,17 +491,35 @@ $(document).ready(function () {
             },
             success: function (response) {
 
+                console.log(response)
+
                 if (response.total_answered == 0) {
                     $('.total_answered_0').removeClass('hidden');
+                } else {
+                    $('#live_result_popup_overlay').removeClass('hidden')
+                    $('#live_result_popup').removeClass('hidden')
+
+                    $("#live_result_total_answered").text(response.total_answered);
+                    $("#live_result_total_correct").text(response.total_correct);
+
                 }
 
-                window.location.href = "/";
             },
             error: function (xhr, status, error) {
                 console.error('Failed to save option:', error);
             }
         })
     });
+
+    $('#live_result_close_popup').on('click', function () {
+        window.location.href = "/";
+    });
+
+    $('#live_result_review_answer').on('click', function () {
+        let exam_start_time = sessionStorage.getItem('exam_start_time')
+        window.location.href = "/exam_score/detail?exam_start_time=" + exam_start_time;
+    });
+
 
     // Add Exam
     $('#questionForm').on('submit', function (e) {
@@ -787,7 +805,7 @@ $(document).ready(function () {
 
     $('#submit-setnumber').on('click', function () {
         let setnumber = $('#setnumber-input').val();
-        
+
         if (setnumber) {
             setnumber = parseInt(setnumber);
 
@@ -1074,4 +1092,10 @@ $(document).ready(function () {
         reader.readAsDataURL(file);
     }
 
+    function truncateString(str) {
+        if (str.length > 20) {
+            return str.substring(0, 20) + '...';
+        }
+        return str;
+    }
 });

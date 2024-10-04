@@ -29,12 +29,12 @@
                     <div class="bg-white overflow-auto">
 
                         <div class="exam_question_description">
-                            <p class="font-semibold text-2xl">
+                            <p class="font-semibold sm:text-xl md:text-2xl lg:text-2xl">
                                 <span id="question-number">
                                     {{ str_replace($question_item->set . '_', ' ', $question_item->question_num) }}.
                                 </span>
                                 <span id="heading">
-                                    Topic
+                                    {{ $question_item->examQuestion->heading }}
                                 </span>
                             </p>
                         </div>
@@ -42,12 +42,12 @@
                         <div class="exam_question py-4 flex items-center justify-center">
 
                             @if ($question_item->examQuestion->question_type == 'text')
-                                <p id="actual-question" class="font-normal text-black text-2xl text-center">
+                                <p id="actual-question" class="font-normal text-black sm:text-xl md:text-2xl lg:text-2xl text-center">
                                     {{ $question_item->examQuestion->question }}
 
                                 </p>
                             @elseif ($question_item->examQuestion->question_type == 'image')
-                                <img class="h-auto max-w-md" src="{{ asset('exam_assets/images/question_image/' . $question_item->examQuestion->question) }}"
+                                <img class="h-auto max-w-md w-64 sm:w-64 md:w-80 lg:w-96" src="{{ asset('exam_assets/images/question_image/' . $question_item->examQuestion->question) }}"
                                     alt="Question Image">
                             @elseif ($question_item->examQuestion->question_type == 'audio')
                                 <audio controls>
@@ -69,7 +69,7 @@
                                 $is_selected = $question_item->answer === $option_id;
                             @endphp
                             <div
-                                class="option-div cursor-pointer border text-2xl p-4 
+                                class="option-div cursor-pointer border sm:text-xl md:text-2xl lg:text-2xl p-4 
                                 {{ $is_correct ? 'bg-blue-600 text-white' : ($is_selected ? 'bg-red-600 text-white' : 'bg-white') }}">
                                 <p class="flex items-center">
                                     <span
@@ -79,12 +79,13 @@
                                     <span id="{{ $option_id }}" class="option-data ml-2">
 
                                         @if ($question_item->examQuestion->answer_type == 'text')
-                                            <span id="actual-question" class="font-normal text-black text-2xl text-center">
-                                                {{ $question_item->examQuestion->$option }}
+                                            <span id="actual-question" class="font-normal text-black sm:text-xl md:text-2xl lg:text-2xl text-center">
+                                                {{ str_replace(['_option_1', '_option_2', '_option_3', '_option_4'], '', $question_item->examQuestion->$option ) }}
+
 
                                             </span>
                                         @elseif ($question_item->examQuestion->answer_type == 'image')
-                                            <img class= "h-auto max-w-40" src="{{ asset('exam_assets/images/option_image/' . $question_item->examQuestion->$option) }}"
+                                            <img class= "h-auto max-w-40 w-16 sm:w-20 md:w-24 lg:w-40" src="{{ asset('exam_assets/images/option_image/' . $question_item->examQuestion->$option) }}"
                                                 alt="Option Image">
                                         @elseif ($question_item->examQuestion->answer_type == 'audio')
                                             <audio controls>

@@ -1,4 +1,4 @@
-<div id="exam_table_popup" class=" hidden fixed inset-0 bg-gray-100 h-screen">
+<div id="exam_table_popup" class=" hidden fixed inset-0 bg-gray-100 overflow-auto">
 
     <div class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
 
@@ -50,3 +50,5 @@
         </div>
     </div>
 </div>
+
+@include('exam_question._live_result')

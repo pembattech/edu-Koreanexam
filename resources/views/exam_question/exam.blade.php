@@ -27,7 +27,7 @@
             </div>
 
             <div class="option-section overflow-auto bg-white">
-                <div class="option-div cursor-pointer border text-2xl p-4">
+                <div class="option-div cursor-pointer w-full border text-2xl p-4">
                     <p class="flex items-center">
                         <span
                             class="number-data border rounded-full bg-white text-black p-2 w-8 h-8 flex items-center justify-center">
@@ -82,16 +82,16 @@
 
         <div class="lower-section flex justify-around border text-xl p-4 mt-2 bg-white">
             <button
-                class="previous-question-btn text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-2xl px-4 py-2">Previous
+                class="previous-question-btn text-white bg-orange-700 hover:bg-orange-800 focus:ring-4 focus:outline-none focus:ring-bg-orange-300 font-medium rounded-lg text-lg sm:text-xl md:text-2xl lg:text-2xl px-4 py-2">Previous
                 Question</button>
             <button
-                class="question-list-btn text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-2xl px-4 py-2">Question
+                class="question-list-btn text-white bg-slate-700 hover:bg-slate-800 focus:ring-4 focus:outline-none focus:ring-bg-slate-300 font-medium rounded-lg text-lg sm:text-xl md:text-2xl lg:text-2xl px-4 py-2">Question
                 List</button>
             <button
-                class="next-question-btn text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-2xl px-4 py-2">Next
+                class="next-question-btn text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-lg sm:text-xl md:text-2xl lg:text-2xl px-4 py-2">Next
                 Question</button>
             <button
-                class="submit-exam-btn hidden text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-2xl px-4 py-2">Submit Exam</button>
+                class="submit-exam-btn hidden text-white bg-red-700 hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-red-300 font-medium rounded-lg text-lg sm:text-xl md:text-2xl lg:text-2xl px-4 py-2">Submit Exam</button>
         </div>
     </div>
 

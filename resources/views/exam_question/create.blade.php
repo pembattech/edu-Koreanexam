@@ -10,7 +10,7 @@
     @endif
 
 
-    <div class="grid grid-cols-2 gap-4">
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 gap-4">
 
         <div>
 
@@ -233,7 +233,7 @@
                             class="text-white bg-blue-500 hover:bg-blue-600 focus:outline-none font-medium rounded-lg text-sm px-4 py-2 mr-2">Add
                             Another Question</button>
                         <button id="closePopup"
-                            class="text-white bg-blue-500 hover:bg-blue-600 focus:outline-none font-medium rounded-lg text-sm px-4 py-2">Close</button>
+                            class="text-white bg-red-500 hover:bg-red-600 focus:outline-none font-medium rounded-lg text-sm px-4 py-2">Close</button>
                     </div>
                 </div>
             </div>
@@ -258,7 +258,7 @@
 
             <div id="store_set_number_popup"
                 class="hidden fixed z-50 inset-0 bg-gray-500 bg-opacity-75 flex items-center justify-center">
-                <div class="bg-white p-8 rounded shadow-lg w-1/4">
+                <div class="bg-white p-8 rounded shadow-lg w-fit">
                                         
                     <h2 id="Qno" class="text-2xl font-semibold">....</h2>
 
@@ -283,6 +283,7 @@
                     <input type="text" id="setnumber-input" class="hidden border p-2 mt-2"
                         placeholder="Enter set number.">
 
+                        <br>
                     <button id="submit-setnumber"
                         class="mt-4 bg-blue-500 text-white py-2 px-4 rounded">Submit</button>
                     <button id="store_set_number-close-popup"

@@ -2,9 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\ExamRoutine;
+use App\Models\Answer;
 use App\Models\ExamQuestion;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 
 class ExamQuestionController extends Controller
 {
@@ -13,12 +15,33 @@ class ExamQuestionController extends Controller
      */
     public function index()
     {
-        $exam_sets = ExamQuestion::query()
-            ->orderBy('set', 'asc') // Order by 'set' column in ascending order
-            ->distinct('set') // distinct('set'): Ensures that only unique values for the set column are selected.
-            ->pluck('set'); // pluck('set'): Retrieves an array of the values from the set column.
+        if (!request()->user()->isAdmin()) {
+            // Get today's date in 'Y-m-d' format
+            $today = now()->format('Y-m-d');
 
-        return view('exam_question.index', ['exam_sets' => $exam_sets]);
+            // Retrieve exam routines where exam_date is today
+            $todayExams = ExamRoutine::where('exam_date', $today)
+            ->where('is_active', true)
+            ->first();
+
+
+            return view('exam_question.index', ['todayExams' => $todayExams]);
+        } else {
+            $exam_sets = ExamQuestion::select('set', DB::raw('count(*) as total_questions'))
+                ->groupBy('set')
+                ->get();
+
+            return view('exam_question.admin_index', ['exam_sets' => $exam_sets]);
+        }
+    }
+
+
+    public function view_set($set_number)
+    {
+        $questionsWithAnswers = ExamQuestion::where('set', $set_number)
+            ->get();
+
+        return view('exam_question.view_set', ['list_of_qn' => $questionsWithAnswers, 'set' => $set_number]);
     }
 
     /**
@@ -120,7 +143,6 @@ class ExamQuestionController extends Controller
         if ($exam_question_create) {
             return response()->json(['success' => true]);
         }
-
     }
 
     public function exam(Request $request)
@@ -137,7 +159,7 @@ class ExamQuestionController extends Controller
 
             return response()->json(['success' => $exam_question]);
         }
-    
+
         return view('exam_question.exam');
     }
 
