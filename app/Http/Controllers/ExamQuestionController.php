@@ -21,8 +21,8 @@ class ExamQuestionController extends Controller
 
             // Retrieve exam routines where exam_date is today
             $todayExams = ExamRoutine::where('exam_date', $today)
-            ->where('is_active', true)
-            ->first();
+                ->where('is_active', true)
+                ->first();
 
 
             return view('exam_question.index', ['todayExams' => $todayExams]);
@@ -36,8 +36,12 @@ class ExamQuestionController extends Controller
     }
 
 
-    public function view_set($set_number)
+    public function view_set($set_number = null)
     {
+        if (is_null($set_number) || !request()->user()->isAdmin()) {
+            return redirect('dashboard');
+        }
+
         $questionsWithAnswers = ExamQuestion::where('set', $set_number)
             ->get();
 
@@ -50,7 +54,7 @@ class ExamQuestionController extends Controller
     public function create()
     {
         if (!request()->user()->isAdmin()) {
-            abort(403, 'Unauthorized');
+            return redirect('dashboard');
         }
 
         return view('exam_question.create');
@@ -63,7 +67,7 @@ class ExamQuestionController extends Controller
     {
 
         if (!request()->user()->isAdmin()) {
-            return redirect()->back();
+            return redirect('dashboard');
         }
 
         $data = $request->validate([
@@ -169,7 +173,7 @@ class ExamQuestionController extends Controller
     public function update_qn(Request $request)
     {
         if (!request()->user()->isAdmin()) {
-            return redirect()->back();
+            return redirect('dashboard');
         }
 
         $data = $request->validate([
@@ -299,11 +303,18 @@ class ExamQuestionController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function delete_qn($question_number)
+    public function delete_qn($question_number = null)
     {
 
+
+        // dd($question_number);
+
+        if (is_null($question_number)) {
+            return redirect('dashboard');
+        }
+
         if (!request()->user()->isAdmin()) {
-            return redirect()->back();
+            return redirect('dashboard');
         }
 
         $question = ExamQuestion::where('question_number', $question_number)->firstOrFail();
@@ -311,5 +322,22 @@ class ExamQuestionController extends Controller
         $question->delete();
 
         return response()->json(['success' => 'Question deleted successfully.']);
+    }
+
+    public function checkQuestionNumber(Request $request)
+    {
+        if (!request()->user()->isAdmin()) {
+            return redirect('dashboard');
+        }
+        
+        $setNumber = 'set_' . $request->input('set_number');
+        $questionNumber = $setNumber . '_' . $request->input('question_number');
+
+        // Check if the question number exists for the set
+        $exists = ExamQuestion::where('question_number', $questionNumber)
+            ->where('set', $setNumber)
+            ->exists();
+
+        return response()->json(['exists' => $exists]);
     }
 }

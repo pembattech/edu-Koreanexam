@@ -53,7 +53,10 @@ class ExamScoresController extends Controller
             ->with(['examQuestion']) // Load the related exam question using Eloquent relationships
             ->get();
 
-        return view('exam_score.detail_result', ['answered_questions' => $answered_questions]);
+        // Access the 'set' from the related 'examQuestion' of the first answered question
+        $answered_set_num = $answered_questions->first()->examQuestion['set'];
+
+        return view('exam_score.detail_result', ['answered_questions' => $answered_questions, 'answered_set_num' => $answered_set_num, 'exam_start_time' => $exam_start_time]);
     }
 
     /**
@@ -61,6 +64,7 @@ class ExamScoresController extends Controller
      */
     public function store(Request $request)
     {
+        
         if ($request->ajax()) {
             $exam_start_time = $request->input('exam_start_time');
             $set_number = $request->input('set_number');

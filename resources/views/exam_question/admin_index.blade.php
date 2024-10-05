@@ -35,7 +35,7 @@
                 @foreach ($exam_sets as $exam_set)
                     <tr class="bg-white border-b hover:bg-gray-50">
                         <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap">
-                            {{ $exam_set->set }}
+                            Set {{ str_replace('set_', '', $exam_set->set) }}
                         </th>
                         <td class="px-6 py-4">{{ $exam_set->total_questions }}</td>
                         <td class="px-6 py-4">
@@ -50,43 +50,54 @@
     </div>
 
     <script>
-        $(document).ready(function() {
-            // Search functionality
-            $("#table-search").on("keyup", function() {
-                var value = $(this).val().toLowerCase();
-                $("table tbody tr").filter(function() {
-                    $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
-                });
-            });
+     $(document).ready(function() {
+    // Search functionality
+    $("#table-search").on("keyup", function() {
+        var value = $(this).val().toLowerCase();
+        console.log("Search value: " + value); // Log the search input
+
+        $("table tbody tr").filter(function() {
+            var rowText = $(this).text().toLowerCase();
+            console.log("Row text: " + rowText); // Log each row's text
+
+            var isVisible = rowText.indexOf(value) > -1;
+            console.log("Is row visible: " + isVisible); // Log whether the row matches the search value
+
+            $(this).toggle(isVisible); // Toggle visibility of the row
         });
+    });
+});
+
     </script>
 
     <script>
         $(document).ready(function() {
-                $.ajax({
-                    url: '{{ route('exam_routine.show_today_exam') }}', // Use the named route
-                    method: 'GET',
-                    success: function(data) {
-                        // Clear previous results
-                        $('#todayExamsContainer').empty();
+            $.ajax({
+                url: '{{ route('exam_routine.show_today_exam') }}', // Use the named route
+                method: 'GET',
+                success: function(data) {
+                    // Clear previous results
+                    $('#todayExamsContainer').empty();
 
-                        if (data.length === 0) {
+                    if (data.length === 0) {
+                        $('#todayExamsContainer').append(
+                            '<p>No exams scheduled for today.</p>');
+                    } else {
+                        // Loop through the exams and append to the container
+                        $.each(data, function(index, exam) {
                             $('#todayExamsContainer').append(
-                                '<p>No exams scheduled for today.</p>');
-                        } else {
-                            // Loop through the exams and append to the container
-                            $.each(data, function(index, exam) {
-                                $('#todayExamsContainer').append(
-                                    '<div class="exam"><p><strong>Today Exam:</strong> ' +
-                                    exam.set + '</p></div>');
-                            });
-                        }
-                    },
-                    error: function(xhr) {
-                        console.error(xhr.responseText);
-                        alert('Error fetching today\'s exams.');
+                                '<div class="exam"><p><strong>Today Exam:</strong> Set ' +
+                                exam.set.replace("set_", " ") + '</p></div>'
+                            );
+                        });
+
                     }
-                });
+                },
+                error: function(xhr) {
+                    console.error(xhr.responseText);
+                    alert('Error fetching today\'s exams.');
+                }
+            });
 
         });
     </script>

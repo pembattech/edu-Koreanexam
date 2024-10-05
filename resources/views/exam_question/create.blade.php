@@ -1,5 +1,5 @@
 <x-app-layout>
-    @if ($errors->any())
+    {{-- @if ($errors->any())
         <div class="alert alert-danger">
             <ul>
                 @foreach ($errors->all() as $error)
@@ -7,7 +7,7 @@
                 @endforeach
             </ul>
         </div>
-    @endif
+    @endif --}}
 
 
     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 gap-4">
@@ -15,11 +15,12 @@
         <div>
 
             <form method="POST" action="{{ route('exam_question.store') }}" enctype="multipart/form-data"
-            id= "questionForm" class="px-4 mx-auto max-w-2xl" novalidate>
+                id= "questionForm" class="px-4 mx-auto max-w-2xl" novalidate>
 
-            <h1 class="mb-4 text-2xl font-extrabold leading-none tracking-tight md:text-3xl lg:text-4xl text-gray-600">
-                Add Question</h1>
-                
+                <h1
+                    class="mb-4 text-2xl font-extrabold leading-none tracking-tight md:text-3xl lg:text-4xl text-gray-600">
+                    Add Question</h1>
+
                 @csrf
                 <div class="grid gap-4 sm:grid-cols-[1fr_1fr] sm:gap-6">
 
@@ -48,6 +49,8 @@
 
                         <span class="text-red-500 font-medium text-base hidden" id="question_number_l40_error">Only up
                             to 40 is allowed.</span>
+
+                        <span id="qn_error-message" class="text-red-500 font-medium text-base"></span>
 
                     </div>
 
@@ -218,7 +221,7 @@
                     </p>
                 </div>
 
-                <button type="submit"
+                <button type="submit" id="submit-button"
                     class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-base px-4 py-2 w-full mb-4">Submit</button>
             </form>
 
@@ -238,7 +241,7 @@
                 </div>
             </div>
 
-       @include('exam_question.edit_qn')
+            @include('exam_question.edit_qn')
 
         </div>
 
@@ -259,7 +262,7 @@
             <div id="store_set_number_popup"
                 class="hidden fixed z-50 inset-0 bg-gray-500 bg-opacity-75 flex items-center justify-center">
                 <div class="bg-white p-8 rounded shadow-lg w-fit">
-                                        
+
                     <h2 id="Qno" class="text-2xl font-semibold">....</h2>
 
                     <div class="flex items-center gap-2 hidden" id= "setnum-container">
@@ -283,7 +286,7 @@
                     <input type="text" id="setnumber-input" class="hidden border p-2 mt-2"
                         placeholder="Enter set number.">
 
-                        <br>
+                    <br>
                     <button id="submit-setnumber"
                         class="mt-4 bg-blue-500 text-white py-2 px-4 rounded">Submit</button>
                     <button id="store_set_number-close-popup"
@@ -414,8 +417,6 @@
             }
         }
 
-
-
         function previewImage(input, previewElement) {
             const file = input.files[0];
             const reader = new FileReader();
@@ -439,6 +440,58 @@
             };
             reader.readAsDataURL(file);
         }
+    </script>
+
+    <script>
+        $(document).ready(function() {
+
+            function checkQuestionNumber(inputElement) {
+                let questionNumber = $('#question_number').val(); // Use the correct input
+                let setNumber = $('#set_number').val();
+
+                if (questionNumber && setNumber) {
+
+                    $.ajax({
+                        url: '{{ route('checkQuestionNumber') }}',
+                        method: 'get',
+                        data: {
+                            question_number: questionNumber,
+                            set_number: setNumber,
+                        },
+                        success: function(response) {
+                            console.log(response)
+                            if (response.exists) {
+                                $('#qn_error-message').text(
+                                    'Question number exists for this set.');
+
+                                $('#submit-button').prop('disabled', true).addClass(
+                                    'bg-gray-900 cursor-not-allowed');
+                            } else {
+                                $('#qn_error-message').text('');
+                                $('#submit-button').prop('disabled', false).removeClass(
+                                    'bg-gray-900 cursor-not-allowed');
+                            }
+                        },
+                        error: function() {
+                            $('#qn_error-message').text(
+                                'An error occurred while checking.');
+                        }
+                    });
+                }
+            }
+
+            // Keyup event for set number
+            $('#set_number').on('keyup', function() {
+                console.log('f');
+                checkQuestionNumber(this); // Pass the current element to the function
+            });
+
+            // Keyup event for question number
+            $('#question_number').on('keyup', function() {
+                console.log('f');
+                checkQuestionNumber(this); // Pass the current element to the function
+            });
+        });
     </script>
 
 </x-app-layout>

@@ -9,9 +9,9 @@ class ExamRoutineController extends Controller
 {
     public function set_today_exam($set)
     {
-        // Check if the user is an admin
+
         if (!request()->user()->isAdmin()) {
-            return redirect()->back();
+            return redirect('dashboard');
         }
 
         // Get today's date in 'Y-m-d' format
@@ -41,7 +41,7 @@ class ExamRoutineController extends Controller
     public function show_today_exam()
     {
         if (!request()->user()->isAdmin()) {
-            return redirect()->back();
+            return redirect('dashboard');
         }
 
         $today = now()->format('Y-m-d');
@@ -58,9 +58,10 @@ class ExamRoutineController extends Controller
 
     public function deactivate_previous_and_set_exam(Request $request, $set)
     {
+
         // Check if the user is an admin
         if (!request()->user()->isAdmin()) {
-            return redirect()->back();
+            return redirect('dashboard');
         }
 
         // Get today's date in 'Y-m-d' format

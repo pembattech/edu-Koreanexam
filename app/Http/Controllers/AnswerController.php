@@ -45,6 +45,7 @@ class AnswerController extends Controller
 
     public function store_user_choice(Request $request)
     {
+
         if ($request->ajax()) {
             $question_number = $request->input('question_number');
             $setNumber = $request->input('setNumber');

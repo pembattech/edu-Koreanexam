@@ -7,7 +7,7 @@
 
                 <span class="bg-white py-2 px-6 rounded-md">
 
-                    Set: {{ str_replace('set_', ' ', $set) }}
+                    Set: {{ str_replace('set_', '', $set) }}
 
                 </span>
 
@@ -24,14 +24,21 @@
                     Set Today's Exam
                 </button>
 
-                <div id="confirmationModal" style="display: none;">
-                    <p>An exam is already scheduled for today. Are you sure you want to proceed?</p>
-                    <button id="confirmDeactivate" class="bg-red-500 text-white px-4 py-2 rounded">Yes, Deactivate
-                        Previous Exam</button>
-                    <button id="cancelDeactivate" class="bg-gray-500 text-white px-4 py-2 rounded">Cancel</button>
+                <!-- Background overlay -->
+                <div id="overlay"
+                    style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 999;">
                 </div>
 
-
+                <!-- Popup modal -->
+                <div id="confirmationModal"
+                    style="display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: white; padding: 20px; z-index: 1000; border-radius: 10px; width: fit-content;">
+                    <p class="font-bold text-lg text-red-600">An exam is already scheduled for today.</p>
+                    <p class="font-bold text-lg">Are you sure you want to proceed?</p>
+                    <div class="flex justify-between mt-4">
+                        <button id="confirmDeactivate" class="bg-red-500 text-white px-4 py-2 rounded">Sure</button>
+                        <button id="cancelDeactivate" class="bg-gray-500 text-white px-4 py-2 rounded">Cancel</button>
+                    </div>
+                </div>
             </div>
         </div>
 
@@ -54,7 +61,8 @@
                     <div class="exam_question py-4 flex items-center justify-center">
 
                         @if ($question_item->question_type == 'text')
-                            <p id="actual-question" class="font-normal text-black sm:text-xl md:text-2xl lg:text-2xl text-center">
+                            <p id="actual-question"
+                                class="font-normal text-black sm:text-xl md:text-2xl lg:text-2xl text-center">
                                 {{ $question_item->question }}
 
                             </p>
@@ -92,7 +100,8 @@
                                 <span id="{{ $option_id }}" class="option-data ml-2">
 
                                     @if ($question_item->answer_type == 'text')
-                                        <span id="actual-question" class="font-normal text-black sm:text-xl md:text-2xl lg:text-2xl text-center">
+                                        <span id="actual-question"
+                                            class="font-normal text-black sm:text-xl md:text-2xl lg:text-2xl text-center">
                                             {{ str_replace(['_option_1', '_option_2', '_option_3', '_option_4'], '', $question_item->$option) }}
 
                                         </span>
@@ -125,12 +134,12 @@
 
                 // AJAX request to check if an exam is already scheduled
                 $.ajax({
-                    url: '{{ route('exam_routine.show_today_exam') }}', // Adjust if necessary
+                    url: '{{ route('exam_routine.show_today_exam') }}',
                     method: 'GET',
                     success: function(data) {
                         if (data.length > 0) {
-                            // Show confirmation modal if an exam exists
-                            $('#confirmationModal').show();
+                            $("#overlay").fadeIn();
+                            $("#confirmationModal").fadeIn();
                         } else {
                             // If no exam exists, proceed to set the exam
                             setExam(set);
@@ -147,12 +156,14 @@
             $('#confirmDeactivate').click(function() {
                 var set = $('#setTodayExam').data('set');
                 deactivatePreviousAndSetExam(set);
-                $('#confirmationModal').hide();
+                $("#overlay").fadeOut();
+                $("#confirmationModal").fadeOut();
             });
 
             // Cancel deactivation
             $('#cancelDeactivate').click(function() {
-                $('#confirmationModal').hide();
+                $("#overlay").fadeOut();
+                $("#confirmationModal").fadeOut();
             });
         });
 
@@ -160,9 +171,9 @@
         function deactivatePreviousAndSetExam(set) {
             $.ajax({
                 url: '/deactivate_previous_and_set_exam/' + set,
-                method: 'POST', // Change to POST if necessary for your route
+                method: 'POST',
                 data: {
-                    _token: '{{ csrf_token() }}', // Include CSRF token for POST requests
+                    _token: '{{ csrf_token() }}',
                 },
                 success: function(response) {
                     if (response.success) {
@@ -182,7 +193,7 @@
         function setExam(set) {
             $.ajax({
                 url: '/set_today_exam/' + set,
-                method: 'POST', // Use POST for creating new records
+                method: 'POST',
                 data: {
                     _token: '{{ csrf_token() }}', // Include CSRF token
                 },

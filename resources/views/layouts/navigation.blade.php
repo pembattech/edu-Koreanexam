@@ -20,12 +20,6 @@
                     </x-nav-link>
                 </div>
 
-                {{-- <div class="sidebar-item">
-                    <x-nav-link :href="#" :active="request()->routeIs('request()->')">
-                        {{ __('Chapter Test') }}
-                    </x-nav-link>
-                </div> --}}
-
                 <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
                     <x-nav-link :href="route('exam_score.result')" :active="request()->routeIs('exam_score.result')">
                         {{ __('Result') }}
@@ -40,7 +34,7 @@
                     </div>
 
                     {{-- <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
-                        <x-nav-link :href="route('exam_question.create')" :active="request()->routeIs('exam_question.create')">
+                        <x-nav-link :href="route('exam_question.all_result')" :active="request()->routeIs('exam_question.create')">
                             {{ __('All Result') }}
                         </x-nav-link>
                     </div> --}}
@@ -111,18 +105,31 @@
             </x-responsive-nav-link>
         </div>
 
-        <div class="sidebar-item"><a href="#">
-                Exam
-            </a>
+        <div class="pt-2 pb-3 space-y-1">
+            <x-responsive-nav-link :href="route('exam_question.index')" :active="request()->routeIs('exam_question.index')">
+                {{ __('Exam') }}
+            </x-responsive-nav-link>
         </div>
-        <div class="sidebar-item"><a href="#">
-                Chapter Test
-            </a>
+
+        <div class="pt-2 pb-3 space-y-1">
+            <x-responsive-nav-link :href="route('exam_score.result')" :active="request()->routeIs('exam_score.result')">
+                {{ __('Result') }}
+            </x-responsive-nav-link>
         </div>
-        <div class="sidebar-item"><a href="#">
-                Result
-            </a>
-        </div>
+
+        @if (Auth()->user()->isAdmin())
+            <div class="pt-2 pb-3 space-y-1">
+                <x-responsive-nav-link :href="route('exam_question.create')" :active="request()->routeIs('exam_question.create')">
+                    {{ __('Add Exam') }}
+                </x-responsive-nav-link>
+            </div>
+
+            {{-- <div class="pt-2 pb-3 space-y-1">
+                <x-responsive-nav-link :href="route('exam_question.all_result')" :active="request()->routeIs('exam_question.create')">
+                    {{ __('All Result') }}
+                </x-responsive-nav-link>
+            </div> --}}
+        @endif
 
 
         <!-- Responsive Settings Options -->

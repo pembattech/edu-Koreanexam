@@ -17,7 +17,7 @@ $(document).ready(function () {
 
     $('.attemptButton').on('click', function (e) {
         // Set the time for the countdown (50 minutes in seconds)
-        let time = 50 * 60;
+        let time = 1 * 60;
 
         // Function to update the timer every second
         function updateTimer() {
@@ -34,6 +34,41 @@ $(document).ready(function () {
                 // Timer reaches 0
                 clearInterval(timerInterval);
                 $('.exam-timer').text("Time's up!");
+
+                let exam_start_time = sessionStorage.getItem('exam_start_time')
+                let exam_set_number = sessionStorage.getItem('currentSetNumber')
+
+                if (exam_start_time && exam_set_number) {
+
+                    $.ajax({
+                        url: '/exam_score/store',
+                        method: 'POST',
+                        data: {
+                            "exam_start_time": exam_start_time,
+                            "set_number": exam_set_number,
+                            _token: $('meta[name="csrf-token"]').attr('content'),
+                        },
+                        success: function (response) {
+
+                            console.log(response)
+
+                            if (response.total_answered == 0) {
+                                $('.total_answered_0').removeClass('hidden');
+                            } else {
+                                $('#live_result_popup_overlay').removeClass('hidden')
+                                $('#live_result_popup').removeClass('hidden')
+
+                                $("#live_result_total_answered").text(response.total_answered);
+                                $("#live_result_total_correct").text(response.total_correct);
+
+                            }
+
+                        },
+                        error: function (xhr, status, error) {
+                            console.error('Failed to save option:', error);
+                        }
+                    })
+                }
             }
         }
 
@@ -542,6 +577,7 @@ $(document).ready(function () {
 
             if ($('#question_number').val() > 40) {
                 $('#question_number_l40_error').removeClass('hidden');
+                isValid = false;
             } else {
                 $('#question_number_l40_error').addClass('hidden');
             }

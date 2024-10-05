@@ -23,11 +23,19 @@ Route::middleware('auth')->group(function () {
 
     Route::get('exam_question/exam_table', [ExamQuestionController::class, 'exam_table']);
     Route::get('exam_question/exam', [ExamQuestionController::class, 'exam'])->name('exam_question.start_exam');
-    Route::get('exam_question/view_set/{set_number}', [ExamQuestionController::class, 'view_set'])->name('exam_question.view_set');
+
+    // -- Admin route
+    Route::get('exam_question/view_set/{set_number?}', [ExamQuestionController::class, 'view_set'])->name('exam_question.view_set');
+    Route::get('exam_question/check-question-number', [ExamQuestionController::class, 'checkQuestionNumber'])->name('checkQuestionNumber');
     Route::post('/exam_question', [ExamQuestionController::class, 'store']);
     route::post('/exam_question/update', [ExamQuestionController::class, 'update_qn'])->name('exam_question.update_qn');
-    route::delete('/exam_question/delete/{question_number}', [ExamQuestionController::class, 'delete_qn'])->name('exam_question.delete_qn');
+    route::delete('/exam_question/delete/{question_number?}', [ExamQuestionController::class, 'delete_qn'])->name('exam_question.delete_qn');
     Route::resource('exam_question', ExamQuestionController::class);
+
+    Route::post('set_today_exam/{set?}', [ExamRoutineController::class, 'set_today_exam'])->name('exam_routine.set_today_exam');
+    Route::get('show_today_exam', [ExamRoutineController::class, 'show_today_exam'])->name('exam_routine.show_today_exam');
+    Route::post('deactivate_previous_and_set_exam/{set?}', [ExamRoutineController::class, 'deactivate_previous_and_set_exam'])->name('exam_routine.deactivate_previous_and_set_exam');
+    // --
 
     Route::get('answer/is-answer', [AnswerController::class, 'is_answer'])->name('answer.is_answer');
     Route::post('answer/store-user-choice', [AnswerController::class, 'store_user_choice'])->name('answer.store');
@@ -35,10 +43,6 @@ Route::middleware('auth')->group(function () {
     Route::get('exam_score', [ExamScoresController::class, 'index'])->name('exam_score.result');
     Route::post('exam_score/store', [ExamScoresController::class, 'store'])->name('exam_score.store');
     Route::get('exam_score/detail', [ExamScoresController::class, 'detail_result'])->name('exam_score.detail_result');
-
-    Route::post('set_today_exam/{set}', [ExamRoutineController::class, 'set_today_exam'])->name('exam_routine.set_today_exam');
-    Route::get('show_today_exam', [ExamRoutineController::class, 'show_today_exam'])->name('exam_routine.show_today_exam');
-    Route::post('deactivate_previous_and_set_exam/{set}', [ExamRoutineController::class, 'deactivate_previous_and_set_exam'])->name('exam_routine.deactivate_previous_and_set_exam');
 });
 
 Route::middleware('auth')->group(function () {

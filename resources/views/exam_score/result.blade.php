@@ -27,7 +27,7 @@
                                 {{ $exam_score->exam_start_time }}
                             </th>
                             <td class="px-6 py-4">
-                                {{ $exam_score->set_number }}
+                                Set {{ str_replace('set_', '', $exam_score->set_number) }}
                             </td>
                             <td class="px-6 py-4">
                                 {{ $exam_score->korean_score }}
