@@ -1038,7 +1038,9 @@ $(document).ready(function () {
 
                                     // Set the value for the text option
                                     if (options[i - 1]) {
-                                        $textInput.val(options[i - 1]);
+                                        // Remove the "_option_*" suffix from the value
+                                        const valueWithoutSuffix = options[i - 1].replace(/_option_\d+$/, '');
+                                        $textInput.val(valueWithoutSuffix);
                                     }
                                 }
                             }
