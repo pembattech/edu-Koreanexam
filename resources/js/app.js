@@ -17,7 +17,7 @@ $(document).ready(function () {
 
     $('.attemptButton').on('click', function (e) {
         // Set the time for the countdown (50 minutes in seconds)
-        let time = 1 * 60;
+        let time = 50 * 60;
 
         // Function to update the timer every second
         function updateTimer() {
