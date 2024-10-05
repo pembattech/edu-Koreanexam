@@ -360,13 +360,18 @@ $(document).ready(function () {
                             ".");
 
                         if (q_type == 'audio') {
+
                             // Create an audio element and set its source
                             const audioElement = `
-                                <audio controls>
+                                            <audio id="exam-audio-${question.question_number}">
                                     <source src="/exam_assets/audio/question_audio/${questionText}" type="audio/mpeg">
                                         Your browser does not support the audio element.
-                                </audio>`;
+                                </audio>
+                                
+                                <button class="play_qn_audio" data-qn-audio="${question.question_number}" id="${question.question_number}">Play Audio</button>
+                                `;
                             $("#actual-question").html(audioElement);
+
                         } else if (q_type == 'image') {
                             $("#actual-question").html(`<img class="h-auto max-w-md w-64 sm:w-64 md:w-80 lg:w-96" src = "/exam_assets/images/question_image/${questionText}" /> `);
                         } else {
@@ -1136,4 +1141,33 @@ $(document).ready(function () {
         }
         return str;
     }
+
+    // Handle audio button click and play limit
+    $(document).on('click', '.play_qn_audio', function () {
+        console.log('audio-click');
+        let buttonId = $(this).data('qn-audio');
+        let audioId = `exam-audio-${buttonId}`;
+        playAudio(audioId, buttonId);
+    });
+
+    let audioPlayCount = {};
+
+    function playAudio(audioId, buttonId) {
+        console.log('-');
+        console.log(audioPlayCount);
+
+        if (!audioPlayCount[audioId]) {
+            audioPlayCount[audioId] = 0;
+        }
+
+        if (audioPlayCount[audioId] < 2) {
+            let audioElement = $('#' + audioId)[0];
+            audioElement.play();
+            audioPlayCount[audioId]++;
+        } else {
+            $('#' + buttonId).prop('disabled', true);
+            alert("You have reached the maximum play limit for this audio.");
+        }
+    }
+
 });
