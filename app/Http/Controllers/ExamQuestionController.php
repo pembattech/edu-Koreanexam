@@ -2,6 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use Intervention\Image\ImageManager;
+use Intervention\Image\Drivers\Gd\Driver;
+
 use App\Models\ExamRoutine;
 use App\Models\Answer;
 use App\Models\ExamQuestion;
@@ -101,8 +104,21 @@ class ExamQuestionController extends Controller
         // Handle the question description image or audio file
         if ($request->question_type === 'image' && $request->hasFile('question_description_image')) {
             $imageName = time() . '.' . $request->question_description_image->extension();
-            $request->question_description_image->move(public_path('exam_assets/images/question_image'), $imageName);
+
+            $image = $request->file('question_description_image');
+
+            // Create an instance of ImageManager with the GD driver
+            $manager = new ImageManager(new Driver());
+
+            // Read the uploaded image
+            $img = $manager->read($image->getPathname());
+
+            $img->scaleDown(width: 700);
+
+            // Save the resized image
+            $img->save(public_path('exam_assets/images/question_image/' . $imageName));
             $data['question_description'] = $imageName;
+
         } elseif ($request->question_type === 'audio' && $request->hasFile('question_description_audio')) {
             $audioName = time() . '.' . $request->question_description_audio->extension();
             $request->question_description_audio->move(public_path('exam_assets/audio/question_audio'), $audioName);
@@ -117,8 +133,21 @@ class ExamQuestionController extends Controller
 
             if ($request->answer_type === 'image' && $request->hasFile($optionImageKey)) {
                 $optionImageName = time() . '_option_' . $i . '.' . $request->$optionImageKey->extension();
-                $request->$optionImageKey->move(public_path('exam_assets/images/option_image'), $optionImageName);
+
+                $optionImage = $request->file($optionImageKey);
+                
+                // Create an instance of ImageManager with the GD driver
+                $option_manager = new ImageManager(new Driver());
+    
+                // Read the uploaded image
+                $option_img = $option_manager->read($optionImage->getPathname());
+    
+                $option_img->scaleDown(width: 700);
+    
+                // Save the resized image
+                $option_img->save(public_path('exam_assets/images/option_image/' . $optionImageName));
                 $data[$optionKey] = $optionImageName;
+
             } elseif ($request->answer_type === 'audio' && $request->hasFile($optionAudioKey)) {
                 $optionAudioName = time() . '_option_' . $i . '.' . $request->$optionAudioKey->extension();
                 $request->$optionAudioKey->move(public_path('exam_assets/audio/option_audio'), $optionAudioName);
@@ -329,7 +358,7 @@ class ExamQuestionController extends Controller
         if (!request()->user()->isAdmin()) {
             return redirect('dashboard');
         }
-        
+
         $setNumber = 'set_' . $request->input('set_number');
         $questionNumber = $setNumber . '_' . $request->input('question_number');
 
