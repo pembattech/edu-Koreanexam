@@ -368,7 +368,9 @@ $(document).ready(function () {
                                         Your browser does not support the audio element.
                                 </audio>
                                 
-                                <button class="play_qn_audio" data-qn-audio="${question.question_number}" id="${question.question_number}">Play Audio</button>
+                                <button class="play_qn_audio" data-qn-audio="${question.question_number}" id="${question.question_number}">
+                                <img class="w-20" src="/exam_assets/audio.jpg" alt="Play Audio">
+                                </button>
                                 `;
                             $("#actual-question").html(audioElement);
 
