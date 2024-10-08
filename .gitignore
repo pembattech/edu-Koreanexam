@@ -1,6 +1,17 @@
+# Ignore all files inside the audio and image directories
+public/exam_assets/audio/option_audio/*
+public/exam_assets/audio/question_audio/*
+public/exam_assets/images/option_image/*
+public/exam_assets/images/question_image/*
+
+!public/exam_assets/audio/option_audio/.gitkeep
+!public/exam_assets/audio/question_audio/.gitkeep
+!public/exam_assets/images/option_image/.gitkeep
+!public/exam_assets/images/question_image/.gitkeep
+
 /.phpunit.cache
 /node_modules
-/public/build
+# /public/build
 /public/hot
 /public/storage
 /storage/*.key

@@ -1155,9 +1155,6 @@ $(document).ready(function () {
     let audioPlayCount = {};
 
     function playAudio(audioId, buttonId) {
-        console.log('-');
-        console.log(audioPlayCount);
-
         if (!audioPlayCount[audioId]) {
             audioPlayCount[audioId] = 0;
         }
@@ -1166,9 +1163,12 @@ $(document).ready(function () {
             let audioElement = $('#' + audioId)[0];
             audioElement.play();
             audioPlayCount[audioId]++;
+
+            if (audioPlayCount[audioId] == 2) {
+                $('#' + buttonId).prop('disabled', true).css('opacity', '0.5');
+            }
         } else {
-            $('#' + buttonId).prop('disabled', true);
-            alert("You have reached the maximum play limit for this audio.");
+            // alert("You have reached the maximum play limit for this audio.");
         }
     }
 
