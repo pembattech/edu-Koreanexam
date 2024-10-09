@@ -14,32 +14,37 @@ class ExamScoresController extends Controller
      */
     public function index()
     {
-        // if (auth()->check() && auth()->user()->is_admin) {
+        if (auth()->check() && auth()->user()->is_admin) {
 
-        //     return view('exam_score.admin_result');
+            // Fetch all exam scores with related user information
+            $examScores = ExamScore::with('user')
+            ->orderBy('exam_start_time', 'desc')
+            ->get();
 
-        // } else {
+            // Return the results to a view or as JSON
+            return view('exam_score.admin_result', compact('examScores'));
+        } else {
 
-        $candidate_id = auth()->user()->id;
+            $candidate_id = auth()->user()->id;
 
-        $exam_scores = ExamScore::query()
-            ->where('candidate_id', $candidate_id)
-            ->get()
-            ->map(function ($score) use ($candidate_id) {
-                $correct_answers_count = DB::table('answers')
-                    ->where('candidate_id', $candidate_id)
-                    ->where('exam_start_time', $score->exam_start_time) // Using exam_start_time from ExamScore
-                    ->where('is_correct', true)
-                    ->count();
+            $exam_scores = ExamScore::query()
+                ->where('candidate_id', $candidate_id)
+                ->get()
+                ->map(function ($score) use ($candidate_id) {
+                    $correct_answers_count = DB::table('answers')
+                        ->where('candidate_id', $candidate_id)
+                        ->where('exam_start_time', $score->exam_start_time) // Using exam_start_time from ExamScore
+                        ->where('is_correct', true)
+                        ->count();
 
-                $score->correct_answers_count = $correct_answers_count;
+                    $score->correct_answers_count = $correct_answers_count;
 
-                return $score;
-            });
+                    return $score;
+                });
 
 
-        return view('exam_score.result', ['exams_score' => $exam_scores]);
-        // }
+            return view('exam_score.result', ['exams_score' => $exam_scores]);
+        }
     }
 
     public function detail_result(Request $request)
@@ -64,7 +69,7 @@ class ExamScoresController extends Controller
      */
     public function store(Request $request)
     {
-        
+
         if ($request->ajax()) {
             $exam_start_time = $request->input('exam_start_time');
             $set_number = $request->input('set_number');

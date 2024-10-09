@@ -18,10 +18,10 @@
 
 
     <!-- Scripts -->
-    @vite(['resources/css/app.css', 'resources/js/app.js'])
+    {{-- @vite(['resources/css/app.css', 'resources/js/app.js']) --}}
 
 
-    <link rel="stylesheet" href="{{ asset('public/build/assets/app-pu8VfaVw.css') }}">
+    <link rel="stylesheet" href="{{ asset('build/assets/app-BpUhKniQ.css') }}">
 </head>
 
 <body class="font-sans antialiased bg-black">
@@ -67,7 +67,7 @@
         });
     </script>
 
-    <script src="{{ asset('public/build/assets/app-DnQ6wM03.js') }}"></script>
+    <script src="{{ asset('build/assets/app-DnQ6wM03.js') }}"></script>
 </body>
 
 </html>
