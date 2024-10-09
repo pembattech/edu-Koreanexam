@@ -67,7 +67,6 @@
         });
     </script>
 
-    <script src="{{ asset('build/assets/app-DnQ6wM03.js') }}"></script>
 </body>
 
 </html>
