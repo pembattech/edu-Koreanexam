@@ -18,10 +18,10 @@
 
 
     <!-- Scripts -->
-    {{-- @vite(['resources/css/app.css', 'resources/js/app.js']) --}}
+    @vite(['resources/css/app.css', 'resources/js/app.js'])
 
 
-    <link rel="stylesheet" href="{{ asset('build/assets/app-BpUhKniQ.css') }}">
+    {{-- <link rel="stylesheet" href="{{ asset('build/assets/app-BpUhKniQ.css') }}"> --}}
 </head>
 
 <body class="font-sans antialiased bg-black">
