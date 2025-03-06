@@ -2,7 +2,12 @@
 
     <div>
         <p class="font-medium">
-            {{ Str::limit(auth()->user()->name, 15) }}
+            @if (auth()->guard('student')->check())
+                {{ Str::limit(auth()->guard('student')->user()->name, 15) }}
+            @else
+                {{ Str::limit(auth()->user()->name, 15) }}
+            @endif
+
         </p>
     </div>
 

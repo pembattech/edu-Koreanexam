@@ -18,7 +18,7 @@ class CreateExamScoresTable extends Migration
             $table->unsignedBigInteger('candidate_id');
             $table->timestamp('exam_start_time');
             $table->integer('korean_score');
-            $table->foreign('candidate_id')->references('id')->on('users')->onDelete('cascade');
+            $table->foreign('candidate_id')->references('id')->on('students')->onDelete('cascade');
             $table->timestamps(); // This adds the created_at and updated_at columns
         });
     }

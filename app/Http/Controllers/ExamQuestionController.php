@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use Intervention\Image\ImageManager;
 use Intervention\Image\Drivers\Gd\Driver;
+use Illuminate\Support\Facades\Auth;
+
 
 use App\Models\ExamRoutine;
 use App\Models\Answer;
@@ -18,7 +20,7 @@ class ExamQuestionController extends Controller
      */
     public function index()
     {
-        if (!request()->user()->isAdmin()) {
+        if (Auth::guard('student')->check()) {
             // Get today's date in 'Y-m-d' format
             $today = now()->format('Y-m-d');
 
@@ -29,7 +31,9 @@ class ExamQuestionController extends Controller
 
 
             return view('exam_question.index', ['todayExams' => $todayExams]);
-        } else {
+        }
+
+        if (Auth::user()->is_admin) {
             $exam_sets = ExamQuestion::select('set', DB::raw('count(*) as total_questions'))
                 ->groupBy('set')
                 ->get();
@@ -85,6 +89,10 @@ class ExamQuestionController extends Controller
                 'mimetypes:audio/mpeg,audio/mp4,audio/wav,audio/x-wav,audio/wave',
                 'max:2048'
             ],
+            'additional_audio' => [
+                'mimetypes:audio/mpeg,audio/mp4,audio/wav,audio/x-wav,audio/wave',
+                'max:2048'
+            ],
             'answer_type' => ['required', 'string'],
             'option_1' => ['required_if:answer_type,text', 'string'],
             'option_1_image' => ['required_if:answer_type,image', 'image', 'mimes:jpeg,png,jpg,gif,svg', 'max:2048'],
@@ -119,6 +127,11 @@ class ExamQuestionController extends Controller
             $img->save(public_path('exam_assets/images/question_image/' . $imageName));
             $data['question_description'] = $imageName;
 
+            if ($request->hasFile('additional_audio')) {
+                $audioName = time() . '.' . $request->additional_audio->extension();
+                $request->additional_audio->move(public_path('exam_assets/audio/additional_audio'), $audioName);
+                $data['additional_audio'] = $audioName;
+            }
         } elseif ($request->question_type === 'audio' && $request->hasFile('question_description_audio')) {
             $audioName = time() . '.' . $request->question_description_audio->extension();
             $request->question_description_audio->move(public_path('exam_assets/audio/question_audio'), $audioName);
@@ -135,19 +148,18 @@ class ExamQuestionController extends Controller
                 $optionImageName = time() . '_option_' . $i . '.' . $request->$optionImageKey->extension();
 
                 $optionImage = $request->file($optionImageKey);
-                
+
                 // Create an instance of ImageManager with the GD driver
                 $option_manager = new ImageManager(new Driver());
-    
+
                 // Read the uploaded image
                 $option_img = $option_manager->read($optionImage->getPathname());
-    
+
                 $option_img->scaleDown(width: 700);
-    
+
                 // Save the resized image
                 $option_img->save(public_path('exam_assets/images/option_image/' . $optionImageName));
                 $data[$optionKey] = $optionImageName;
-
             } elseif ($request->answer_type === 'audio' && $request->hasFile($optionAudioKey)) {
                 $optionAudioName = time() . '_option_' . $i . '.' . $request->$optionAudioKey->extension();
                 $request->$optionAudioKey->move(public_path('exam_assets/audio/option_audio'), $optionAudioName);
@@ -157,8 +169,7 @@ class ExamQuestionController extends Controller
             }
         }
 
-        // Create the exam question
-        $exam_question_create = ExamQuestion::create([
+        $examQuestionData = [
             "set" => "set_" . $data['set_number'],
             "question_number" => "set_" . $data['set_number'] . "_" . $data['question_number'],
             "heading" => $data['heading'],
@@ -170,8 +181,13 @@ class ExamQuestionController extends Controller
             "option3" => $data['option_3'],
             "option4" => $data['option_4'],
             "correct_answer" => $data['correct_answer'],
-        ]);
+        ];
 
+        if (!empty($data['additional_audio'])) {
+            $examQuestionData['additional_audio'] = $data['additional_audio'];
+        }
+
+        $exam_question_create = ExamQuestion::create($examQuestionData);
 
         if ($exam_question_create) {
             return response()->json(['success' => true]);

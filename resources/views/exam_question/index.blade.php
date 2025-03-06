@@ -30,6 +30,55 @@
         @else
             <p class="text-2xl text-gray-950">No exams scheduled for today.</p>
         @endif
+
+        <div class="p-4">
+            <table class="min-w-full divide-y divide-gray-200 border border-gray-200 shadow-sm rounded-lg overflow-hidden">
+                <tbody class="bg-white divide-y divide-gray-200">
+                    @if (auth('student')->check())
+                    <tr>
+                        <td colspan="2" class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 text-center">
+                            <img src="{{ asset('assets/student_profile_pictures/' . auth('student')->user()->profile_picture) }}" 
+                                 alt="Profile Picture"
+                                 class="w-24 h-24 object-cover rounded-full mx-auto">
+                        </td>
+                    </tr>
+                        <tr>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">Name</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ auth('student')->user()->name }}</td>
+                        </tr>
+                        <tr>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">Date of Birth</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ auth('student')->user()->dob }}</td>
+                        </tr>
+                        <tr>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">Gender</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ auth('student')->user()->gender }}</td>
+                        </tr>
+                        <tr>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">Address</td>
+                            <td class="px-6 py-4 text-sm text-gray-500">{{ auth('student')->user()->address }}</td>
+                        </tr>
+                        <tr>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">Contact Number</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ auth('student')->user()->contact_number }}</td>
+                        </tr>
+                        <tr>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">Email</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ auth('student')->user()->email }}</td>
+                        </tr>
+                        <tr>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">Enrollment Date</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ auth('student')->user()->enrollment_date }}</td>
+                        </tr>
+                    @else
+                        <tr>
+                            <td colspan="2" class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 text-center">No data available for guest users.</td>
+                        </tr>
+                    @endif
+                </tbody>
+            </table>
+        </div>
+
     </div>
 
 </x-app-layout>

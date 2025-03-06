@@ -51,7 +51,7 @@ class AnswerController extends Controller
             $setNumber = $request->input('setNumber');
             $chosenOption = $request->input('chosenOption');
             $exam_start_time = $request->input('exam_start_time');
-            $candidate_id = auth()->user()->id;
+            $candidate_id = auth('student')->user()->id;
 
             try {
                 $exam_question = ExamQuestion::query()

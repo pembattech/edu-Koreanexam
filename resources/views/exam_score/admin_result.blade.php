@@ -40,7 +40,7 @@
                     @foreach ($examScores as $examScore)
                         <tr class="border-b hover:bg-gray-50">
                             <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap">
-                                {{ $examScore->user->name }}
+                                {{ $examScore->student->name }}
                             </th>
                             <td class="px-6 py-4">{{ $examScore->korean_score }}</td>
                             <td class="px-6 py-4">

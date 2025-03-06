@@ -5,7 +5,7 @@
             <h1 class="title">Korean UBT Exam</h1>
             <p class="subtitle">Master your skills with real-time results and detailed review options.</p>
 
-            <a href="{{ route('login') }}">
+            <a href="{{ route('student.loginForm') }}">
                 <button class="start-btn">Start Your Journey</button>
             </a>
 

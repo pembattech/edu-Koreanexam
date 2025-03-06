@@ -4,17 +4,7 @@
 
     <div class="flex justify-center">
 
-        {{-- <div class="flex items-center">
-            <div class="ml-8 bg-indigo-600 text-white p-8 rounded-lg h-fit w-80">
-
-                <h2 class="text-3xl font-bold mb-4">Test Your Skills for Free!</h2>
-                <p class="mb-6">Not ready to register? Take a free practice test to see where you stand!</p>
-                <a href="/free-test" class="bg-white text-indigo-600 font-bold py-2 px-4 rounded-full">Start Free
-                    Test</a>
-            </div>
-        </div> --}}
-
-        <form method="POST" action="{{ route('login') }}">
+        <form method="POST" action="{{ route('student.login') }}">
             @csrf
             <div class=" py-3 sm:max-w-xl sm:mx-auto">
 
@@ -22,7 +12,7 @@
 
                     <div class="max-w-md mx-auto">
                         <div>
-                            <h1 class="text-2xl font-semibold">Login</h1>
+                            <h1 class="text-2xl font-semibold">Student Login</h1>
                         </div>
                         <div class="divide-y divide-gray-200">
                             <div class="py-8 text-base leading-6 space-y-4 text-gray-700 sm:text-lg sm:leading-7">
@@ -48,12 +38,6 @@
                                 </div>
 
                                 <div class="flex items-center mt-4">
-                                    {{-- @if (Route::has('password.request'))
-                                        <a class="underline text-sm text-gray-600 hover:text-gray-900 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
-                                            href="{{ route('password.request') }}">
-                                            {{ __('Forgot your password?') }}
-                                        </a>
-                                    @endif --}}
 
                                     <x-primary-button>
                                         {{ __('Log in') }}
@@ -63,15 +47,6 @@
                             </div>
                         </div>
 
-                        <p
-                            class="text-gray-600 text-sm focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
-                            Don't have an account?
-                            <a class="underline  hover:text-gray-900" href="{{ route('register') }}">
-                                <span>
-                                    Register here?
-                                </span>
-                            </a>
-                        </p>
                     </div>
                 </div>
             </div>

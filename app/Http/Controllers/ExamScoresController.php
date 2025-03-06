@@ -17,7 +17,7 @@ class ExamScoresController extends Controller
         if (auth()->check() && auth()->user()->is_admin) {
 
             // Fetch all exam scores with related user information
-            $examScores = ExamScore::with('user')
+            $examScores = ExamScore::with('student')
             ->orderBy('exam_start_time', 'desc')
             ->get();
 
@@ -25,7 +25,7 @@ class ExamScoresController extends Controller
             return view('exam_score.admin_result', compact('examScores'));
         } else {
 
-            $candidate_id = auth()->user()->id;
+            $candidate_id = auth('student')->user()->id;
 
             $exam_scores = ExamScore::query()
                 ->where('candidate_id', $candidate_id)
@@ -73,7 +73,7 @@ class ExamScoresController extends Controller
         if ($request->ajax()) {
             $exam_start_time = $request->input('exam_start_time');
             $set_number = $request->input('set_number');
-            $candidate_id = auth()->user()->id;
+            $candidate_id = auth('student')->user()->id;
 
             // Retrieve the collection of answers
             $retrive_answer = Answer::query()

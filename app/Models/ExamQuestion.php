@@ -13,6 +13,7 @@ class ExamQuestion extends Model
         'heading',
         'question_type',
         'question',
+        'additional_audio',
         'answer_type',
         'option1',
         'option2',

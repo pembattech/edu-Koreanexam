@@ -14,10 +14,6 @@
             </h1>
 
             <div>
-                <button
-                    class="text-black bg-gray-50 hover:bg-gray-300 focus:ring-4 focus:outline-none focus:ring-gray-200 text-xl font-bold leading-none tracking-tight py-2 px-6 rounded-md">
-                    Edit
-                </button>
 
                 <button id="setTodayExam" data-set="{{ $set }}"
                     class="text-white ml-2 bg-green-700 hover:bg-green-800 focus:ring-4 focus:outline-none focus:ring-green-300 text-xl font-bold leading-none tracking-tight py-2 px-6 rounded-md">
@@ -47,6 +43,14 @@
 
                 <div class="bg-white overflow-auto">
 
+                    <button id="edit-question_number"
+                        class="edit-question_number text-black bg-gray-50 hover:bg-gray-300 focus:ring-4 focus:outline-none focus:ring-gray-200 text-md font-normal leading-none tracking-tight py-2 px-6 rounded-md"
+                        data-set-num="{{ $set }}"
+                        data-qn-num="{{ str_replace($set . '_', '', $question_item->question_number) }}">
+
+                        Edit
+                    </button>
+
                     <div class="exam_question_description">
                         <p class="font-semibold sm:text-xl md:text-2xl lg:text-2xl">
                             <span id="question-number">
@@ -67,9 +71,24 @@
 
                             </p>
                         @elseif ($question_item->question_type == 'image')
-                            <img class="h-auto max-w-md w-64 sm:w-64 md:w-80 lg:w-96"
-                                src="{{ asset('exam_assets/images/question_image/' . $question_item->question) }}"
-                                alt="Question Image">
+                        <div class="flex flex-col gap-2">
+                            @if (!is_null($question_item->additional_audio) && $question_item->additional_audio != '')
+                                <div>
+                                    <audio controls>
+                                        <source
+                                            src="{{ asset('exam_assets/audio/additional_audio/' . $question_item->additional_audio) }}"
+                                            type="audio/mpeg">
+                                        Your browser does not support the audio element.
+                                    </audio>
+                                </div>
+                            @endif
+                            <div>
+                                <img class="h-auto max-w-md w-64 sm:w-64 md:w-80 lg:w-96"
+                                    src="{{ asset('exam_assets/images/question_image/' . $question_item->question) }}"
+                                    alt="Question Image">
+                            </div>
+
+                        </div>
                         @elseif ($question_item->question_type == 'audio')
                             <audio controls>
                                 <source
@@ -124,6 +143,8 @@
                 </div>
             </div>
         @endforeach
+
+        @include('exam_question.edit_qn')
 
     </div>
 
@@ -210,6 +231,234 @@
                 }
             });
         }
+
+
+        $('.edit-question_number').on('click', function() {
+            const get_setnum = $(this).data('set-num');
+            const get_qnum = $(this).data('qn-num');
+
+            $.ajax({
+                url: '/exam_question/exam',
+                method: 'GET',
+                data: {
+                    'setNumber': get_setnum,
+                    'questionNumber': get_setnum + "_" + get_qnum,
+                },
+                success: function(response) {
+
+                    if (response.success.length <= 0) {
+
+                        $('#invalid-message').removeClass('hidden');
+
+                    } else {
+
+                        $('#edit-question-drawer').removeClass('-translate-x-full');
+                        $('#editQuestionForm')[0].reset();
+
+                        $('#store_set_number_popup').addClass('hidden');
+
+
+                        // Iterate over each question
+                        response.success.forEach(function(question) {
+
+                            console.log(question)
+                            // Extract data from each question object
+                            var set_number = get_setnum.replace("set_", "");
+                            var questionNumber = question.question_number.replace(question.set +
+                                "_", "");
+                            var headingText = question.heading;
+                            var q_type = question.question_type;
+                            var questionText = question.question;
+                            var option_1 = question.option1;
+                            var option_2 = question.option2;
+                            var option_3 = question.option3;
+                            var option_4 = question.option4;
+                            var ans_type = question.answer_type;
+                            var correct_answer = question.correct_answer;
+
+                            // Set the values of the inputs
+                            $("#edit_set_number").val(set_number);
+                            $("#edit_question").val(headingText);
+                            $("#edit_question_number").val(questionNumber);
+                            $("#edit_question_type").val(q_type);
+
+                            const questionType = q_type;
+                            const $questionDescriptionContainer = $(
+                                '#edit_question_description_container');
+                            const $questionImagePreview = $('#edit_question_image_preview');
+                            const $questionAudioPreview = $('#edit_question_audio_preview');
+
+                            // Check if the current element is a file input, textarea, or audio element
+                            const $currentElement = $(
+                                '#edit_question_description_image, #edit_question_description_audio, #edit_question_description'
+                            );
+
+                            if (questionType === 'image') {
+                                // Create a new file input for the image
+                                const $fileInput = $('<input>', {
+                                    type: 'file',
+                                    name: 'question_description_image',
+                                    id: 'edit_question_description_image',
+                                    class: $currentElement.attr('class'),
+                                    accept: 'image/*'
+                                }).on('change', function() {
+                                    previewImage($fileInput[0], $questionImagePreview[
+                                        0]);
+
+                                });
+
+                                $currentElement.replaceWith($fileInput);
+                                $questionImagePreview.removeClass('hidden');
+                                $questionAudioPreview.addClass('hidden');
+
+                                if (questionText) {
+
+                                    const imageUrl = '/exam_assets/images/question_image/' +
+                                        questionText;
+                                    $questionImagePreview.attr('src', imageUrl).removeClass(
+                                        'hidden');
+
+                                    // document.getElementById('edit__additional_audio_field').style.display = 'block';
+
+                                }
+                            } else if (questionType === 'audio') {
+                                // Create a new file input for the audio
+                                const $fileInput = $('<input>', {
+                                    type: 'file',
+                                    name: 'question_description_audio',
+                                    id: 'edit_question_description_audio',
+                                    class: $currentElement.attr('class'),
+                                    accept: 'audio/*'
+                                }).on('change', function() {
+                                    previewAudio($fileInput[0], $questionAudioPreview[
+                                        0]);
+                                });
+
+                                $currentElement.replaceWith($fileInput);
+                                $questionImagePreview.addClass('hidden');
+                                $questionAudioPreview.removeClass('hidden');
+
+                                if (questionText) {
+
+                                    const audioURL = '/exam_assets/audio/question_audio/' +
+                                        questionText;
+                                    $questionAudioPreview.attr('src', audioURL).removeClass(
+                                        'hidden');
+
+                                }
+                            } else {
+                                // Create a new textarea for the text
+                                const $textarea = $('<textarea>', {
+                                    name: 'question_description',
+                                    id: 'edit_question_description',
+                                    class: $currentElement.attr('class')
+                                });
+
+                                $currentElement.replaceWith($textarea);
+                                $questionImagePreview.addClass('hidden');
+                                $questionAudioPreview.addClass('hidden');
+
+                                // If it's a text question, set the text
+                                $textarea.val(questionText);
+                            }
+
+                            $("#edit_answer_type").val(ans_type);
+
+
+                            const options = [option_1, option_2, option_3, option_4];
+
+                            for (let i = 1; i <= 4; i++) {
+                                // Get the current element (either the text input, image input, or audio input)
+                                const currentElement = $('#edit_option_' + i + '_image')[0] ||
+                                    $('#edit_option_' + i + '_audio')[0] ||
+                                    $('#edit_option_' + i)[0];
+
+                                const optionPreview = $('#edit_option_' + i + '_preview');
+                                const optionAudioPreview = $('#edit_option_' + i +
+                                    '_audio_preview');
+
+                                if (currentElement) {
+                                    if (ans_type === 'image') {
+                                        // Create a new file input for the image
+                                        const $fileInput = $('<input>', {
+                                            type: 'file',
+                                            name: 'option_' + i + '_image',
+                                            id: 'edit_option_' + i + '_image',
+                                            class: currentElement.className,
+                                            accept: 'image/*'
+                                        }).on('change', function() {
+                                            previewImage(this, optionPreview[0]);
+                                        });
+
+                                        $(currentElement).replaceWith($fileInput);
+                                        optionPreview.removeClass('hidden');
+                                        optionAudioPreview.addClass('hidden');
+
+                                        // Set the existing image if available
+                                        if (options[i - 1]) {
+
+                                            const optionImageURL =
+                                                '/exam_assets/images/option_image/' +
+                                                options[i - 1];
+
+                                            optionPreview.attr('src', optionImageURL);
+                                        }
+                                    } else if (ans_type === 'audio') {
+                                        // Create a new file input for the audio
+                                        const $fileInput = $('<input>', {
+                                            type: 'file',
+                                            name: 'option_' + i + '_audio',
+                                            id: 'edit_option_' + i + '_audio',
+                                            class: currentElement.className,
+                                            accept: 'audio/*'
+                                        }).on('change', function() {
+                                            previewAudio(this, optionAudioPreview[0]);
+                                        });
+
+                                        $(currentElement).replaceWith($fileInput);
+                                        optionPreview.addClass('hidden');
+                                        optionAudioPreview.removeClass('hidden');
+
+                                        if (options[i - 1]) {
+
+                                            const optionAudioURL =
+                                                '/exam_assets/audio/option_audio/' +
+                                                options[i - 1];
+
+                                            optionAudioPreview.attr('src', optionAudioURL);
+
+                                        }
+                                    } else {
+                                        // Create a new text input for the text
+                                        const $textInput = $('<input>', {
+                                            type: 'text',
+                                            name: 'option_' + i,
+                                            id: 'edit_option_' + i,
+                                            class: currentElement.className
+                                        });
+
+                                        $(currentElement).replaceWith($textInput);
+                                        optionPreview.addClass('hidden');
+                                        optionAudioPreview.addClass('hidden');
+
+                                        // Set the value for the text option
+                                        if (options[i - 1]) {
+                                            // Remove the "_option_*" suffix from the value
+                                            const valueWithoutSuffix = options[i - 1].replace(
+                                                /_option_\d+$/, '');
+                                            $textInput.val(valueWithoutSuffix);
+                                        }
+                                    }
+                                }
+                            }
+
+                            $("#edit_correct_answer").val(correct_answer);
+
+                        });
+                    }
+                }
+            });
+        });
     </script>
 
 </x-app-layout>
