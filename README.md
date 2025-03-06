@@ -1,6 +1,6 @@
-# Edu-UBTexam
+# Edu-Koreanexam
 
-**Edu-UBTexam** is a comprehensive online exam platform designed to evaluate and enhance Korean language proficiency. This project provides an interactive environment for users to take and manage Korean language exams with features such as dynamic question types, real-time scoring, and detailed results analysis.
+**Edu-Koreanexam** is a comprehensive online exam platform designed to evaluate and enhance Korean language proficiency. This project provides an interactive environment for users to take and manage Korean language exams with features such as dynamic question types, real-time scoring, and detailed results analysis.
 
 ## Features
 
